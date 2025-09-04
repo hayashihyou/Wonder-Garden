@@ -43,10 +43,9 @@ public:
 	/// •`‰æˆ—
 	/// </summary>
 	/// <param name="rc"></param>
-	virtual void Draw(RenderContext& rc);
+	virtual void Render(RenderContext& rc);
 
-	int hp;
-	int atk;
-	int spd;
+	int hp = 100;
+	int atk = 10;
 };
 
