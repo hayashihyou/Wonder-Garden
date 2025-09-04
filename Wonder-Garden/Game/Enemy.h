@@ -7,9 +7,17 @@ public:
 	Enemy() {};
 private:
 	~Enemy() {};
-	bool Start()override;
-	void Update()override;
-	void Draw(RenderContext& rc)override;
+	bool Start();
+	void Rotation();
+	void Update();
+	void Render(RenderContext& rc);
 
+	void HP()override;
+	void Attack()override;
+	void Move()override;
+
+	ModelRender m_enemyModel;
+	Quaternion m_rot;
+	Vector3 pos;
 };
 

@@ -11,9 +11,9 @@ void CharacterBase::Update()
 
 }
 
-void CharacterBase::Draw(RenderContext& rc)
+void CharacterBase::Render(RenderContext& rc)
 {
-
+	
 }
 
 
