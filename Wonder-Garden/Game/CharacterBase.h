@@ -45,7 +45,7 @@ public:
 	/// <param name="rc"></param>
 	virtual void Render(RenderContext& rc);
 
-	int hp = 100;
+	int hp = 0;
 	int atk = 10;
 };
 

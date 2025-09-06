@@ -5,6 +5,7 @@ class Enemy : public CharacterBase
 {
 public:
 	Enemy() {};
+
 private:
 	~Enemy() {};
 	bool Start();
@@ -17,7 +18,9 @@ private:
 	void Move()override;
 
 	ModelRender m_enemyModel;
+	PhysicsStaticObject physicsStaticObject;
 	Quaternion m_rot;
+
 	Vector3 pos;
 };
 
