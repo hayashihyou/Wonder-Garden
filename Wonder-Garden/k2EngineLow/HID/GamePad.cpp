@@ -50,10 +50,10 @@ namespace nsK2EngineLow {
 			{ enButtonLeft		, VK_NUMPAD4,	'4' 		},
 			{ enButtonRight		, VK_NUMPAD6,	'6' 		},
 			{ enButtonA			, 'J',			0xFFFFFFFF	},
-			{ enButtonB			, VK_SPACE,			0xFFFFFFFF	},
+			{ enButtonB			, VK_SPACE,		0xFFFFFFFF	},
 			{ enButtonY			, 'I',			0xFFFFFFFF	},
-			{ enButtonX			, VK_LSHIFT,			0xFFFFFFFF	},
-			{ enButtonSelect	, 'K',		0xFFFFFFFF},
+			{ enButtonX			, VK_LSHIFT,	0xFFFFFFFF	},
+			{ enButtonSelect	, 'K',			0xFFFFFFFF},
 			{ enButtonStart		, VK_RETURN,	0xFFFFFFFF	},
 			{ enButtonRB1		, '7',			0xFFFFFFFF	},
 			{ enButtonRB2		, '8',			0xFFFFFFFF	},
@@ -205,7 +205,7 @@ namespace nsK2EngineLow {
 			//接続されている。
 			m_state.bConnected = true;
 			UpdateCore(m_state.state);
-			
+
 		}
 		else {
 			//接続されていない場合はキーボードの入力でエミュレートする。

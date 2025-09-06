@@ -3,13 +3,15 @@
 
 bool Enemy::Start()
 {
-    m_enemyModel.Init("Assets/modelData/enemy/slime/slime.tkm");
+	m_enemyModel.Init("Assets/modelData/enemy/slime/slime.tkm");
 
 	pos = { 200,0,0 };
 	m_enemyModel.SetPosition(pos);
 
 	m_enemyModel.Update();
-    return true;
+
+	physicsStaticObject.CreateFromModel(m_enemyModel.GetModel(), m_enemyModel.GetModel().GetWorldMatrix());
+	return true;
 }
 
 void Enemy::Update()
@@ -36,7 +38,7 @@ void Enemy::Move()
 
 void Enemy::Rotation()
 {
-	
+
 }
 
 void Enemy::Render(RenderContext& rc)

@@ -1,25 +1,14 @@
 #pragma once
 #include "CharacterBase.h"
 
-class Player :  public CharacterBase
+class IState;
+class Player : public CharacterBase
 {
 public:
 	Player() {};
+	void RegisterState();
 
-	Vector3 pos = { 0,0,0 };
-private:
-	~Player() {};
-	bool Start();
-	void Rotation();
-	void Update();
-	void Render(RenderContext& rc);
-	void ManagerState();
-	void PlayAnimation();
-	void HP()override;
-	void Attack()override;
-	void Move()override;
-
-private:
+public:
 	/// <summary>
 	/// アニメーションの種類
 	/// </summary>
@@ -32,6 +21,29 @@ private:
 		enAnimationClip_Attack,
 		enAnimationClip_Num,
 	};
+
+public:
+	ModelRender m_playerModel;
+
+	Vector3 pos = { 0,0,0 };
+	Vector3 moveSpeed;
+	int hp = 10;
+	void SetAttack(bool attackFlag);
+
+private:
+	~Player() {};
+	bool Start();
+	void Rotation();
+	void Update();
+	void Render(RenderContext& rc);
+	void ManagerState();
+	void UpdateChangeState();
+
+	void HP()override;
+	void Attack()override;
+	void Move()override;
+
+private:
 
 	/// <summary>
 	/// プレイヤーの状態
@@ -49,11 +61,14 @@ private:
 	AnimationClip m_animationClips[enAnimationClip_Num];
 	CharacterController m_characterController;
 	CharacterBase* m_characterBase;
-	ModelRender m_playerModel;
 	Quaternion m_rot;
 
-	Vector3 moveSpeed;
-
 	int playerState = enPlayerState_Idle;
-};
+	int m_atk = 1;
 
+private:
+	IState* m_currentState = nullptr;
+	IState* m_stateList[enPlayerState_Num];
+	bool m_attackFlag = false;	
+	bool m_isStopMove = false;
+};

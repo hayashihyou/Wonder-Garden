@@ -1,5 +1,11 @@
 #include "stdafx.h"
-#include "player.h"
+#include "Player.h"
+#include "PlayerState.h"
+
+void Player::RegisterState()
+{
+
+}
 
 bool Player::Start()
 {
@@ -16,6 +22,14 @@ bool Player::Start()
 
 	m_playerModel.Init("Assets/modelData/player/player.tkm", m_animationClips, enAnimationClip_Num);
 
+	m_stateList[enPlayerState_Idle] = new IdleState;
+	m_stateList[enAnimationClip_Walk] = new WalkState;
+	m_stateList[enAnimationClip_Run] = new RunState;
+	m_stateList[enAnimationClip_Jump] = new JumpState;
+	m_stateList[enAnimationClip_Attack] = new AttackState;
+
+	m_currentState = m_stateList[enPlayerState_Idle];
+
 	//キャラクターコントローラーの初期化
 	m_characterController.Init(25.0f, 75.0f, pos);
 
@@ -26,30 +40,25 @@ bool Player::Start()
 
 void Player::Update()
 {
+	ManagerState();
+
 	Attack();
 
 	Move();
 
 	Rotation();
 
-	ManagerState();
-
-	PlayAnimation();
+	UpdateChangeState();
 }
 
 void Player::HP()
 {
-	hp = 9;
+
 }
 
 void Player::Attack()
 {
-	atk = 2;
-
-	if (g_pad[0]->IsTrigger(enButtonA))
-	{
-		playerState = enAnimationClip_Attack;
-	}
+	m_atk = 2;
 }
 
 void Player::Move()
@@ -82,7 +91,6 @@ void Player::Move()
 	{
 		if (g_pad[0]->IsTrigger(enButtonB))
 		{
-			playerState = enAnimationClip_Jump;
 			//ジャンプ
 			moveSpeed.y = 350.0f;
 		}
@@ -90,13 +98,27 @@ void Player::Move()
 
 	moveSpeed.y -= 10.0f;
 
+	//ストップムーブがtrueなら移動速度を0にする
+	if(m_isStopMove){
+		moveSpeed.x = 0.0f;
+		moveSpeed.z = 0.0f;
+	}
+
 	//キャラクターコントローラーを使って座標を移動させる
 	pos = m_characterController.Execute(moveSpeed, 1.0f / 60.0f);
+
+	m_isStopMove = false;
 
 	//モデルの座標に反映させる
 	m_playerModel.SetPosition(pos);
 
 	m_playerModel.Update();
+
+}
+
+void Player::SetAttack(bool attackFlag)
+{
+	m_attackFlag = attackFlag;
 }
 
 void Player::Rotation()
@@ -111,57 +133,108 @@ void Player::Rotation()
 
 void Player::ManagerState()
 {
+	//優先順位
+	enum {
+		PRI__NONE,
+		PRI_IDLE,
+		PRI_WALK,
+		PRI_RUN,
+		PRI_JUMP,
+		PRI_ATTACK
+	};
+
+	//優先順位の高いものを入れる変数
+	int bestPri = PRI__NONE;
+	//優先するステート
+	AnimationState bestState = enPlayerState_Idle;
+
+	bool isMove = fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f;
+
+
+	//状態を考慮するラムダ式
+	auto considerState = [&](int pri, AnimationState state)
+		{
+			//優先順位が一番高いものを採用する
+			if (bestPri < pri)
+			{
+				bestPri = pri;
+				bestState = state;
+			}
+		};
+
+
 	//地面についてないとき
 	if (m_characterController.IsOnGround() == false)
 	{
-		playerState == enAnimationClip_Jump;
-		return;
+		considerState(PRI_JUMP, enPlayerState_Jump);
 	}
 
 	//移動しているとき
-	if (fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f)
+	if (isMove)
 	{
-		playerState = enAnimationClip_Walk;
-
-		if (g_pad[0]->IsPress(enButtonX))
-		{
-			playerState = enAnimationClip_Run;
-		}
+		//歩いている状態にする
+		considerState(PRI_WALK, enPlayerState_Walk);
 	}
 
-	else
+	//走っている状態にする
+	if (g_pad[0]->IsPress(enButtonX) && isMove)
 	{
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			playerState = enAnimationClip_Attack;
-		}
-
-		playerState = enAnimationClip_Idle;
+		considerState(PRI_RUN, enPlayerState_Run);
 	}
+
+
+	//攻撃している状態にする
+	if (g_pad[0]->IsTrigger(enButtonA) || m_attackFlag)
+	{
+		considerState(PRI_ATTACK, enPlayerState_Attack);
+		m_isStopMove = true;
+	}
+
+	//優先順位が一番高いものを採用する
+	m_currentState = m_stateList[bestState];
 }
 
-void Player::PlayAnimation()
+
+void Player::UpdateChangeState()
 {
-	switch (playerState)
+
+	IState* nextState = nullptr;
+
+	if (m_currentState == m_stateList[0])
 	{
-	case 0:
-		m_playerModel.PlayAnimation(enAnimationClip_Idle);
-		break;
-	case 1:
-		m_playerModel.PlayAnimation(enAnimationClip_Walk);
-		break;
-	case 2:
-		m_playerModel.PlayAnimation(enAnimationClip_Run);
-		break;
-	case 3:
-		m_playerModel.PlayAnimation(enAnimationClip_Jump);
-		break;
-	case 4:
-		m_playerModel.PlayAnimation(enAnimationClip_Attack);
-		break;
-	default:
-		break;
+		nextState = m_stateList[enPlayerState_Idle];
 	}
+
+	if (m_currentState == m_stateList[1])
+	{
+		nextState = m_stateList[enAnimationClip_Walk];
+	}
+
+	if (m_currentState == m_stateList[2])
+	{
+		nextState = m_stateList[enPlayerState_Run];
+	}
+
+	if (m_currentState == m_stateList[3])
+	{
+		nextState = m_stateList[enPlayerState_Jump];
+	}
+
+	if (m_currentState == m_stateList[4])
+	{
+		nextState = m_stateList[enPlayerState_Attack];
+	}
+
+	//状態切り替わり処理
+	if (nextState != nullptr)
+	{
+		m_currentState->Exit();
+		m_currentState = nextState;
+		m_currentState->Enter();
+	}
+
+	m_currentState->Update();
+
 }
 
 
