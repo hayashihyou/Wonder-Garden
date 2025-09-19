@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "PlayerState.h"
+#include "IState.h"
 #include "Player.h"
 
 void IdleState::Enter()
@@ -77,9 +77,11 @@ void AttackState::Update()
 	if (!m_player->m_playerModel.IsPlayingAnimation())
 	{
 		m_player->SetAttack(false);
+		m_player->m_deleteFlag = true;
 	}
 }
 
 void AttackState::Exit()
 {
+	
 }

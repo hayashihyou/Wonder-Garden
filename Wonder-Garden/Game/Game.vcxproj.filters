@@ -19,7 +19,9 @@
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="GameOver.cpp" />
-    <ClCompile Include="PlayerState.cpp" />
+    <ClCompile Include="IState.cpp" />
+    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="AttackCollision.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -34,6 +36,8 @@
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameClear.h" />
     <ClInclude Include="GameOver.h" />
-    <ClInclude Include="PlayerState.h" />
+    <ClInclude Include="IState.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="AttackCollision.h" />
   </ItemGroup>
 </Project>

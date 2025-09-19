@@ -1,14 +1,22 @@
 #include "stdafx.h"
 #include "Player.h"
-#include "PlayerState.h"
+#include "IState.h"
+#include "Enemy.h"
+#include "AttackCollision.h"
 
-void Player::RegisterState()
+
+namespace
 {
+	const Vector3 TO_PLAYER_POS_VECTOR = { 0,30,50 };
 
+	const float COLLISION_TIME = 5.0f;
 }
 
 bool Player::Start()
 {
+
+	
+
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/player/playerIdle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/player/playerWalk.tka");
@@ -31,7 +39,7 @@ bool Player::Start()
 	m_currentState = m_stateList[enPlayerState_Idle];
 
 	//キャラクターコントローラーの初期化
-	m_characterController.Init(25.0f, 75.0f, pos);
+	m_characterController.Init(25.0f, 75.0f, m_transform.m_localPosition);
 
 	m_playerModel.Update();
 
@@ -53,12 +61,22 @@ void Player::Update()
 
 void Player::HP()
 {
-
+	hp = 9;
 }
 
 void Player::Attack()
 {
 	m_atk = 2;
+
+	if (g_pad[0]->IsTrigger(enButtonA))
+	{
+		MakeAttackCollision();
+	}
+
+	if (m_currentState == m_stateList[enPlayerState_Jump])
+	{
+		MakeJumpCollision();
+	}
 }
 
 void Player::Move()
@@ -75,6 +93,7 @@ void Player::Move()
 	//カメラの前方向と右方向のベクトルを持ってくる
 	Vector3 forward = g_camera3D->GetForward();
 	Vector3 right = g_camera3D->GetRight();
+
 
 	//y方向には移動させない
 	forward.y = 0.0f;
@@ -99,18 +118,19 @@ void Player::Move()
 	moveSpeed.y -= 10.0f;
 
 	//ストップムーブがtrueなら移動速度を0にする
-	if(m_isStopMove){
+	if (m_isStopMove) {
 		moveSpeed.x = 0.0f;
 		moveSpeed.z = 0.0f;
 	}
 
 	//キャラクターコントローラーを使って座標を移動させる
-	pos = m_characterController.Execute(moveSpeed, 1.0f / 60.0f);
+	m_transform.m_localPosition = m_characterController.Execute(moveSpeed, 1.0f / 60.0f);
+	playerPos = m_transform.m_localPosition;
 
 	m_isStopMove = false;
 
 	//モデルの座標に反映させる
-	m_playerModel.SetPosition(pos);
+	m_playerModel.SetPosition(m_transform.m_localPosition);
 
 	m_playerModel.Update();
 
@@ -126,9 +146,34 @@ void Player::Rotation()
 	if (fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f)
 	{
 		//キャラクターの向きを変える
-		m_rot.SetRotationYFromDirectionXZ(moveSpeed);
-		m_playerModel.SetRotation(m_rot);
+		m_transform.m_localRotation.SetRotationYFromDirectionXZ(moveSpeed);
+		m_playerModel.SetRotation(m_transform.m_localRotation);
 	}
+}
+
+void Player::MakeAttackCollision()
+{
+	//攻撃用の当たり判定を作成
+	//TODO::当たり判定が出しっぱなしで消えてない
+	punchCollision = NewGO<AttackCollision>(0);
+	m_transform.SetParent(&punchCollision->m_transform);
+	Vector3 toPlayerPos;
+	toPlayerPos.Set(TO_PLAYER_POS_VECTOR);
+	m_transform.m_localRotation.Apply(toPlayerPos);
+	punchCollision->m_transform.m_localPosition = toPlayerPos + m_transform.m_localPosition;
+	punchCollision->m_collisionObject.CreateSphere(punchCollision->m_transform.m_localPosition,m_transform.m_localRotation, 30.0f);
+	punchCollision->m_collisionObject.SetIsEnableAutoDelete(false);
+	punchCollision->m_collisionObject.SetTimeLimit(COLLISION_TIME);
+}
+
+void Player::MakeJumpCollision()
+{
+	//ジャンプ用の当たり判定を作成
+	//TODO::Transformクラスを用いてrotを取得する
+	auto jumpCollision = NewGO<CollisionObject>(0);
+	Vector3 jumpCollisionPos = m_transform.m_localPosition;
+	jumpCollisionPos.y += 10.0f;
+	jumpCollision->CreateSphere(jumpCollisionPos, Quaternion::Identity, 20.0f);
 }
 
 void Player::ManagerState()

@@ -22,17 +22,17 @@ public:
 	/// HPのベース
 	/// </summary>
 	virtual void HP() = 0;
-	
+
 	/// <summary>
 	/// 攻撃力のベース
 	/// </summary>
 	virtual void Attack() = 0;
-	
+
 	/// <summary>
 	/// 移動速度のベース
 	/// </summary>
 	virtual void Move() = 0;
-	
+
 
 	/// <summary>
 	/// 更新処理
@@ -45,7 +45,16 @@ public:
 	/// <param name="rc"></param>
 	virtual void Render(RenderContext& rc);
 
+public:
+	const Vector3& GetPosition() const { return m_transform.m_position; }
+	const Quaternion& GetRotation() const { return m_transform.m_rotation; }
+	const Vector3& GetScale() const { return m_transform.m_scale; }
+protected:
+	Transform m_transform;
+
 	int hp = 0;
-	int atk = 10;
+	int atk = 0;
+
+
 };
 

@@ -14,5 +14,6 @@ private:
 private:
 	Player* m_player = nullptr;
 	Vector3 m_toCameraPos;
+	Transform m_transform;
 };
 
