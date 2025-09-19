@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Game.h"
 #include "Player.h"
-#include "PlayerState.h"
+#include "IState.h"
 #include "Enemy.h"
 #include "Stage.h"
 #include "GameCamera.h"
@@ -30,21 +30,21 @@ bool Game::Start()
 	m_gameCamera = NewGO<GameCamera>(0, "GameCamera");
 
 	//コメントアウトする。
-	//PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 	return true;
 }
 
 void Game::Update()
 {
-	if (m_player->hp == 0)
-	{
-		//m_gameOver = NewGO<GameOver>(0, "GameOver");
-	}
+	//if (m_player->hp == 0)
+	//{
+	//	//m_gameOver = NewGO<GameOver>(0, "GameOver");
+	//}
 
-	if (m_enemy->hp == 0)
-	{
-		//m_gameClear = NewGO<GameClear>(0, "GameClear");
-	}
+	//if (m_enemy->hp == 0)
+	//{
+	//	//m_gameClear = NewGO<GameClear>(0, "GameClear");
+	//}
 }
 
 void Game::Render(RenderContext& rc)
