@@ -1,6 +1,13 @@
 #include "stdafx.h"
 #include "Enemy.h"
 #include "Player.h"
+#include "AttackCollision.h"
+
+namespace
+{
+	const Vector3 COLPOS_Y = Vector3{ 0, 20, 0 };
+	const Vector3 COLJUMPPOS_Y = Vector3{ 0,30,0 };
+}
 
 bool Enemy::Start()
 {
@@ -15,24 +22,29 @@ bool Enemy::Start()
 
 	m_enemyModel.Init("Assets/modelData/enemy/slime/slime.tkm", m_animationClips, enAnimationClip_Num);
 	m_pos = { 200,0,0 };
+	m_colPos = m_pos + COLPOS_Y;
+
+	m_colJumpPos = m_pos + COLJUMPPOS_Y;
+
 	m_enemyModel.SetPosition(m_pos);
-
 	m_enemyModel.SetRotation(m_rot);
-
-
-	m_enemyCollision.CreateFromModel(m_enemyModel.GetModel(), m_enemyModel.GetModel().GetWorldMatrix());
-
 	m_enemyModel.Update();
+
+	enemyCollisionObject.CreateSphere(m_colPos, m_rot, 40.0f);
+	enemyJumpCollision.CreateSphere(m_colJumpPos, m_rot, 25.0f);
 	return true;
 }
 
 void Enemy::Update()
 {
-
 	if (m_player == nullptr)
 	{
 		m_player = FindGO<Player>("Player");
 	}
+
+
+	m_attackCollision = FindGO<AttackCollision>("AttackCollision");
+
 
 	Attack();
 
@@ -40,18 +52,20 @@ void Enemy::Update()
 
 	Rotation();
 
+	JumpHit();
+
+	PunchHit();
+
 	//PlayAnimation();
 
 }
 
 void Enemy::HP()
 {
-	hp = 1;
 	if (hp <= 0)
 	{
 		hp = 0;
-		m_enemyState = enEnemyState_Die;
-		m_enemyModel.PlayAnimation(enAnimationClip_AttackDie);
+		DeleteGO(this);
 	}
 }
 
@@ -79,21 +93,44 @@ void Enemy::Move()
 
 		m_pos += toPlayerDir * 1.0f;
 
+		m_colPos = m_pos + COLPOS_Y;
+		m_colJumpPos = m_pos + COLJUMPPOS_Y;
+		enemyCollisionObject.SetPosition(m_colPos);
+		enemyJumpCollision.SetPosition(m_colJumpPos);
 		m_enemyModel.SetPosition(m_pos);
 		m_enemyModel.Update();
 	}
 
-	if (m_player->enPlayerState_Jump)
+	if (m_player->enAnimationClip_Jump)
 	{
-		m_pos.y= 0;
+		m_pos.y = 0;
+	}
+}
+
+void Enemy::JumpHit()
+{
+	if (enemyJumpCollision.IsHit(m_player->m_characterController))
+	{
+		hp -= 2;
+		HP();
+	}
+}
+
+void Enemy::PunchHit()
+{
+	if (m_attackCollision != nullptr)
+	{
+		if (enemyCollisionObject.IsHit(m_attackCollision->m_punchCollision))
+		{
+			hp -= 2;
+			HP();
+		}
 	}
 }
 
 void Enemy::Rotation()
 {
-	m_rot.SetRotationY(Math::PI);
-	m_enemyModel.SetRotation(m_rot);
-	m_enemyModel.Update();
+
 }
 
 void Enemy::ManagerState()

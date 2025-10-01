@@ -226,6 +226,7 @@
     <ClCompile Include="AttackCollision.cpp" />
     <ClCompile Include="CharacterBase.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyType2.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameClear.cpp" />
@@ -246,6 +247,7 @@
     <ClInclude Include="AttackCollision.h" />
     <ClInclude Include="CharacterBase.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyType2.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameClear.h" />

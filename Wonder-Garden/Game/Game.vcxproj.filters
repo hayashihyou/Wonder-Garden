@@ -22,6 +22,7 @@
     <ClCompile Include="IState.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="AttackCollision.cpp" />
+    <ClCompile Include="EnemyType2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -39,5 +40,6 @@
     <ClInclude Include="IState.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="AttackCollision.h" />
+    <ClInclude Include="EnemyType2.h" />
   </ItemGroup>
 </Project>

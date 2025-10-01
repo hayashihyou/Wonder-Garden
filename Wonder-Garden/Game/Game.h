@@ -4,6 +4,7 @@
 class Player;
 class IState;
 class Enemy;
+class EnemyType2;
 class Stage;
 class GameCamera;
 class GameClear;
@@ -22,6 +23,7 @@ private:
 	Player* m_player = nullptr;
 	IState* m_iState = nullptr;
 	Enemy* m_enemy = nullptr;
+	EnemyType2* m_enemyType2 = nullptr;
 	Stage* m_stage = nullptr;
 	GameCamera* m_gameCamera = nullptr;
 	GameClear* m_gameClear = nullptr;

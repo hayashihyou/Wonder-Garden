@@ -93,6 +93,10 @@ namespace nsK2Engine {
 			(*it)->m_parent = nullptr;
 			//子トランスフォームへの紐づけを外す
 			m_children.erase(it);
+			if (m_children.size() == 0)
+			{
+				break;
+			}
 			//イテレータを進める
 			++it;
 		}

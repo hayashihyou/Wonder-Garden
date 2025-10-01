@@ -36,9 +36,9 @@ public:
 
 public:
 	ModelRender m_playerModel;
-	AttackCollision* punchCollision;
+	CharacterController m_characterController;
 
-	/*Vector3 pos = { 0,0,0 };*/
+public:
 	Vector3 moveSpeed;
 	Vector3 playerPos;
 	int hp = 10;
@@ -63,18 +63,17 @@ private:
 private:
 
 	AnimationClip m_animationClips[enAnimationClip_Num];
-	CharacterController m_characterController;
 	CharacterBase* m_characterBase;
-	/*Quaternion m_rot;*/
 	IState* m_currentState = nullptr;
 	IState* m_stateList[enPlayerState_Num];
 	Enemy* m_enemy;
 	Vector3 collisionRot;
-	//Vector3 toPlayerPos;
 
 private:
 	int playerState = enPlayerState_Idle;
 	int m_atk = 1;
+
 	bool m_attackFlag = false;	
 	bool m_isStopMove = false;
+	bool deleteFlag = true;
 };
