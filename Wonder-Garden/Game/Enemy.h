@@ -2,6 +2,7 @@
 #include "CharacterBase.h"
 
 class Player;
+class AttackCollision;
 class Enemy : public CharacterBase
 {
 public:
@@ -16,6 +17,8 @@ private:
 	void Rotation();
 	void Update();
 	void Render(RenderContext& rc);
+	void JumpHit();
+	void PunchHit();
 	void ManagerState();
 	void PlayAnimation();
 
@@ -48,10 +51,15 @@ private:
 	ModelRender m_enemyModel;
 	AnimationClip m_animationClips[enAnimationClip_Num];
 	EnEnemyState m_enemyState = enEnemyState_Idle;
+	CollisionObject enemyCollisionObject;
+	CollisionObject enemyJumpCollision;
 	Quaternion m_rot;
 	Player* m_player;
+	AttackCollision* m_attackCollision;
 
 	Vector3 m_pos;
+	Vector3 m_colPos;
+	Vector3 m_colJumpPos;
 	Vector3 toPlayer;
 	Vector3 toPlayerDir;
 

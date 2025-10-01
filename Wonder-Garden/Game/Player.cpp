@@ -9,7 +9,8 @@ namespace
 {
 	const Vector3 TO_PLAYER_POS_VECTOR = { 0,30,50 };
 
-	const float COLLISION_TIME = 5.0f;
+	const float COLLISION_TIME = 0.5f;
+	const float COLLISION_SCALE = 30.0f;
 }
 
 bool Player::Start()
@@ -70,6 +71,7 @@ void Player::Attack()
 
 	if (g_pad[0]->IsTrigger(enButtonA))
 	{
+		/**TODO:現状複数回呼び出されるからアニメーションが終わるまでコリジョンの生成をなくし処理不可を軽くする */
 		MakeAttackCollision();
 	}
 
@@ -155,25 +157,20 @@ void Player::MakeAttackCollision()
 {
 	//攻撃用の当たり判定を作成
 	//TODO::当たり判定が出しっぱなしで消えてない
-	punchCollision = NewGO<AttackCollision>(0);
-	m_transform.SetParent(&punchCollision->m_transform);
-	Vector3 toPlayerPos;
-	toPlayerPos.Set(TO_PLAYER_POS_VECTOR);
-	m_transform.m_localRotation.Apply(toPlayerPos);
-	punchCollision->m_transform.m_localPosition = toPlayerPos + m_transform.m_localPosition;
-	punchCollision->m_collisionObject.CreateSphere(punchCollision->m_transform.m_localPosition,m_transform.m_localRotation, 30.0f);
-	punchCollision->m_collisionObject.SetIsEnableAutoDelete(false);
-	punchCollision->m_collisionObject.SetTimeLimit(COLLISION_TIME);
+	AttackCollision* punchCollision= NewGO<AttackCollision>(0,"AttackCollision");
+	punchCollision->InitTransform(playerPos,m_transform);
+	punchCollision->CreateCollision(COLLISION_SCALE, deleteFlag, COLLISION_TIME);
 }
 
+/**TODO: enemy側でジャンプ判定を作れたらこの関数は消去する */
 void Player::MakeJumpCollision()
 {
-	//ジャンプ用の当たり判定を作成
-	//TODO::Transformクラスを用いてrotを取得する
-	auto jumpCollision = NewGO<CollisionObject>(0);
-	Vector3 jumpCollisionPos = m_transform.m_localPosition;
-	jumpCollisionPos.y += 10.0f;
-	jumpCollision->CreateSphere(jumpCollisionPos, Quaternion::Identity, 20.0f);
+	////ジャンプ用の当たり判定を作成
+	////TODO::Transformクラスを用いてrotを取得する
+	//auto jumpCollision = NewGO<CollisionObject>(0);
+	//Vector3 jumpCollisionPos = m_transform.m_localPosition;
+	//jumpCollisionPos.y += 10.0f;
+	//jumpCollision->CreateSphere(jumpCollisionPos, Quaternion::Identity, 20.0f);
 }
 
 void Player::ManagerState()
