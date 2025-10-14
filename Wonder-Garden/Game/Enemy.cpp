@@ -7,7 +7,7 @@
 namespace
 {
 	const Vector3 COLPOS_Y = Vector3{ 0, 20, 0 };
-	const Vector3 COLJUMPPOS_Y = Vector3{ 0,60,0 };
+	const Vector3 COLJUMPPOS_Y = Vector3{ 0,35,0 };
 }
 
 bool Enemy::Start()

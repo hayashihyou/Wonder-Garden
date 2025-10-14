@@ -11,7 +11,7 @@ public:
 	void SetAttackFlag(bool attack);
 
 public:
-	enum EnAnimationClip
+	enum EnEnemyAnimationClip
 	{
 		enAnimationClip_Idle,
 		enAnimationClip_Attack,
