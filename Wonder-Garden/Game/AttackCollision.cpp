@@ -4,21 +4,21 @@
 
 void AttackCollision::Update()
 {
-	if (m_punchCollision == nullptr)
+
+	TimeLimit();
+
+	if (deleteTimer < 0)
 	{
-		DeleteGO(this);
+		DeleteGO(m_punchCollision);
+		m_punchCollision = nullptr;
 	}
 }
 
-void AttackCollision::CreateCollision(float size, bool deleteCheck, float deleteTime)
+void AttackCollision::CreateCollision()
 {
 	m_punchCollision = NewGO<CollisionObject>(0);
-	m_punchCollision->CreateSphere(m_transform.m_localPosition, m_transform.m_localRotation, size);
-	m_punchCollision->SetIsEnableAutoDelete(deleteCheck);
-	if (deleteTime > 0)
-	{
-		m_punchCollision->SetTimeLimit(deleteTime);
-	}
+	m_punchCollision->CreateSphere(m_transform.m_localPosition, m_transform.m_localRotation, 30.0f);
+	m_punchCollision->SetIsEnableAutoDelete(false);
 }
 
 void AttackCollision::InitTransform(const Vector3& position, Transform& transform)
@@ -29,4 +29,12 @@ void AttackCollision::InitTransform(const Vector3& position, Transform& transfor
 	transform.m_localRotation.Apply(toPlayerPos);
 	m_transform.m_localPosition = toPlayerPos + transform.m_localPosition;
 	m_transform.UpdateTransform();
+}
+
+void AttackCollision::TimeLimit()
+{
+	if (m_punchCollision != nullptr)
+	{
+		deleteTimer -= g_gameTime->GetFrameDeltaTime();
+	}
 }

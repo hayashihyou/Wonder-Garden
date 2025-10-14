@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Player.h"
-#include "IState.h"
+#include "PlayerState.h"
 #include "Enemy.h"
 #include "AttackCollision.h"
 
@@ -8,15 +8,12 @@
 namespace
 {
 	const Vector3 TO_PLAYER_POS_VECTOR = { 0,30,50 };
-
-	const float COLLISION_TIME = 0.5f;
-	const float COLLISION_SCALE = 30.0f;
 }
 
 bool Player::Start()
 {
 
-	
+
 
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/player/playerIdle.tka");
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
@@ -31,11 +28,11 @@ bool Player::Start()
 
 	m_playerModel.Init("Assets/modelData/player/player.tkm", m_animationClips, enAnimationClip_Num);
 
-	m_stateList[enPlayerState_Idle] = new IdleState;
-	m_stateList[enAnimationClip_Walk] = new WalkState;
-	m_stateList[enAnimationClip_Run] = new RunState;
-	m_stateList[enAnimationClip_Jump] = new JumpState;
-	m_stateList[enAnimationClip_Attack] = new AttackState;
+	m_stateList[enPlayerState_Idle] = new PlayerIdleState;
+	m_stateList[enPlayerState_Walk] = new PlayerWalkState;
+	m_stateList[enPlayerState_Run] = new PlayerRunState;
+	m_stateList[enPlayerState_Jump] = new PlayerJumpState;
+	m_stateList[enPlayerState_Attack] = new PlayerAttackState;
 
 	m_currentState = m_stateList[enPlayerState_Idle];
 
@@ -73,11 +70,6 @@ void Player::Attack()
 	{
 		/**TODO:現状複数回呼び出されるからアニメーションが終わるまでコリジョンの生成をなくし処理不可を軽くする */
 		MakeAttackCollision();
-	}
-
-	if (m_currentState == m_stateList[enPlayerState_Jump])
-	{
-		MakeJumpCollision();
 	}
 }
 
@@ -125,6 +117,12 @@ void Player::Move()
 		moveSpeed.z = 0.0f;
 	}
 
+	if (g_pad[0]->IsPress(enButtonX))
+	{
+		moveSpeed.x * 10.0f;
+		moveSpeed.z * 10.0f;
+	}
+
 	//キャラクターコントローラーを使って座標を移動させる
 	m_transform.m_localPosition = m_characterController.Execute(moveSpeed, 1.0f / 60.0f);
 	playerPos = m_transform.m_localPosition;
@@ -156,21 +154,10 @@ void Player::Rotation()
 void Player::MakeAttackCollision()
 {
 	//攻撃用の当たり判定を作成
-	//TODO::当たり判定が出しっぱなしで消えてない
-	AttackCollision* punchCollision= NewGO<AttackCollision>(0,"AttackCollision");
-	punchCollision->InitTransform(playerPos,m_transform);
-	punchCollision->CreateCollision(COLLISION_SCALE, deleteFlag, COLLISION_TIME);
-}
-
-/**TODO: enemy側でジャンプ判定を作れたらこの関数は消去する */
-void Player::MakeJumpCollision()
-{
-	////ジャンプ用の当たり判定を作成
-	////TODO::Transformクラスを用いてrotを取得する
-	//auto jumpCollision = NewGO<CollisionObject>(0);
-	//Vector3 jumpCollisionPos = m_transform.m_localPosition;
-	//jumpCollisionPos.y += 10.0f;
-	//jumpCollision->CreateSphere(jumpCollisionPos, Quaternion::Identity, 20.0f);
+	AttackCollision* punchCollision = NewGO<AttackCollision>(0, "AttackCollision");
+	punchCollision->InitTransform(playerPos, m_transform);
+	punchCollision->CreateCollision();
+	punchCollision->Update();
 }
 
 void Player::ManagerState()
@@ -188,13 +175,13 @@ void Player::ManagerState()
 	//優先順位の高いものを入れる変数
 	int bestPri = PRI__NONE;
 	//優先するステート
-	AnimationState bestState = enPlayerState_Idle;
+	EnPlayerState bestState = enPlayerState_Idle;
 
 	bool isMove = fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f;
 
 
 	//状態を考慮するラムダ式
-	auto considerState = [&](int pri, AnimationState state)
+	auto considerState = [&](int pri, EnPlayerState state)
 		{
 			//優先順位が一番高いものを採用する
 			if (bestPri < pri)
@@ -240,7 +227,7 @@ void Player::ManagerState()
 void Player::UpdateChangeState()
 {
 
-	IState* nextState = nullptr;
+	IPlayerState* nextState = nullptr;
 
 	if (m_currentState == m_stateList[0])
 	{
@@ -249,7 +236,7 @@ void Player::UpdateChangeState()
 
 	if (m_currentState == m_stateList[1])
 	{
-		nextState = m_stateList[enAnimationClip_Walk];
+		nextState = m_stateList[enPlayerState_Walk];
 	}
 
 	if (m_currentState == m_stateList[2])

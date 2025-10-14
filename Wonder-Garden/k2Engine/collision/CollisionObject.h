@@ -196,6 +196,11 @@ namespace nsK2Engine {
 		{
 			return m_isEnable;
 		}
+		
+		
+		
+		
+
 	private:
 		PhysicsGhostObject			m_physicsGhostObject;				//ゴーストオブジェクト。
 		const char* m_name = nullptr;					//名前。

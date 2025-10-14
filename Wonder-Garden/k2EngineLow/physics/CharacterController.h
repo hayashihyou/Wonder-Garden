@@ -92,7 +92,7 @@ namespace nsK2EngineLow {
 		bool				m_isOnGround = true;			//!<地面の上にいる？
 		CCapsuleCollider	m_collider;						//!<コライダー。
 		float				m_radius = 0.0f;				//!<カプセルコライダーの半径。
-		float				m_height = 0.0f;				//!<カプセルコライダーの高さ。
+		float				m_height = -2.0f;				//!<カプセルコライダーの高さ。
 		RigidBody			m_rigidBody;					//剛体。
 	};
 }

@@ -2,7 +2,7 @@
 
 #include "Level3DRender/LevelRender.h"
 class Player;
-class IState;
+class IEnemyState;
 class Enemy;
 class EnemyType2;
 class Stage;
@@ -21,7 +21,7 @@ public:
 
 private:
 	Player* m_player = nullptr;
-	IState* m_iState = nullptr;
+	IEnemyState* m_iState = nullptr;
 	Enemy* m_enemy = nullptr;
 	EnemyType2* m_enemyType2 = nullptr;
 	Stage* m_stage = nullptr;
