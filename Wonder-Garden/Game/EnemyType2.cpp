@@ -2,6 +2,7 @@
 #include "EnemyType2.h"
 #include "Player.h"
 #include "AttackCollision.h"
+#include "EnemyType2State.h"
 
 namespace
 {
@@ -15,12 +16,12 @@ bool EnemyType2::Start()
 	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationClips[enAnimationClip_Attack].Load("Assets/animData/enemy/stone/StoneMonstorAttack.tka");
 	m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_AttackDead].Load("Assets/animData/enemy/stone/StoneMonstorDamage.tka");
+	m_animationClips[enAnimationClip_AttackDead].Load("Assets/animData/enemy/stone/StoneMonstorDeath.tka");
 	m_animationClips[enAnimationClip_AttackDead].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_JumpDead].Load("Assets/animData/enemy/stone/StoneMonstorDeath.tka");
+	m_animationClips[enAnimationClip_JumpDead].Load("Assets/animData/enemy/stone/StoneMonstorDamage.tka");
 	m_animationClips[enAnimationClip_AttackDead].SetLoopFlag(false);
 
-	m_enemyType2Model.Init("Assets/modelData/enemy/stone/StoneMonster.tkm");
+	m_enemyType2Model.Init("Assets/modelData/enemy/stone/StoneMonster.tkm", m_animationClips, enAnimationClip_Num);
 	m_pos = { -200,0,0 };
 	m_colPos = m_pos + POS_Y;
 
@@ -32,12 +33,37 @@ bool EnemyType2::Start()
 
 	enemyType2Collision.CreateSphere(m_colPos, m_rot, 25.0f);
 	enemyType2JumpCollision.CreateSphere(m_colJumpPos, m_rot, 20.0f);
+
+	m_stateList[enEnemyType2State_Idle] = new EnemyType2IdleState;
+	m_stateList[enEnemyType2State_Attack] = new EnemyType2AttackState;
+	m_stateList[enEnemyType2State_AttackDead] = new EnemyType2AttackDeadState;
+	m_stateList[enEnemyType2State_JumpDead] = new EnemyType2JumpDeadState;
+
+	m_currentState = m_stateList[enEnemyType2State_Idle];
+
 	return true;
 }
 
 void EnemyType2::Update()
 {
-	PlayAnimation();
+	if (m_player == nullptr)
+	{
+		m_player = FindGO<Player>("Player");
+	}
+
+	m_attackCollision = FindGO<AttackCollision>("AttackCollision");
+
+	ManagerState();
+
+	HitJump();
+
+	HitPunch();
+
+	AttackFlag();
+
+	Rotation();
+
+	UpdateChangeState();
 }
 
 void EnemyType2::HP()
@@ -51,19 +77,29 @@ void EnemyType2::HP()
 
 void EnemyType2::Attack()
 {
-	toPlayer = m_player->playerPos - m_pos;
-
-	disToPlayer = toPlayer.Length();
-	if (disToPlayer < 200)
+	if (m_player->hp >= 1)
 	{
-		isAttackFlag = true;
+		m_player->hp - 1;
 	}
-
 }
 
 void EnemyType2::Move()
 {
 
+}
+
+void EnemyType2::AttackFlag()
+{
+	toPlayer = m_player->playerPos - m_pos;
+
+	disToPlayer = toPlayer.Length();
+	if (disToPlayer < 100)
+	{
+		isAttackFlag = true;
+		Attack();
+	}
+
+	m_enemyType2Model.Update();
 }
 
 void EnemyType2::HitPunch()
@@ -90,10 +126,107 @@ void EnemyType2::HitJump()
 	}
 }
 
-void EnemyType2::PlayAnimation()
+void EnemyType2::Rotation()
 {
-	m_enemyType2Model.PlayAnimation(enAnimationClip_Idle);
-	m_enemyType2Model.Update();
+
+}
+
+void EnemyType2::ManagerState()
+{
+	enum
+	{
+		PRI_NONE,
+		PRI_IDLE,
+		PRI_ATTACK,
+		PRI_ATTACKDEAD,
+		PRI_JUMPDEAD,
+	};
+
+	//優先順位の高いものを入れる変数
+	int bestPri = PRI_NONE;
+	//優先するステート
+	EnEnemyType2State bestState = enEnemyType2State_Idle;
+
+	//状態を考慮するラムダ式
+	auto considerState = [&](int pri, EnEnemyType2State state)
+		{
+			//優先順位が一番高いものを採用する
+			if (bestPri < pri)
+			{
+				bestPri = pri;
+				bestState = state;
+			}
+		};
+
+	if (isAttackFlag == true)
+	{
+		considerState(PRI_ATTACK, enEnemyType2State_Attack);
+		m_currentState = m_stateList[enEnemyType2State_Attack];
+	}
+
+	if (isDeadFlag == true)
+	{
+		isDeadFlag == false;
+
+		if (m_attackCollision != nullptr && m_attackCollision->m_punchCollision != nullptr)
+		{
+			considerState(PRI_ATTACKDEAD, enEnemyType2State_AttackDead);
+			m_currentState = m_stateList[enEnemyType2State_AttackDead];
+		}
+
+		else
+		{
+			considerState(PRI_JUMPDEAD, enEnemyType2State_JumpDead);
+			m_currentState = m_stateList[enEnemyType2State_JumpDead];
+		}
+
+		if (bestState != enEnemyType2State_AttackDead)
+		{
+			m_currentState = m_stateList[enEnemyType2State_JumpDead];
+		}
+	}
+
+	if (!bestState == enEnemyType2State_AttackDead || !bestState == enEnemyType2State_JumpDead)
+	{
+		m_currentState = m_stateList[bestState];
+	}
+
+
+}
+
+void EnemyType2::UpdateChangeState()
+{
+	IEnemyType2State* nextState = nullptr;
+
+	if (m_currentState == m_stateList[0])
+	{
+		nextState = m_stateList[enEnemyType2State_Idle];
+	}
+
+	if (m_currentState == m_stateList[1])
+	{
+		nextState = m_stateList[enEnemyType2State_Attack];
+	}
+
+	if (m_currentState == m_stateList[2])
+	{
+		nextState = m_stateList[enEnemyType2State_AttackDead];
+	}
+
+	if (m_currentState == m_stateList[3])
+	{
+		nextState = m_stateList[enEnemyType2State_JumpDead];
+	}
+
+	//状態切り替わり処理
+	if (nextState != nullptr)
+	{
+		m_currentState->Exit();
+		m_currentState = nextState;
+		m_currentState->Enter();
+	}
+
+	m_currentState->Update();
 }
 
 void EnemyType2::Render(RenderContext& rc)
