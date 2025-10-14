@@ -2,13 +2,14 @@
 #include "CharacterBase.h"
 
 
-class IState;
+class IPlayerState;
 class Enemy;
 class AttackCollision;
 class Player : public CharacterBase
 {
 public:
 	Player() {};
+	void SetAttack(bool attackFlag);
 
 public:
 	/// <summary>
@@ -24,7 +25,7 @@ public:
 		enAnimationClip_Num,
 	};
 
-	enum AnimationState
+	enum EnPlayerState
 	{
 		enPlayerState_Idle,
 		enPlayerState_Walk,
@@ -42,7 +43,6 @@ public:
 	Vector3 moveSpeed;
 	Vector3 playerPos;
 	int hp = 10;
-	void SetAttack(bool attackFlag);
 	bool m_deleteFlag = false;
 
 private:
@@ -52,7 +52,6 @@ private:
 	void Update();
 	void Render(RenderContext& rc);
 	void MakeAttackCollision();
-	void MakeJumpCollision();
 	void ManagerState();
 	void UpdateChangeState();
 
@@ -64,8 +63,8 @@ private:
 
 	AnimationClip m_animationClips[enAnimationClip_Num];
 	CharacterBase* m_characterBase;
-	IState* m_currentState = nullptr;
-	IState* m_stateList[enPlayerState_Num];
+	IPlayerState* m_currentState = nullptr;
+	IPlayerState* m_stateList[enPlayerState_Num];
 	Enemy* m_enemy;
 	Vector3 collisionRot;
 

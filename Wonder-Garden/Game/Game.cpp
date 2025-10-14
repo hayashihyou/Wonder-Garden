@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Game.h"
 #include "Player.h"
-#include "IState.h"
+#include "PlayerState.h"
 #include "Enemy.h"
 #include "EnemyType2.h"
 #include "Stage.h"

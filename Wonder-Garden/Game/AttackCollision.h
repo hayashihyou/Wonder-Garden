@@ -11,14 +11,18 @@ public:
 	~AttackCollision() {};
 
 	void Update();
-	void CreateCollision(float size, bool kesimasuka = true, float deleteTime = 0);
+	void CreateCollision();
 	void InitTransform(const Vector3& position, Transform& transform);
+	void TimeLimit();
 
 public:
-	CollisionObject* m_punchCollision;
+	CollisionObject* m_punchCollision = nullptr;
 
 
 private:
 	Transform m_transform;
+
+private:
+	float deleteTimer = 1.0f;
 };
 
