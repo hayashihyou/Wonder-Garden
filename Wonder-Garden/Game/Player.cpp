@@ -66,7 +66,7 @@ void Player::Attack()
 {
 	m_atk = 2;
 
-	if (g_pad[0]->IsTrigger(enButtonA))
+	if (g_pad[0]->IsTrigger(enButtonB))
 	{
 		/**TODO:現状複数回呼び出されるからアニメーションが終わるまでコリジョンの生成をなくし処理不可を軽くする */
 		MakeAttackCollision();
@@ -102,7 +102,7 @@ void Player::Move()
 
 	if (m_characterController.IsOnGround() == true)
 	{
-		if (g_pad[0]->IsTrigger(enButtonB))
+		if (g_pad[0]->IsTrigger(enButtonA))
 		{
 			//ジャンプ
 			moveSpeed.y = 350.0f;
@@ -213,7 +213,7 @@ void Player::ManagerState()
 
 
 	//攻撃している状態にする
-	if (g_pad[0]->IsTrigger(enButtonA) || m_attackFlag)
+	if (g_pad[0]->IsTrigger(enButtonB) || m_attackFlag)
 	{
 		considerState(PRI_ATTACK, enPlayerState_Attack);
 		m_isStopMove = true;

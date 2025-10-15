@@ -25,6 +25,8 @@ public:
 	ModelRender m_bossModel;
 	AnimationClip m_animationClips[enAnimationClip_Num];
 
+	bool isDeadFlag = false;
+
 private:
 	~Boss() {};
 	bool Start();
@@ -63,5 +65,4 @@ private:
 
 	float disToPlayer;
 	bool isAttackFlag = false;
-	bool isDeadFlag = false;
 };

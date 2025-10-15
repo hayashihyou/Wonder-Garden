@@ -7,6 +7,9 @@ class Enemy;
 class EnemyType2;
 class Boss;
 class Stage;
+class Star;
+class StarCounter;
+class Title;
 class GameCamera;
 class GameClear;
 class GameOver;
@@ -18,6 +21,7 @@ public:
 	~Game();
 	bool Start();
 	void Update();
+	void CreateStar();
 	void Render(RenderContext& rc);
 
 private:
@@ -27,6 +31,9 @@ private:
 	EnemyType2* m_enemyType2 = nullptr;
 	Boss* m_boss = nullptr;
 	Stage* m_stage = nullptr;
+	Star * m_star = nullptr;
+	StarCounter* m_starCounter = nullptr;
+	Title* m_title = nullptr;
 	GameCamera* m_gameCamera = nullptr;
 	GameClear* m_gameClear = nullptr;
 	GameOver* m_gameOver = nullptr;
