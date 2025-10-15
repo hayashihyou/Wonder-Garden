@@ -224,6 +224,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AttackCollision.cpp" />
+    <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="BossState.cpp" />
     <ClCompile Include="CharacterBase.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyState.cpp" />
@@ -247,6 +249,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AttackCollision.h" />
+    <ClInclude Include="Boss.h" />
+    <ClInclude Include="BossState.h" />
     <ClInclude Include="CharacterBase.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyState.h" />

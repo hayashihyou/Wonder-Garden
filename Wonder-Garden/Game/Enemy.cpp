@@ -55,9 +55,9 @@ void Enemy::Update()
 
 	ManagerState();
 
-	JumpHit();
+	HitJump();
 
-	PunchHit();
+	HitPunch();
 
 	Move();
 
@@ -86,6 +86,11 @@ void Enemy::Attack()
 void Enemy::SetAttackFlag(bool attack)
 {
 	isAttack = attack;
+}
+
+void Enemy::SetDeadFlag(bool dead)
+{
+	isDead = dead;
 }
 
 void Enemy::Move()
@@ -132,7 +137,7 @@ void Enemy::Move()
 
 }
 
-void Enemy::JumpHit()
+void Enemy::HitJump()
 {
 	if (enemyJumpCollision.IsHit(m_player->m_characterController))
 	{
@@ -141,7 +146,7 @@ void Enemy::JumpHit()
 	}
 }
 
-void Enemy::PunchHit()
+void Enemy::HitPunch()
 {
 	if (m_attackCollision != nullptr)
 	{
@@ -188,13 +193,6 @@ void Enemy::ManagerState()
 			}
 		};
 
-	if (isAttack == true)
-	{
-		considerState(PRI_ATTACK, enEnemyState_Attack);
-		Attack();
-		isStopMove = true;
-	}
-
 	if (isDead == true)
 	{
 		isDead = false;
@@ -203,12 +201,13 @@ void Enemy::ManagerState()
 		{
 			considerState(PRI_ATTACKDEAD, enEnemyState_AttackDead);
 			m_currentState = m_stateList[enEnemyState_AttackDead];
+			bestState = enEnemyState_AttackDead;
 			isStopMove = true;
 		}
-
 		else
 		{
 			considerState(PRI_JUMPDEAD, enEnemyState_JumpDead);
+			m_currentState = m_stateList[enEnemyState_JumpDead];
 			bestState = enEnemyState_JumpDead;
 			isStopMove = true;
 		}
@@ -220,10 +219,16 @@ void Enemy::ManagerState()
 
 	}
 
-	if (!bestState == enEnemyState_AttackDead || !bestState == enEnemyState_JumpDead)
+	if (isAttack == true)
 	{
-		m_currentState = m_stateList[bestState];
+		considerState(PRI_ATTACK, enEnemyState_Attack);
+		Attack();
+		isStopMove = true;
 	}
+
+	
+	m_currentState = m_stateList[bestState];
+	
 
 }
 

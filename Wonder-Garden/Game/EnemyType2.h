@@ -9,6 +9,8 @@ class EnemyType2 : public CharacterBase
 {
 public:
 	EnemyType2() {};
+	void SetAttack(bool attack);
+	void SetDead(bool dead);
 
 public:
 	enum EnEnemyType2AnimationClip
@@ -38,7 +40,7 @@ private:
 
 	void HP()override;
 	void Attack()override;
-	void Move()override;
+	void Move()override {};
 
 private:
 	enum EnEnemyType2State

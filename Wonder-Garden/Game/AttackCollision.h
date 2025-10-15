@@ -8,7 +8,7 @@ class AttackCollision : public IGameObject
 {
 public:
 	AttackCollision() {};
-	~AttackCollision() {};
+	~AttackCollision();
 
 	void Update();
 	void CreateCollision();

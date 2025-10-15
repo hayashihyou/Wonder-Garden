@@ -2,15 +2,19 @@
 #include "AttackCollision.h"
 #include "Player.h"
 
+AttackCollision::~AttackCollision()
+{
+}
+
 void AttackCollision::Update()
 {
 
 	TimeLimit();
 
-	if (deleteTimer < 0)
+	if (deleteTimer <= 0)
 	{
 		DeleteGO(m_punchCollision);
-		m_punchCollision = nullptr;
+		DeleteGO(this);
 	}
 }
 

@@ -4,6 +4,7 @@
 #include "PlayerState.h"
 #include "Enemy.h"
 #include "EnemyType2.h"
+#include "Boss.h"
 #include "Stage.h"
 #include "GameCamera.h"
 #include "GameClear.h"
@@ -20,6 +21,7 @@ Game::~Game()
 	DeleteGO(m_player);
 	DeleteGO(m_enemy);
 	DeleteGO(m_enemyType2);
+	DeleteGO(m_boss);
 	DeleteGO(m_stage);
 	DeleteGO(m_gameCamera);
 }
@@ -29,6 +31,7 @@ bool Game::Start()
 	m_player = NewGO<Player>(0, "Player");
 	m_enemy = NewGO<Enemy>(0, "Enemy");
 	m_enemyType2 = NewGO<EnemyType2>(0, "EnemyType2");
+	m_boss = NewGO<Boss>(0, "Boss");
 	m_stage = NewGO<Stage>(0, "Stage");
 	m_gameCamera = NewGO<GameCamera>(0, "GameCamera");
 
