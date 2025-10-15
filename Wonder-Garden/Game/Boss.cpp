@@ -30,7 +30,7 @@ bool Boss::Start()
 	m_bossModel.SetScale(m_scale);
 	m_bossModel.Update();
 
-	m_bossCollision.CreateSphere(m_colPos, m_rot, 80.0);
+	m_bossCollision.CreateSphere(m_colPos, m_rot, 70.0);
 
 	m_stateList[enBossState_Idle] = new BossIdleState;
 	m_stateList[enBossState_Attack] = new BossAttackState;
