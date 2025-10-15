@@ -9,6 +9,7 @@ class Enemy : public CharacterBase
 public:
 	Enemy() {};
 	void SetAttackFlag(bool attack);
+	void SetDeadFlag(bool dead);
 
 public:
 	enum EnEnemyAnimationClip
@@ -44,8 +45,8 @@ private:
 	void Rotation();
 	void Update();
 	void Render(RenderContext& rc);
-	void JumpHit();
-	void PunchHit();
+	void HitJump();
+	void HitPunch();
 	void ManagerState();
 	void UpdateChangeState();
 

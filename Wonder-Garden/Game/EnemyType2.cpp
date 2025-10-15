@@ -83,11 +83,6 @@ void EnemyType2::Attack()
 	}
 }
 
-void EnemyType2::Move()
-{
-
-}
-
 void EnemyType2::AttackFlag()
 {
 	toPlayer = m_player->playerPos - m_pos;
@@ -96,10 +91,19 @@ void EnemyType2::AttackFlag()
 	if (disToPlayer < 100)
 	{
 		isAttackFlag = true;
-		Attack();
 	}
 
 	m_enemyType2Model.Update();
+}
+
+void EnemyType2::SetAttack(bool attack)
+{
+	isAttackFlag = attack;
+}
+
+void EnemyType2::SetDead(bool dead)
+{
+	isDeadFlag = dead;
 }
 
 void EnemyType2::HitPunch()
@@ -158,12 +162,6 @@ void EnemyType2::ManagerState()
 			}
 		};
 
-	if (isAttackFlag == true)
-	{
-		considerState(PRI_ATTACK, enEnemyType2State_Attack);
-		m_currentState = m_stateList[enEnemyType2State_Attack];
-	}
-
 	if (isDeadFlag == true)
 	{
 		isDeadFlag == false;
@@ -172,26 +170,30 @@ void EnemyType2::ManagerState()
 		{
 			considerState(PRI_ATTACKDEAD, enEnemyType2State_AttackDead);
 			m_currentState = m_stateList[enEnemyType2State_AttackDead];
+			bestState = enEnemyType2State_AttackDead;
 		}
 
 		else
 		{
 			considerState(PRI_JUMPDEAD, enEnemyType2State_JumpDead);
 			m_currentState = m_stateList[enEnemyType2State_JumpDead];
+			bestState = enEnemyType2State_JumpDead;
 		}
 
 		if (bestState != enEnemyType2State_AttackDead)
 		{
 			m_currentState = m_stateList[enEnemyType2State_JumpDead];
+			bestState = enEnemyType2State_JumpDead;
 		}
 	}
 
-	if (!bestState == enEnemyType2State_AttackDead || !bestState == enEnemyType2State_JumpDead)
+	if (isAttackFlag == true)
 	{
-		m_currentState = m_stateList[bestState];
+		considerState(PRI_ATTACK, enEnemyType2State_Attack);
+		Attack();
 	}
 
-
+	m_currentState = m_stateList[bestState];
 }
 
 void EnemyType2::UpdateChangeState()

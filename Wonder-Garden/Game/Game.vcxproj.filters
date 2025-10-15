@@ -25,6 +25,8 @@
     <ClCompile Include="EnemyType2.cpp" />
     <ClCompile Include="EnemyState.cpp" />
     <ClCompile Include="EnemyType2State.cpp" />
+    <ClCompile Include="Boss.cpp" />
+    <ClCompile Include="BossState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -45,5 +47,7 @@
     <ClInclude Include="EnemyType2.h" />
     <ClInclude Include="EnemyState.h" />
     <ClInclude Include="EnemyType2State.h" />
+    <ClInclude Include="Boss.h" />
+    <ClInclude Include="BossState.h" />
   </ItemGroup>
 </Project>

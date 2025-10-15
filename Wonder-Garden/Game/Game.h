@@ -5,6 +5,7 @@ class Player;
 class IEnemyState;
 class Enemy;
 class EnemyType2;
+class Boss;
 class Stage;
 class GameCamera;
 class GameClear;
@@ -24,6 +25,7 @@ private:
 	IEnemyState* m_iState = nullptr;
 	Enemy* m_enemy = nullptr;
 	EnemyType2* m_enemyType2 = nullptr;
+	Boss* m_boss = nullptr;
 	Stage* m_stage = nullptr;
 	GameCamera* m_gameCamera = nullptr;
 	GameClear* m_gameClear = nullptr;
