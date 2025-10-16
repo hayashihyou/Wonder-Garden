@@ -52,6 +52,7 @@ void Game::Update()
 	if (m_player->playerPos.y <= -400.0f)
 	{
 		m_gameOver = NewGO<GameOver>(0, "GameOver");
+		DeleteGO(m_star);
 		DeleteGO(this);
 	}
 
