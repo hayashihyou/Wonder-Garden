@@ -1,10 +1,13 @@
 #pragma once
 
 #include "Level3DRender/LevelRender.h"
+#include "nature/SkyCube.h"
+
 class Player;
 class IEnemyState;
 class Enemy;
 class EnemyType2;
+class EnemyManager;
 class Boss;
 class Stage;
 class Star;
@@ -31,6 +34,7 @@ private:
 	EnemyType2* m_enemyType2 = nullptr;
 	Boss* m_boss = nullptr;
 	Stage* m_stage = nullptr;
+    SkyCube* m_skyCube = nullptr;
 	Star * m_star = nullptr;
 	StarCounter* m_starCounter = nullptr;
 	Title* m_title = nullptr;
