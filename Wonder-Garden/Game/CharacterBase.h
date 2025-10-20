@@ -3,44 +3,44 @@ class CharacterBase : public IGameObject
 {
 public:
 	/// <summary>
-	/// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	/// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	/// </summary>
 	CharacterBase() {};
 
 	/// <summary>
-	/// ƒfƒXƒgƒ‰ƒNƒ^
+	/// ãƒ‡ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	/// </summary>
 	~CharacterBase() {};
 
 	/// <summary>
-	/// ƒXƒ^[ƒg
+	/// ã‚¹ã‚¿ãƒ¼ãƒˆ
 	/// </summary>
 	/// <returns></returns>
 	virtual bool Start();
 
 	/// <summary>
-	/// HP‚Ìƒx[ƒX
+	/// HPã®ãƒ™ãƒ¼ã‚¹
 	/// </summary>
 	virtual void HP() = 0;
 
 	/// <summary>
-	/// UŒ‚—Í‚Ìƒx[ƒX
+	/// æ”»æ’ƒåŠ›ã®ãƒ™ãƒ¼ã‚¹
 	/// </summary>
 	virtual void Attack() = 0;
 
 	/// <summary>
-	/// ˆÚ“®‘¬“x‚Ìƒx[ƒX
+	/// ç§»å‹•é€Ÿåº¦ã®ãƒ™ãƒ¼ã‚¹
 	/// </summary>
 	virtual void Move() = 0;
 
 
 	/// <summary>
-	/// XVˆ—
+	/// æ›´æ–°å‡¦ç†
 	/// </summary>
 	virtual void Update();
 
 	/// <summary>
-	/// •`‰æˆ—
+	/// æç”»å‡¦ç†
 	/// </summary>
 	/// <param name="rc"></param>
 	virtual void Render(RenderContext& rc);

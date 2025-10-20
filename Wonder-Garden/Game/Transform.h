@@ -2,47 +2,47 @@
 
 namespace nsK2Engine {
 
-	//‚È‚ñ‚©“®‚­°‚Æ‚©‚ÆƒvƒŒƒCƒ„[‚ğ˜A“®‚³‚¹‚½‚¢‚ç‚µ‚¢
-	//Noncopyable‚ÍƒRƒs[‚ğ–h‚®‹@”\
+	//ãªã‚“ã‹å‹•ãåºŠã¨ã‹ã¨ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚’é€£å‹•ã•ã›ãŸã„ã‚‰ã—ã„
+	//Noncopyableã¯ã‚³ãƒ”ãƒ¼ã‚’é˜²ãæ©Ÿèƒ½
 	class Transform : public Noncopyable
 	{
-		//publicŠÖ”
+		//publicé–¢æ•°
 	public:
 		Transform();
 		~Transform();
 
-		//XVˆ—
+		//æ›´æ–°å‡¦ç†
 		void UpdateTransform();
-		//ƒ[ƒ‹ƒhs—ñXVAUpdateTransform‚Ì•û‚ÅŒÄ‚Î‚ê‚é‚Ì‚ÅŒÄ‚Ño‚·•K—v‚È‚µ
+		//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—æ›´æ–°ã€UpdateTransformã®æ–¹ã§å‘¼ã°ã‚Œã‚‹ã®ã§å‘¼ã³å‡ºã™å¿…è¦ãªã—
 		void UpdateWorldMatrix();
 
-		//‘S‚Ä‚Ìqƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Æ‚Ì•R‚Ã‚¯‚ğŠO‚·
+		//å…¨ã¦ã®å­ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã¨ã®ç´ã¥ã‘ã‚’å¤–ã™
 		void Release();
 
-		//“Á’è‚Ìqƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Æ‚Ì•R‚Ã‚¯‚ğŠO‚·
+		//ç‰¹å®šã®å­ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã¨ã®ç´ã¥ã‘ã‚’å¤–ã™
 		void RemoveChild(Transform* t);
 
-		//eƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚ğİ’è
+		//è¦ªãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã‚’è¨­å®š
 		void SetParent(Transform* p)
 		{
 			m_parent = p;
 			m_parent->m_children.push_back(this);
 		}
 
-		//public•Ï”
+		//publicå¤‰æ•°
 	public:
-		//©g‚Ìƒpƒ‰ƒ[ƒ^
+		//è‡ªèº«ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 		Vector3 m_localPosition;
 		Quaternion m_localRotation;
 		Vector3 m_localScale;
 
-		//eƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚ğl—¶‚µ‚½ƒpƒ‰ƒ[ƒ^
+		//è¦ªãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã‚’è€ƒæ…®ã—ãŸãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
 		Vector3 m_position;
 		Quaternion m_rotation;
 		Vector3 m_scale;
 
-		//private•Ï”
-		//Šî–{“I‚ÉŠÖ”ˆÈŠO‚©‚ç˜M‚é•K—v‚È‚µ
+		//privateå¤‰æ•°
+		//åŸºæœ¬çš„ã«é–¢æ•°ä»¥å¤–ã‹ã‚‰å¼„ã‚‹å¿…è¦ãªã—
 	private:
 
 		Matrix m_rotationMatrix;
