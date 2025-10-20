@@ -22,7 +22,6 @@ bool Enemy::Start()
 	m_animationClips[enAnimationClip_AttackDead].SetLoopFlag(false);
 
 	m_enemyModel.Init("Assets/modelData/enemy/slime/slime.tkm", m_animationClips, enAnimationClip_Num);
-	m_pos = { 200,0,0 };
 	m_colPos = m_pos + COLPOS_Y;
 
 	m_colJumpPos = m_pos + COLJUMPPOS_Y;
@@ -35,9 +34,13 @@ bool Enemy::Start()
 	enemyJumpCollision.CreateSphere(m_colJumpPos, m_rot, 25.0f);
 
 	m_stateList[enEnemyState_Idle] = new EnemyIdleState;
+    m_stateList[enEnemyState_Idle]->SetOwner(this);
 	m_stateList[enEnemyState_Attack] = new EnemyAttackState;
+    m_stateList[enEnemyState_Attack]->SetOwner(this);
 	m_stateList[enEnemyState_JumpDead] = new EnemyJumpDeadState;
+    m_stateList[enEnemyState_JumpDead]->SetOwner(this);
 	m_stateList[enEnemyState_AttackDead] = new EnemyAttackDeadState;
+    m_stateList[enEnemyState_AttackDead]->SetOwner(this);
 
 	m_currentState = m_stateList[enEnemyState_Idle];
 
@@ -168,7 +171,7 @@ void Enemy::Rotation()
 
 void Enemy::ManagerState()
 {
-	//—Dæ‡ˆÊ
+	//å„ªå…ˆé †ä½
 	enum {
 		PRI_NONE,
 		PRI_IDLE,
@@ -177,15 +180,15 @@ void Enemy::ManagerState()
 		PRI_ATTACKDEAD,
 	};
 
-	//—Dæ‡ˆÊ‚Ì‚‚¢‚à‚Ì‚ğ“ü‚ê‚é•Ï”
+	//å„ªå…ˆé †ä½ã®é«˜ã„ã‚‚ã®ã‚’å…¥ã‚Œã‚‹å¤‰æ•°
 	int bestPri = PRI_NONE;
-	//—Dæ‚·‚éƒXƒe[ƒg
+	//å„ªå…ˆã™ã‚‹ã‚¹ãƒ†ãƒ¼ãƒˆ
 	EnEnemyState bestState = enEnemyState_Idle;
 
-	//ó‘Ô‚ğl—¶‚·‚éƒ‰ƒ€ƒ_®
+	//çŠ¶æ…‹ã‚’è€ƒæ…®ã™ã‚‹ãƒ©ãƒ ãƒ€å¼
 	auto considerState = [&](int pri, EnEnemyState state)
 		{
-			//—Dæ‡ˆÊ‚ªˆê”Ô‚‚¢‚à‚Ì‚ğÌ—p‚·‚é
+			//å„ªå…ˆé †ä½ãŒä¸€ç•ªé«˜ã„ã‚‚ã®ã‚’æ¡ç”¨ã™ã‚‹
 			if (bestPri < pri)
 			{
 				bestPri = pri;
@@ -256,7 +259,7 @@ void Enemy::UpdateChangeState()
 		nextState = m_stateList[enEnemyState_AttackDead];
 	}
 
-	//ó‘ÔØ‚è‘Ö‚í‚èˆ—
+	//çŠ¶æ…‹åˆ‡ã‚Šæ›¿ã‚ã‚Šå‡¦ç†
 	if (nextState != nullptr)
 	{
 		m_currentState->Exit();

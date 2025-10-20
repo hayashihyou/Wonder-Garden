@@ -4,6 +4,12 @@
     <Filter Include="system">
       <UniqueIdentifier>{22dd8095-74f9-46df-81a1-36675a040b1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{edb20865-0fd6-4dd2-84e2-ed66eb0f05d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Enemy">
+      <UniqueIdentifier>{ba9bec86-82fe-4416-b444-6370ef53de64}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -12,24 +18,41 @@
       <Filter>system</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="CharacterBase.cpp" />
-    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="GameCamera.cpp" />
-    <ClCompile Include="GameClear.cpp" />
-    <ClCompile Include="GameOver.cpp" />
-    <ClCompile Include="PlayerState.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="AttackCollision.cpp" />
-    <ClCompile Include="EnemyType2.cpp" />
-    <ClCompile Include="EnemyState.cpp" />
-    <ClCompile Include="EnemyType2State.cpp" />
-    <ClCompile Include="Boss.cpp" />
-    <ClCompile Include="BossState.cpp" />
     <ClCompile Include="Star.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="StarCounter.cpp" />
+    <ClCompile Include="Player.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerState.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyState.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyType2.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyType2State.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="BossState.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="GameClear.cpp" />
+    <ClCompile Include="GameOver.cpp" />
+    <ClCompile Include="EnemyManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -37,23 +60,40 @@
       <Filter>system</Filter>
     </ClInclude>
     <ClInclude Include="Game.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="CharacterBase.h" />
-    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="GameCamera.h" />
-    <ClInclude Include="GameClear.h" />
-    <ClInclude Include="GameOver.h" />
-    <ClInclude Include="PlayerState.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="AttackCollision.h" />
-    <ClInclude Include="EnemyType2.h" />
-    <ClInclude Include="EnemyState.h" />
-    <ClInclude Include="EnemyType2State.h" />
-    <ClInclude Include="Boss.h" />
-    <ClInclude Include="BossState.h" />
     <ClInclude Include="Star.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="StarCounter.h" />
+    <ClInclude Include="PlayerState.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyState.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyType2.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyType2State.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="BossState.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="GameClear.h" />
+    <ClInclude Include="GameOver.h" />
+    <ClInclude Include="EnemyManager.h" />
   </ItemGroup>
 </Project>

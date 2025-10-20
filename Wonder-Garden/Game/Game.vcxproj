@@ -229,6 +229,7 @@
     <ClCompile Include="BossState.cpp" />
     <ClCompile Include="CharacterBase.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="EnemyState.cpp" />
     <ClCompile Include="EnemyType2.cpp" />
     <ClCompile Include="EnemyType2State.cpp" />
@@ -257,6 +258,7 @@
     <ClInclude Include="BossState.h" />
     <ClInclude Include="CharacterBase.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="EnemyState.h" />
     <ClInclude Include="EnemyType2.h" />
     <ClInclude Include="EnemyType2State.h" />
