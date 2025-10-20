@@ -30,38 +30,38 @@ namespace nsK2Engine {
 	{
 
 		if (m_parent) {
-			//À•WŒvZ
+			//åº§æ¨™è¨ˆç®—
 			Matrix localPos;
 			localPos.MakeTranslation(m_localPosition);
 
 			Matrix pos;
 			pos.Multiply(localPos, m_parent->m_worldMatrix);
 
-			//‘½•ª•½sˆÚ“®‚Ì•”•ª‚ğæ‚Á‚Ä‚é‚¾‚¯
+			//å¤šåˆ†å¹³è¡Œç§»å‹•ã®éƒ¨åˆ†ã‚’å–ã£ã¦ã‚‹ã ã‘
 			m_position.x = pos.m[3][0];
 			m_position.y = pos.m[3][1];
 			m_position.z = pos.m[3][2];
 
-			//ƒXƒP[ƒ‹
+			//ã‚¹ã‚±ãƒ¼ãƒ«
 			m_scale.x = m_localScale.x * m_parent->m_scale.x;
 			m_scale.y = m_localScale.y * m_parent->m_scale.y;
 			m_scale.z = m_localScale.z * m_parent->m_scale.z;
 
-			//‰ñ“]
+			//å›è»¢
 			m_rotation = m_parent->m_rotation * m_localRotation;
 
 		}
 		else
 		{
-			//ƒ[ƒJƒ‹‚Ì’l‚ğ‚»‚Ì‚Ü‚ÜƒRƒs[
+			//ãƒ­ãƒ¼ã‚«ãƒ«ã®å€¤ã‚’ãã®ã¾ã¾ã‚³ãƒ”ãƒ¼
 			m_position = m_localPosition;
 			m_scale = m_localScale;
 			m_rotation = m_localRotation;
 		}
 
-		//‰ñ“]s—ñ
+		//å›è»¢è¡Œåˆ—
 		m_rotationMatrix.MakeRotationFromQuaternion(m_rotation);
-		//ƒ[ƒ‹ƒhs—ñXV
+		//ãƒ¯ãƒ¼ãƒ«ãƒ‰è¡Œåˆ—æ›´æ–°
 		UpdateWorldMatrix();
 	}
 
@@ -74,7 +74,7 @@ namespace nsK2Engine {
 		world.Multiply(scal, m_rotationMatrix);
 		m_worldMatrix.Multiply(world, pos);
 
-		//q‚àXV
+		//å­ã‚‚æ›´æ–°
 		for (Transform* child : m_children)
 		{
 			child->UpdateTransform();
@@ -84,46 +84,46 @@ namespace nsK2Engine {
 
 	void Transform::Release()
 	{
-		//ƒCƒeƒŒ[ƒ^¶¬
+		//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ç”Ÿæˆ
 		std::vector<Transform*>::iterator it = m_children.begin();
-		//vector‚ÌI‚í‚è‚Ü‚Å‰ñ‚·
+		//vectorã®çµ‚ã‚ã‚Šã¾ã§å›ã™
 		while (it != m_children.end())
 		{
-			//qƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚©‚ç‚Ì•R‚Ã‚¯‚ğŠO‚·
+			//å­ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã‹ã‚‰ã®ç´ã¥ã‘ã‚’å¤–ã™
 			(*it)->m_parent = nullptr;
-			//qƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Ö‚Ì•R‚Ã‚¯‚ğŠO‚·
+			//å­ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã¸ã®ç´ã¥ã‘ã‚’å¤–ã™
 			m_children.erase(it);
 			if (m_children.size() == 0)
 			{
 				break;
 			}
-			//ƒCƒeƒŒ[ƒ^‚ği‚ß‚é
+			//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’é€²ã‚ã‚‹
 			++it;
 		}
-		//”O‚Ì‚½‚ßHvector‚Ì—v‘f‚ğ‘Síœ
+		//å¿µã®ãŸã‚ï¼Ÿvectorã®è¦ç´ ã‚’å…¨å‰Šé™¤
 		m_children.clear();
 	}
 
 	void Transform::RemoveChild(Transform* t)
 	{
-		//ƒCƒeƒŒ[ƒ^¶¬
+		//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ç”Ÿæˆ
 		std::vector<Transform*>::iterator it = m_children.begin();
-		//vector‚ğ‰ñ‚·
+		//vectorã‚’å›ã™
 		while (it != m_children.end())
 		{
-			//ƒCƒeƒŒ[ƒ^‚©‚çqƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚Ìƒ|ƒCƒ“ƒ^‚ğó‚¯æ‚é
+			//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‹ã‚‰å­ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ã®ãƒã‚¤ãƒ³ã‚¿ã‚’å—ã‘å–ã‚‹
 			Transform* child = (*it);
-			//ó‚¯æ‚Á‚½qƒgƒ‰ƒ“ƒXƒtƒH[ƒ€‚ª‚µ‚Ä‚³‚ê‚½•¨‚È‚ç
+			//å—ã‘å–ã£ãŸå­ãƒˆãƒ©ãƒ³ã‚¹ãƒ•ã‚©ãƒ¼ãƒ ãŒã—ã¦ã•ã‚ŒãŸç‰©ãªã‚‰
 			if (child == t)
 			{
-				//•R‚Ã‚¯‚ğŠO‚·
+				//ç´ã¥ã‘ã‚’å¤–ã™
 				child->m_parent = nullptr;
 				m_children.erase(it);
-				//ˆ—‚ğI—¹
+				//å‡¦ç†ã‚’çµ‚äº†
 				return;
 			}
 
-			//ƒCƒeƒŒ[ƒ^‚ği‚ß‚é
+			//ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’é€²ã‚ã‚‹
 			++it;
 		}
 	}

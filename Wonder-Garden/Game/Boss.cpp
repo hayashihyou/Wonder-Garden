@@ -123,7 +123,7 @@ void Boss::HitPunch()
 
 void Boss::ManagerState()
 {
-	//—Dæ‡ˆÊ
+	//å„ªå…ˆé †ä½
 	enum {
 		PRI_NONE,
 		PRI_IDLE,
@@ -131,15 +131,15 @@ void Boss::ManagerState()
 		PRI_DEAD,
 	};
 
-	//—Dæ‡ˆÊ‚Ì‚‚¢‚à‚Ì‚ğ“ü‚ê‚é•Ï”
+	//å„ªå…ˆé †ä½ã®é«˜ã„ã‚‚ã®ã‚’å…¥ã‚Œã‚‹å¤‰æ•°
 	int bestPri = PRI_NONE;
-	//—Dæ‚·‚éƒXƒe[ƒg
+	//å„ªå…ˆã™ã‚‹ã‚¹ãƒ†ãƒ¼ãƒˆ
 	EnBossState bestState = enBossState_Idle;
 
-	//ó‘Ô‚ğl—¶‚·‚éƒ‰ƒ€ƒ_®
+	//çŠ¶æ…‹ã‚’è€ƒæ…®ã™ã‚‹ãƒ©ãƒ ãƒ€å¼
 	auto considerState = [&](int pri, EnBossState state)
 		{
-			//—Dæ‡ˆÊ‚ªˆê”Ô‚‚¢‚à‚Ì‚ğÌ—p‚·‚é
+			//å„ªå…ˆé †ä½ãŒä¸€ç•ªé«˜ã„ã‚‚ã®ã‚’æ¡ç”¨ã™ã‚‹
 			if (bestPri < pri)
 			{
 				bestPri = pri;
@@ -184,7 +184,7 @@ void Boss::UpdateChangeState()
 		nextState = m_stateList[enBossState_Dead];
 	}
 
-	//ó‘ÔØ‚è‘Ö‚í‚èˆ—
+	//çŠ¶æ…‹åˆ‡ã‚Šæ›¿ã‚ã‚Šå‡¦ç†
 	if (nextState != nullptr)
 	{
 		m_currentState->Exit();

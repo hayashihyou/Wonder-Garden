@@ -13,263 +13,253 @@ namespace
 bool Player::Start()
 {
 
+    m_animationClips[enAnimationClip_Idle].Load("Assets/animData/player/playerIdle.tka");
+    m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
+    m_animationClips[enAnimationClip_Walk].Load("Assets/animData/player/playerWalk.tka");
+    m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
+    m_animationClips[enAnimationClip_Run].Load("Assets/animData/player/playerRun.tka");
+    m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
+    m_animationClips[enAnimationClip_Jump].Load("Assets/animData/player/playerJump.tka");
+    m_animationClips[enAnimationClip_Jump].SetLoopFlag(false);
+    m_animationClips[enAnimationClip_Attack].Load("Assets/animData/player/playerPunch.tka");
+    m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
 
+    m_playerModel.Init("Assets/modelData/player/player.tkm", m_animationClips, enAnimationClip_Num);
 
-	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/player/playerIdle.tka");
-	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Walk].Load("Assets/animData/player/playerWalk.tka");
-	m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Run].Load("Assets/animData/player/playerRun.tka");
-	m_animationClips[enAnimationClip_Run].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Jump].Load("Assets/animData/player/playerJump.tka");
-	m_animationClips[enAnimationClip_Jump].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_Attack].Load("Assets/animData/player/playerPunch.tka");
-	m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
+    m_stateList[enPlayerState_Idle] = new PlayerIdleState;
+    m_stateList[enPlayerState_Walk] = new PlayerWalkState;
+    m_stateList[enPlayerState_Run] = new PlayerRunState;
+    m_stateList[enPlayerState_Jump] = new PlayerJumpState;
+    m_stateList[enPlayerState_Attack] = new PlayerAttackState;
 
-	m_playerModel.Init("Assets/modelData/player/player.tkm", m_animationClips, enAnimationClip_Num);
+    m_currentState = m_stateList[enPlayerState_Idle];
 
-	m_stateList[enPlayerState_Idle] = new PlayerIdleState;
-	m_stateList[enPlayerState_Walk] = new PlayerWalkState;
-	m_stateList[enPlayerState_Run] = new PlayerRunState;
-	m_stateList[enPlayerState_Jump] = new PlayerJumpState;
-	m_stateList[enPlayerState_Attack] = new PlayerAttackState;
+    // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®åˆæœŸåŒ–
+    m_characterController.Init(10.0f, 40.0f, m_transform.m_localPosition);
 
-	m_currentState = m_stateList[enPlayerState_Idle];
+    m_playerModel.Update();
 
-	//ƒLƒƒƒ‰ƒNƒ^[ƒRƒ“ƒgƒ[ƒ‰[‚Ì‰Šú‰»
-	m_characterController.Init(25.0f, 75.0f, m_transform.m_localPosition);
-
-	m_playerModel.Update();
-
-	return true;
+    return true;
 }
 
 void Player::Update()
 {
-	ManagerState();
+    ManagerState();
 
-	Attack();
+    Attack();
 
-	Move();
+    Move();
 
-	Rotation();
+    Rotation();
 
-	UpdateChangeState();
+    UpdateChangeState();
 }
 
 void Player::HP()
 {
-	hp = 9;
+    hp = 9;
 }
 
 void Player::Attack()
 {
-	m_atk = 2;
+    m_atk = 2;
 
-	if (g_pad[0]->IsTrigger(enButtonB))
-	{
-		/**TODO:Œ»ó•¡”‰ñŒÄ‚Ño‚³‚ê‚é‚©‚çƒAƒjƒ[ƒVƒ‡ƒ“‚ªI‚í‚é‚Ü‚ÅƒRƒŠƒWƒ‡ƒ“‚Ì¶¬‚ğ‚È‚­‚µˆ—•s‰Â‚ğŒy‚­‚·‚é */
-		MakeAttackCollision();
-	}
+    if (g_pad[0]->IsTrigger(enButtonB))
+    {
+        /**TODO:ç¾çŠ¶è¤‡æ•°å›å‘¼ã³å‡ºã•ã‚Œã‚‹ã‹ã‚‰ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ãŒçµ‚ã‚ã‚‹ã¾ã§ã‚³ãƒªã‚¸ãƒ§ãƒ³ã®ç”Ÿæˆã‚’ãªãã—å‡¦ç†ä¸å¯ã‚’è»½ãã™ã‚‹ */
+        MakeAttackCollision();
+    }
 }
 
 void Player::Move()
 {
-	//xz‚ÌˆÚ“®‘¬“x‚ğ0‚É‚·‚é
-	moveSpeed.x = 0.0f;
-	moveSpeed.z = 0.0f;
+    // xzã®ç§»å‹•é€Ÿåº¦ã‚’0ã«ã™ã‚‹
+    moveSpeed.x = 0.0f;
+    moveSpeed.z = 0.0f;
 
-	//¶ƒXƒeƒBƒbƒN‚Ì“ü—Í—Ê‚Ìæ“¾
-	Vector3 sthickL;
-	sthickL.x = g_pad[0]->GetLStickXF();
-	sthickL.z = g_pad[0]->GetLStickYF();
+    // å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›é‡ã®å–å¾—
+    Vector3 sthickL;
+    sthickL.x = g_pad[0]->GetLStickXF();
+    sthickL.z = g_pad[0]->GetLStickYF();
 
-	//ƒJƒƒ‰‚Ì‘O•ûŒü‚Æ‰E•ûŒü‚ÌƒxƒNƒgƒ‹‚ğ‚Á‚Ä‚­‚é
-	Vector3 forward = g_camera3D->GetForward();
-	Vector3 right = g_camera3D->GetRight();
+    // ã‚«ãƒ¡ãƒ©ã®å‰æ–¹å‘ã¨å³æ–¹å‘ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’æŒã£ã¦ãã‚‹
+    Vector3 forward = g_camera3D->GetForward();
+    Vector3 right = g_camera3D->GetRight();
 
+    // yæ–¹å‘ã«ã¯ç§»å‹•ã•ã›ãªã„
+    forward.y = 0.0f;
+    right.y = 0.0f;
 
-	//y•ûŒü‚É‚ÍˆÚ“®‚³‚¹‚È‚¢
-	forward.y = 0.0f;
-	right.y = 0.0f;
+    // å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å…¥åŠ›é‡ã¨120.0fã‚’ä¹—ç®—
+    right *= sthickL.x * 120.0f;
+    forward *= sthickL.z * 120.0f;
 
-	//¶ƒXƒeƒBƒbƒN‚Ì“ü—Í—Ê‚Æ120.0f‚ğæZ
-	right *= sthickL.x * 120.0f;
-	forward *= sthickL.z * 120.0f;
+    // ç§»å‹•é€Ÿåº¦ã«åŠ ç®—
+    moveSpeed += right + forward;
 
-	//ˆÚ“®‘¬“x‚É‰ÁZ
-	moveSpeed += right + forward;
+    if (m_characterController.IsOnGround() == true)
+    {
+        if (g_pad[0]->IsTrigger(enButtonA))
+        {
+            // ã‚¸ãƒ£ãƒ³ãƒ—
+            moveSpeed.y = 350.0f;
+        }
+    }
 
-	if (m_characterController.IsOnGround() == true)
-	{
-		if (g_pad[0]->IsTrigger(enButtonA))
-		{
-			//ƒWƒƒƒ“ƒv
-			moveSpeed.y = 350.0f;
-		}
-	}
+    moveSpeed.y -= 10.0f;
 
-	moveSpeed.y -= 10.0f;
+    // ã‚¹ãƒˆãƒƒãƒ—ãƒ ãƒ¼ãƒ–ãŒtrueãªã‚‰ç§»å‹•é€Ÿåº¦ã‚’0ã«ã™ã‚‹
+    if (m_isStopMove)
+    {
+        moveSpeed.x = 0.0f;
+        moveSpeed.z = 0.0f;
+    }
 
-	//ƒXƒgƒbƒvƒ€[ƒu‚ªtrue‚È‚çˆÚ“®‘¬“x‚ğ0‚É‚·‚é
-	if (m_isStopMove) {
-		moveSpeed.x = 0.0f;
-		moveSpeed.z = 0.0f;
-	}
+    if (g_pad[0]->IsPress(enButtonX))
+    {
+        moveSpeed.x * 10.0f;
+        moveSpeed.z * 10.0f;
+    }
 
-	if (g_pad[0]->IsPress(enButtonX))
-	{
-		moveSpeed.x * 10.0f;
-		moveSpeed.z * 10.0f;
-	}
+    // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã‚’ä½¿ã£ã¦åº§æ¨™ã‚’ç§»å‹•ã•ã›ã‚‹
+    m_transform.m_localPosition = m_characterController.Execute(moveSpeed, 1.0f / 60.0f);
+    playerPos = m_transform.m_localPosition;
 
-	//ƒLƒƒƒ‰ƒNƒ^[ƒRƒ“ƒgƒ[ƒ‰[‚ğg‚Á‚ÄÀ•W‚ğˆÚ“®‚³‚¹‚é
-	m_transform.m_localPosition = m_characterController.Execute(moveSpeed, 1.0f / 60.0f);
-	playerPos = m_transform.m_localPosition;
+    m_isStopMove = false;
 
-	m_isStopMove = false;
+    // ãƒ¢ãƒ‡ãƒ«ã®åº§æ¨™ã«åæ˜ ã•ã›ã‚‹
+    m_playerModel.SetPosition(m_transform.m_localPosition);
 
-	//ƒ‚ƒfƒ‹‚ÌÀ•W‚É”½‰f‚³‚¹‚é
-	m_playerModel.SetPosition(m_transform.m_localPosition);
-
-	m_playerModel.Update();
-
+    m_playerModel.Update();
 }
 
 void Player::SetAttack(bool attackFlag)
 {
-	m_attackFlag = attackFlag;
+    m_attackFlag = attackFlag;
 }
 
 void Player::Rotation()
 {
-	if (fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f)
-	{
-		//ƒLƒƒƒ‰ƒNƒ^[‚ÌŒü‚«‚ğ•Ï‚¦‚é
-		m_transform.m_localRotation.SetRotationYFromDirectionXZ(moveSpeed);
-		m_playerModel.SetRotation(m_transform.m_localRotation);
-	}
+    if (fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f)
+    {
+        // ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ã®å‘ãã‚’å¤‰ãˆã‚‹
+        m_transform.m_localRotation.SetRotationYFromDirectionXZ(moveSpeed);
+        m_playerModel.SetRotation(m_transform.m_localRotation);
+    }
 }
 
 void Player::MakeAttackCollision()
 {
-	//UŒ‚—p‚Ì“–‚½‚è”»’è‚ğì¬
-	AttackCollision* punchCollision = NewGO<AttackCollision>(0, "AttackCollision");
-	punchCollision->InitTransform(playerPos, m_transform);
-	punchCollision->CreateCollision();
-	punchCollision->Update();
+    // æ”»æ’ƒç”¨ã®å½“ãŸã‚Šåˆ¤å®šã‚’ä½œæˆ
+    AttackCollision* punchCollision = NewGO<AttackCollision>(0, "AttackCollision");
+    punchCollision->InitTransform(playerPos, m_transform);
+    punchCollision->CreateCollision();
+    punchCollision->Update();
 }
 
 void Player::ManagerState()
 {
-	//—Dæ‡ˆÊ
-	enum {
-		PRI__NONE,
-		PRI_IDLE,
-		PRI_WALK,
-		PRI_RUN,
-		PRI_JUMP,
-		PRI_ATTACK
-	};
+    // å„ªå…ˆé †ä½
+    enum
+    {
+        PRI__NONE,
+        PRI_IDLE,
+        PRI_WALK,
+        PRI_RUN,
+        PRI_JUMP,
+        PRI_ATTACK
+    };
 
-	//—Dæ‡ˆÊ‚Ì‚‚¢‚à‚Ì‚ğ“ü‚ê‚é•Ï”
-	int bestPri = PRI__NONE;
-	//—Dæ‚·‚éƒXƒe[ƒg
-	EnPlayerState bestState = enPlayerState_Idle;
+    // å„ªå…ˆé †ä½ã®é«˜ã„ã‚‚ã®ã‚’å…¥ã‚Œã‚‹å¤‰æ•°
+    int bestPri = PRI__NONE;
+    // å„ªå…ˆã™ã‚‹ã‚¹ãƒ†ãƒ¼ãƒˆ
+    EnPlayerState bestState = enPlayerState_Idle;
 
-	bool isMove = fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f;
+    bool isMove = fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f;
 
+    // çŠ¶æ…‹ã‚’è€ƒæ…®ã™ã‚‹ãƒ©ãƒ ãƒ€å¼
+    auto considerState = [&](int pri, EnPlayerState state)
+    {
+        // å„ªå…ˆé †ä½ãŒä¸€ç•ªé«˜ã„ã‚‚ã®ã‚’æ¡ç”¨ã™ã‚‹
+        if (bestPri < pri)
+        {
+            bestPri = pri;
+            bestState = state;
+        }
+    };
 
-	//ó‘Ô‚ğl—¶‚·‚éƒ‰ƒ€ƒ_®
-	auto considerState = [&](int pri, EnPlayerState state)
-		{
-			//—Dæ‡ˆÊ‚ªˆê”Ô‚‚¢‚à‚Ì‚ğÌ—p‚·‚é
-			if (bestPri < pri)
-			{
-				bestPri = pri;
-				bestState = state;
-			}
-		};
+    // åœ°é¢ã«ã¤ã„ã¦ãªã„ã¨ã
+    if (m_characterController.IsOnGround() == false)
+    {
+        considerState(PRI_JUMP, enPlayerState_Jump);
+    }
 
+    // ç§»å‹•ã—ã¦ã„ã‚‹ã¨ã
+    if (isMove)
+    {
+        // æ­©ã„ã¦ã„ã‚‹çŠ¶æ…‹ã«ã™ã‚‹
+        considerState(PRI_WALK, enPlayerState_Walk);
+    }
 
-	//’n–Ê‚É‚Â‚¢‚Ä‚È‚¢‚Æ‚«
-	if (m_characterController.IsOnGround() == false)
-	{
-		considerState(PRI_JUMP, enPlayerState_Jump);
-	}
+    // èµ°ã£ã¦ã„ã‚‹çŠ¶æ…‹ã«ã™ã‚‹
+    if (g_pad[0]->IsPress(enButtonX) && isMove)
+    {
+        considerState(PRI_RUN, enPlayerState_Run);
+    }
 
-	//ˆÚ“®‚µ‚Ä‚¢‚é‚Æ‚«
-	if (isMove)
-	{
-		//•à‚¢‚Ä‚¢‚éó‘Ô‚É‚·‚é
-		considerState(PRI_WALK, enPlayerState_Walk);
-	}
+    // æ”»æ’ƒã—ã¦ã„ã‚‹çŠ¶æ…‹ã«ã™ã‚‹
+    if (g_pad[0]->IsTrigger(enButtonB) || m_attackFlag)
+    {
+        considerState(PRI_ATTACK, enPlayerState_Attack);
+        m_isStopMove = true;
+    }
 
-	//‘–‚Á‚Ä‚¢‚éó‘Ô‚É‚·‚é
-	if (g_pad[0]->IsPress(enButtonX) && isMove)
-	{
-		considerState(PRI_RUN, enPlayerState_Run);
-	}
-
-
-	//UŒ‚‚µ‚Ä‚¢‚éó‘Ô‚É‚·‚é
-	if (g_pad[0]->IsTrigger(enButtonB) || m_attackFlag)
-	{
-		considerState(PRI_ATTACK, enPlayerState_Attack);
-		m_isStopMove = true;
-	}
-
-	//—Dæ‡ˆÊ‚ªˆê”Ô‚‚¢‚à‚Ì‚ğÌ—p‚·‚é
-	m_currentState = m_stateList[bestState];
+    // å„ªå…ˆé †ä½ãŒä¸€ç•ªé«˜ã„ã‚‚ã®ã‚’æ¡ç”¨ã™ã‚‹
+    m_currentState = m_stateList[bestState];
 }
-
 
 void Player::UpdateChangeState()
 {
 
-	IPlayerState* nextState = nullptr;
+    IPlayerState* nextState = nullptr;
 
-	if (m_currentState == m_stateList[0])
-	{
-		nextState = m_stateList[enPlayerState_Idle];
-	}
+    if (m_currentState == m_stateList[0])
+    {
+        nextState = m_stateList[enPlayerState_Idle];
+    }
 
-	if (m_currentState == m_stateList[1])
-	{
-		nextState = m_stateList[enPlayerState_Walk];
-	}
+    if (m_currentState == m_stateList[1])
+    {
+        nextState = m_stateList[enPlayerState_Walk];
+    }
 
-	if (m_currentState == m_stateList[2])
-	{
-		nextState = m_stateList[enPlayerState_Run];
-	}
+    if (m_currentState == m_stateList[2])
+    {
+        nextState = m_stateList[enPlayerState_Run];
+    }
 
-	if (m_currentState == m_stateList[3])
-	{
-		nextState = m_stateList[enPlayerState_Jump];
-	}
+    if (m_currentState == m_stateList[3])
+    {
+        nextState = m_stateList[enPlayerState_Jump];
+    }
 
-	if (m_currentState == m_stateList[4])
-	{
-		nextState = m_stateList[enPlayerState_Attack];
-	}
+    if (m_currentState == m_stateList[4])
+    {
+        nextState = m_stateList[enPlayerState_Attack];
+    }
 
-	//ó‘ÔØ‚è‘Ö‚í‚èˆ—
-	if (nextState != nullptr)
-	{
-		m_currentState->Exit();
-		m_currentState = nextState;
-		m_currentState->Enter();
-	}
+    // çŠ¶æ…‹åˆ‡ã‚Šæ›¿ã‚ã‚Šå‡¦ç†
+    if (nextState != nullptr)
+    {
+        m_currentState->Exit();
+        m_currentState = nextState;
+        m_currentState->Enter();
+    }
 
-	m_currentState->Update();
-
+    m_currentState->Update();
 }
-
 
 void Player::Render(RenderContext& rc)
 {
-	m_playerModel.Draw(rc);
+    m_playerModel.Draw(rc);
 }
-
-

@@ -1,6 +1,6 @@
 #pragma once
 /**
- *Transform‚ÆIGameObject‚ğ‚Á‚½“–‚½‚è”»’è‚ÌƒIƒuƒWƒFƒNƒg
+ *Transformã¨IGameObjectã‚’æŒã£ãŸå½“ãŸã‚Šåˆ¤å®šã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
  */
 
 class Player;

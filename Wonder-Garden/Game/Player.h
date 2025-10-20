@@ -13,7 +13,7 @@ public:
 
 public:
 	/// <summary>
-	/// ƒAƒjƒ[ƒVƒ‡ƒ“‚Ìí—Ş
+	/// ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³ã®ç¨®é¡
 	/// </summary>
 	enum EnAnimationClip
 	{
@@ -74,5 +74,4 @@ private:
 
 	bool m_attackFlag = false;	
 	bool m_isStopMove = false;
-	bool deleteFlag = true;
 };
