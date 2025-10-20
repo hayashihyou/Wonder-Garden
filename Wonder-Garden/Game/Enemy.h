@@ -10,6 +10,12 @@ public:
 	Enemy() {};
 	void SetAttackFlag(bool attack);
 	void SetDeadFlag(bool dead);
+    void SetPosition(Vector3 pos) { m_pos = pos; };
+
+    Vector3 GetPosition()
+    {
+        return m_pos;
+    }
 
 public:
 	enum EnEnemyAnimationClip
@@ -22,7 +28,7 @@ public:
 	};
 
 	/// <summary>
-	/// “G‚Ìó‘Ô
+	/// æ•µã®çŠ¶æ…‹
 	/// </summary>
 	enum EnEnemyState
 	{

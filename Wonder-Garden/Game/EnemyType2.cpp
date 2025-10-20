@@ -1,237 +1,238 @@
 #include "stdafx.h"
-#include "EnemyType2.h"
-#include "Player.h"
+
 #include "AttackCollision.h"
+#include "EnemyType2.h"
 #include "EnemyType2State.h"
+#include "Player.h"
 
 namespace
 {
-	const Vector3 POS_Y = { 0,35,0 };
-	const Vector3 JUMPPOS = { 0,45,0 };
-}
+const Vector3 POS_Y = {0, 35, 0};
+const Vector3 JUMPPOS = {0, 45, 0};
+} // namespace
 
 bool EnemyType2::Start()
 {
-	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/enemy/stone/StoneMonstorIdle.tka");
-	m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
-	m_animationClips[enAnimationClip_Attack].Load("Assets/animData/enemy/stone/StoneMonstorAttack.tka");
-	m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_AttackDead].Load("Assets/animData/enemy/stone/StoneMonstorDeath.tka");
-	m_animationClips[enAnimationClip_AttackDead].SetLoopFlag(false);
-	m_animationClips[enAnimationClip_JumpDead].Load("Assets/animData/enemy/stone/StoneMonstorDamage.tka");
-	m_animationClips[enAnimationClip_AttackDead].SetLoopFlag(false);
+    m_animationClips[enAnimationClip_Idle].Load("Assets/animData/enemy/stone/StoneMonstorIdle.tka");
+    m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
+    m_animationClips[enAnimationClip_Attack].Load("Assets/animData/enemy/stone/StoneMonstorAttack.tka");
+    m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
+    m_animationClips[enAnimationClip_AttackDead].Load("Assets/animData/enemy/stone/StoneMonstorDeath.tka");
+    m_animationClips[enAnimationClip_AttackDead].SetLoopFlag(false);
+    m_animationClips[enAnimationClip_JumpDead].Load("Assets/animData/enemy/stone/StoneMonstorDamage.tka");
+    m_animationClips[enAnimationClip_AttackDead].SetLoopFlag(false);
 
-	m_enemyType2Model.Init("Assets/modelData/enemy/stone/StoneMonster.tkm", m_animationClips, enAnimationClip_Num);
-	m_pos = { -200,0,0 };
-	m_colPos = m_pos + POS_Y;
+    m_enemyType2Model.Init("Assets/modelData/enemy/stone/StoneMonster.tkm", m_animationClips, enAnimationClip_Num);
+    m_colPos = m_pos + POS_Y;
 
-	m_colJumpPos = m_pos + JUMPPOS;
+    m_colJumpPos = m_pos + JUMPPOS;
 
-	m_enemyType2Model.SetPosition(m_pos);
-	m_enemyType2Model.SetRotation(m_rot);
-	m_enemyType2Model.Update();
+    m_enemyType2Model.SetPosition(m_pos);
+    m_enemyType2Model.SetRotation(m_rot);
+    m_enemyType2Model.Update();
 
-	enemyType2Collision.CreateSphere(m_colPos, m_rot, 25.0f);
-	enemyType2JumpCollision.CreateSphere(m_colJumpPos, m_rot, 20.0f);
+    enemyType2Collision.CreateSphere(m_colPos, m_rot, 25.0f);
+    enemyType2JumpCollision.CreateSphere(m_colJumpPos, m_rot, 20.0f);
 
-	m_stateList[enEnemyType2State_Idle] = new EnemyType2IdleState;
-	m_stateList[enEnemyType2State_Attack] = new EnemyType2AttackState;
-	m_stateList[enEnemyType2State_AttackDead] = new EnemyType2AttackDeadState;
-	m_stateList[enEnemyType2State_JumpDead] = new EnemyType2JumpDeadState;
+    m_stateList[enEnemyType2State_Idle] = new EnemyType2IdleState;
+    m_stateList[enEnemyType2State_Idle]->SetOwner(this);
+    m_stateList[enEnemyType2State_Attack] = new EnemyType2AttackState;
+    m_stateList[enEnemyType2State_Attack]->SetOwner(this);
+    m_stateList[enEnemyType2State_AttackDead] = new EnemyType2AttackDeadState;
+    m_stateList[enEnemyType2State_AttackDead]->SetOwner(this);
+    m_stateList[enEnemyType2State_JumpDead] = new EnemyType2JumpDeadState;
+    m_stateList[enEnemyType2State_JumpDead]->SetOwner(this);
 
-	m_currentState = m_stateList[enEnemyType2State_Idle];
+    m_currentState = m_stateList[enEnemyType2State_Idle];
 
-	return true;
+    return true;
 }
 
 void EnemyType2::Update()
 {
-	if (m_player == nullptr)
-	{
-		m_player = FindGO<Player>("Player");
-	}
+    if (m_player == nullptr)
+    {
+        m_player = FindGO<Player>("Player");
+    }
 
-	m_attackCollision = FindGO<AttackCollision>("AttackCollision");
+    m_attackCollision = FindGO<AttackCollision>("AttackCollision");
 
-	ManagerState();
+    ManagerState();
 
-	HitJump();
+    HitJump();
 
-	HitPunch();
+    HitPunch();
 
-	AttackFlag();
+    AttackFlag();
 
-	Rotation();
+    Rotation();
 
-	UpdateChangeState();
+    UpdateChangeState();
 }
 
 void EnemyType2::HP()
 {
-	if (hp <= 0)
-	{
-		hp = 0;
-		isDeadFlag = true;
-	}
+    if (hp <= 0)
+    {
+        hp = 0;
+        isDeadFlag = true;
+    }
 }
 
 void EnemyType2::Attack()
 {
-	if (m_player->hp >= 1)
-	{
-		m_player->hp - 1;
-	}
+    if (m_player->hp >= 1)
+    {
+        m_player->hp - 1;
+    }
 }
 
 void EnemyType2::AttackFlag()
 {
-	toPlayer = m_player->playerPos - m_pos;
+    toPlayer = m_player->playerPos - m_pos;
 
-	disToPlayer = toPlayer.Length();
-	if (disToPlayer < 100)
-	{
-		isAttackFlag = true;
-	}
+    disToPlayer = toPlayer.Length();
+    if (disToPlayer < 100)
+    {
+        isAttackFlag = true;
+    }
 
-	m_enemyType2Model.Update();
+    m_enemyType2Model.Update();
 }
 
 void EnemyType2::SetAttack(bool attack)
 {
-	isAttackFlag = attack;
+    isAttackFlag = attack;
 }
 
 void EnemyType2::SetDead(bool dead)
 {
-	isDeadFlag = dead;
+    isDeadFlag = dead;
 }
 
 void EnemyType2::HitPunch()
 {
-	if (m_attackCollision != nullptr)
-	{
-		if (m_attackCollision->m_punchCollision != nullptr)
-		{
-			if (enemyType2Collision.IsHit(m_attackCollision->m_punchCollision))
-			{
-				hp -= 2;
-				HP();
-			}
-		}
-	}
+    if (m_attackCollision != nullptr)
+    {
+        if (m_attackCollision->m_punchCollision != nullptr)
+        {
+            if (enemyType2Collision.IsHit(m_attackCollision->m_punchCollision))
+            {
+                hp -= 2;
+                HP();
+            }
+        }
+    }
 }
 
 void EnemyType2::HitJump()
 {
-	if (enemyType2JumpCollision.IsHit(m_player->m_characterController))
-	{
-		hp -= 2;
-		HP();
-	}
+    if (enemyType2JumpCollision.IsHit(m_player->m_characterController))
+    {
+        hp -= 2;
+        HP();
+    }
 }
 
-void EnemyType2::Rotation()
-{
-
-}
+void EnemyType2::Rotation() {}
 
 void EnemyType2::ManagerState()
 {
-	enum
-	{
-		PRI_NONE,
-		PRI_IDLE,
-		PRI_ATTACK,
-		PRI_ATTACKDEAD,
-		PRI_JUMPDEAD,
-	};
+    enum
+    {
+        PRI_NONE,
+        PRI_IDLE,
+        PRI_ATTACK,
+        PRI_ATTACKDEAD,
+        PRI_JUMPDEAD,
+    };
 
-	//—Dæ‡ˆÊ‚Ì‚‚¢‚à‚Ì‚ğ“ü‚ê‚é•Ï”
-	int bestPri = PRI_NONE;
-	//—Dæ‚·‚éƒXƒe[ƒg
-	EnEnemyType2State bestState = enEnemyType2State_Idle;
+    // å„ªå…ˆé †ä½ã®é«˜ã„ã‚‚ã®ã‚’å…¥ã‚Œã‚‹å¤‰æ•°
+    int bestPri = PRI_NONE;
+    // å„ªå…ˆã™ã‚‹ã‚¹ãƒ†ãƒ¼ãƒˆ
+    EnEnemyType2State bestState = enEnemyType2State_Idle;
 
-	//ó‘Ô‚ğl—¶‚·‚éƒ‰ƒ€ƒ_®
-	auto considerState = [&](int pri, EnEnemyType2State state)
-		{
-			//—Dæ‡ˆÊ‚ªˆê”Ô‚‚¢‚à‚Ì‚ğÌ—p‚·‚é
-			if (bestPri < pri)
-			{
-				bestPri = pri;
-				bestState = state;
-			}
-		};
+    // çŠ¶æ…‹ã‚’è€ƒæ…®ã™ã‚‹ãƒ©ãƒ ãƒ€å¼
+    auto considerState = [&](int pri, EnEnemyType2State state)
+    {
+        // å„ªå…ˆé †ä½ãŒä¸€ç•ªé«˜ã„ã‚‚ã®ã‚’æ¡ç”¨ã™ã‚‹
+        if (bestPri < pri)
+        {
+            bestPri = pri;
+            bestState = state;
+        }
+    };
 
-	if (isDeadFlag == true)
-	{
-		isDeadFlag == false;
+    if (isDeadFlag == true)
+    {
+        isDeadFlag == false;
 
-		if (m_attackCollision != nullptr && m_attackCollision->m_punchCollision != nullptr)
-		{
-			considerState(PRI_ATTACKDEAD, enEnemyType2State_AttackDead);
-			m_currentState = m_stateList[enEnemyType2State_AttackDead];
-			bestState = enEnemyType2State_AttackDead;
-		}
+        if (m_attackCollision != nullptr && m_attackCollision->m_punchCollision != nullptr)
+        {
+            considerState(PRI_ATTACKDEAD, enEnemyType2State_AttackDead);
+            m_currentState = m_stateList[enEnemyType2State_AttackDead];
+            bestState = enEnemyType2State_AttackDead;
+        }
 
-		else
-		{
-			considerState(PRI_JUMPDEAD, enEnemyType2State_JumpDead);
-			m_currentState = m_stateList[enEnemyType2State_JumpDead];
-			bestState = enEnemyType2State_JumpDead;
-		}
+        else
+        {
+            considerState(PRI_JUMPDEAD, enEnemyType2State_JumpDead);
+            m_currentState = m_stateList[enEnemyType2State_JumpDead];
+            bestState = enEnemyType2State_JumpDead;
+        }
 
-		if (bestState != enEnemyType2State_AttackDead)
-		{
-			m_currentState = m_stateList[enEnemyType2State_JumpDead];
-			bestState = enEnemyType2State_JumpDead;
-		}
-	}
+        if (bestState != enEnemyType2State_AttackDead)
+        {
+            m_currentState = m_stateList[enEnemyType2State_JumpDead];
+            bestState = enEnemyType2State_JumpDead;
+        }
+    }
 
-	if (isAttackFlag == true)
-	{
-		considerState(PRI_ATTACK, enEnemyType2State_Attack);
-		Attack();
-	}
+    if (isAttackFlag == true)
+    {
+        considerState(PRI_ATTACK, enEnemyType2State_Attack);
+        Attack();
+    }
 
-	m_currentState = m_stateList[bestState];
+    m_currentState = m_stateList[bestState];
 }
 
 void EnemyType2::UpdateChangeState()
 {
-	IEnemyType2State* nextState = nullptr;
+    IEnemyType2State* nextState = nullptr;
 
-	if (m_currentState == m_stateList[0])
-	{
-		nextState = m_stateList[enEnemyType2State_Idle];
-	}
+    if (m_currentState == m_stateList[0])
+    {
+        nextState = m_stateList[enEnemyType2State_Idle];
+    }
 
-	if (m_currentState == m_stateList[1])
-	{
-		nextState = m_stateList[enEnemyType2State_Attack];
-	}
+    if (m_currentState == m_stateList[1])
+    {
+        nextState = m_stateList[enEnemyType2State_Attack];
+    }
 
-	if (m_currentState == m_stateList[2])
-	{
-		nextState = m_stateList[enEnemyType2State_AttackDead];
-	}
+    if (m_currentState == m_stateList[2])
+    {
+        nextState = m_stateList[enEnemyType2State_AttackDead];
+    }
 
-	if (m_currentState == m_stateList[3])
-	{
-		nextState = m_stateList[enEnemyType2State_JumpDead];
-	}
+    if (m_currentState == m_stateList[3])
+    {
+        nextState = m_stateList[enEnemyType2State_JumpDead];
+    }
 
-	//ó‘ÔØ‚è‘Ö‚í‚èˆ—
-	if (nextState != nullptr)
-	{
-		m_currentState->Exit();
-		m_currentState = nextState;
-		m_currentState->Enter();
-	}
+    // çŠ¶æ…‹åˆ‡ã‚Šæ›¿ã‚ã‚Šå‡¦ç†
+    if (nextState != nullptr)
+    {
+        m_currentState->Exit();
+        m_currentState = nextState;
+        m_currentState->Enter();
+    }
 
-	m_currentState->Update();
+    m_currentState->Update();
 }
 
 void EnemyType2::Render(RenderContext& rc)
 {
-	m_enemyType2Model.Draw(rc);
+    m_enemyType2Model.Draw(rc);
 }

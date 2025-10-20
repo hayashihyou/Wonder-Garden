@@ -11,6 +11,7 @@ public:
 	EnemyType2() {};
 	void SetAttack(bool attack);
 	void SetDead(bool dead);
+    void SetPosition(Vector3 pos) { m_pos = pos; };
 
 public:
 	enum EnEnemyType2AnimationClip

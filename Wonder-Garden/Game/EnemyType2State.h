@@ -11,6 +11,8 @@ public:
 	virtual void Update() = 0;
 	virtual void Exit() = 0;
 
+    void SetOwner(EnemyType2* owner) { m_enemyType2 = owner; };
+
 protected:
 	EnemyType2* m_enemyType2 = nullptr;
 };
