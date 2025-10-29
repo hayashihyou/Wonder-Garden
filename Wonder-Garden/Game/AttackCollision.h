@@ -7,22 +7,20 @@ class Player;
 class AttackCollision : public IGameObject
 {
 public:
-	AttackCollision() {};
-	~AttackCollision();
+    AttackCollision(){};
+    ~AttackCollision();
 
-	void Update();
-	void CreateCollision();
-	void InitTransform(const Vector3& position, Transform& transform);
-	void TimeLimit();
+    void Update();
+    void CreateCollision();
+    void InitTransform(const Vector3& position, Vector3 setposition, Transform& transform);
+    void TimeLimit();
 
 public:
-	CollisionObject* m_punchCollision = nullptr;
-
-
-private:
-	Transform m_transform;
+    CollisionObject* m_punchCollision = nullptr;
 
 private:
-	float deleteTimer = 1.0f;
+    Transform m_transform;
+
+private:
+    float deleteTimer = 1.0f;
 };
-

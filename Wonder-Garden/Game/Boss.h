@@ -11,6 +11,11 @@ public:
 	Boss() {};
 	void SetAttack(bool attack);
 	void SetDead(bool dead);
+    Vector3 GetPosition() { return m_pos; };
+
+    void DamagePunch(int damageAmount);
+    void DamageReceiveHead(int damageAmount);
+    void Damage(int damageAmount, int reason);
 
 public:
 	enum enBossAnimationClip
@@ -25,16 +30,17 @@ public:
 	ModelRender m_bossModel;
 	AnimationClip m_animationClips[enAnimationClip_Num];
 
+    CollisionObject* GetCollision() { return m_bossCollision; }
+    CollisionObject* GetHeadCollision() { return m_bossHeadCollision; }
+
 	bool isDeadFlag = false;
 
 private:
-	~Boss() {};
+	~Boss() ;
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
 	void AttackFlag();
-	void HitJump();
-	void HitPunch();
 	void ManagerState();
 	void UpdateChangeState();
 
@@ -51,17 +57,26 @@ private:
 		enBossState_Num,
 	};
 
+    enum EnDeadReason
+    {
+        enDeadReason_None,
+        enDeadReason_Jump,
+        enDeadReason_Punch,
+    };
+
 private:
 	Vector3 m_pos;
 	Vector3 m_colPos;
 	Quaternion m_rot;
 	Vector3 m_scale;
 	Vector3 toPlayer;
-	CollisionObject m_bossCollision;
+	CollisionObject* m_bossCollision = nullptr;
+	CollisionObject* m_bossHeadCollision = nullptr;
 	Player* m_player = nullptr;
 	AttackCollision* m_attackCollision = nullptr;
 	IBossState* m_stateList[enBossState_Num];
 	IBossState* m_currentState = nullptr;
+    EnDeadReason m_deadReason = enDeadReason_None;
 
 	float disToPlayer;
 	bool isAttackFlag = false;

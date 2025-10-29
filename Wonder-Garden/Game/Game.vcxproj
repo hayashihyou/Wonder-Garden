@@ -228,6 +228,7 @@
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="BossState.cpp" />
     <ClCompile Include="CharacterBase.cpp" />
+    <ClCompile Include="Collision\CollisionManager.cpp" />
     <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="EnemyState.cpp" />
@@ -237,6 +238,7 @@
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="GameOver.cpp" />
+    <ClCompile Include="HPUI.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerState.cpp" />
@@ -257,6 +259,7 @@
     <ClInclude Include="Boss.h" />
     <ClInclude Include="BossState.h" />
     <ClInclude Include="CharacterBase.h" />
+    <ClInclude Include="Collision\CollisionManager.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="EnemyState.h" />
@@ -266,6 +269,7 @@
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameClear.h" />
     <ClInclude Include="GameOver.h" />
+    <ClInclude Include="HPUI.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="Stage.h" />

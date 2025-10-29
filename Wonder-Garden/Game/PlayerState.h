@@ -65,3 +65,23 @@ public:
 	void Exit()override;
 };
 
+class PlayerDamageState: public IPlayerState
+{
+public:
+	PlayerDamageState() {};
+	virtual ~PlayerDamageState() {};
+	void Enter()override;
+	void Update()override;
+	void Exit()override;
+};
+
+class PlayerDeadState: public IPlayerState
+{
+public:
+	PlayerDeadState() {};
+	virtual ~PlayerDeadState() {};
+	void Enter()override;
+	void Update()override;
+	void Exit()override;
+};
+

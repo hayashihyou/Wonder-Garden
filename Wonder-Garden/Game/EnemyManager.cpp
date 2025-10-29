@@ -26,7 +26,7 @@ void EnemyManager::Setup()
     for (int i = 0; i < m_enemy.size(); i++)
     {
         Enemy* enemy = NewGO<Enemy>(0, "Enemy");
-        //
+        
         enemy->SetPosition(Vector3(200, 0, i * 50));
         m_enemy.at(i) = enemy;
     }
