@@ -42,17 +42,18 @@ public:
 public:
 	PhysicsStaticObject m_enemyCollision;
 	ModelRender m_enemyModel;
+    AttackCollision* m_attackCollision = nullptr; 
+    AttackCollision* enemyAttack = nullptr;
 
 	bool isStopMove = false;
 
 private:
-	~Enemy() {};
+    ~Enemy();
 	bool Start();
 	void Rotation();
 	void Update();
 	void Render(RenderContext& rc);
-	void HitJump();
-	void HitPunch();
+    void MakeAttackCollision();
 	void ManagerState();
 	void UpdateChangeState();
 
@@ -60,17 +61,36 @@ private:
 	void Attack()override;
 	void Move()override;
 
+public:
+    CollisionObject* GetColision() { return enemyCollisionObject; }
+    CollisionObject* GetHeadCollision() { return enemyJumpCollision; }
+
+
+public:
+    void DamagePunch(int damageAmount);
+    void DamageReceiveHead(int damageAmount);
+    void Damge(int damageAmount, int reason);
+
+
+private:
+    enum EnDeadReason
+    {
+        enDeadReason_None,
+        enDeadReason_Jump,
+        enDeadReason_Punch,
+    };
+
 private:
 
 	AnimationClip m_animationClips[enAnimationClip_Num];
 	EnEnemyState m_enemyState = enEnemyState_Idle;
-	CollisionObject enemyCollisionObject;
-	CollisionObject enemyJumpCollision;
+	CollisionObject* enemyCollisionObject = nullptr;
+    CollisionObject* enemyJumpCollision = nullptr;
 	Quaternion m_rot;
 	Player* m_player;
-	AttackCollision* m_attackCollision = nullptr;
 	IEnemyState* m_currentState = nullptr;
 	IEnemyState* m_stateList[enEnemyState_Num];
+    EnDeadReason m_deadReason = enDeadReason_None;
 
 	Vector3 m_pos;
 	Vector3 m_colPos;
@@ -78,8 +98,12 @@ private:
 	Vector3 toPlayer;
 	Vector3 toPlayerDir;
 	Vector3 currentToPlayer;
+    const Vector3 attackCol = {0,30,0};
+
+    int checkCollision = 10; //誰の当たり判定か確認する変数
 
 	float disToPlayer;
+    float m_attackCoolTimer = 2.0f;
 
 	bool isAttack = false;
 	bool isDead = false;

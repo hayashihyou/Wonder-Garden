@@ -10,6 +10,12 @@
     <Filter Include="Enemy">
       <UniqueIdentifier>{ba9bec86-82fe-4416-b444-6370ef53de64}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Collision">
+      <UniqueIdentifier>{3d0e3cab-0c10-4b96-b603-09fa1c3e4728}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{8eda26bf-80d9-4247-ae68-c103d31c83dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -53,6 +59,12 @@
     <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
+    <ClCompile Include="Collision\CollisionManager.cpp">
+      <Filter>Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="HPUI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -95,5 +107,11 @@
     <ClInclude Include="GameClear.h" />
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="EnemyManager.h" />
+    <ClInclude Include="Collision\CollisionManager.h">
+      <Filter>Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="HPUI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

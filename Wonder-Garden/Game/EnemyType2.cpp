@@ -11,6 +11,12 @@ const Vector3 POS_Y = {0, 35, 0};
 const Vector3 JUMPPOS = {0, 45, 0};
 } // namespace
 
+EnemyType2::~EnemyType2()
+{
+    DeleteGO(enemyType2Collision);
+    DeleteGO(enemyType2JumpCollision);
+}
+
 bool EnemyType2::Start()
 {
     m_animationClips[enAnimationClip_Idle].Load("Assets/animData/enemy/stone/StoneMonstorIdle.tka");
@@ -31,8 +37,13 @@ bool EnemyType2::Start()
     m_enemyType2Model.SetRotation(m_rot);
     m_enemyType2Model.Update();
 
-    enemyType2Collision.CreateSphere(m_colPos, m_rot, 25.0f);
-    enemyType2JumpCollision.CreateSphere(m_colJumpPos, m_rot, 20.0f);
+    enemyType2Collision = NewGO<CollisionObject>(0);
+    enemyType2Collision->CreateSphere(m_colPos, m_rot, 25.0f);
+    enemyType2Collision->SetIsEnableAutoDelete(false);
+
+    enemyType2JumpCollision = NewGO<CollisionObject>(0);
+    enemyType2JumpCollision->CreateSphere(m_colJumpPos, m_rot, 20.0f);
+    enemyType2JumpCollision->SetIsEnableAutoDelete(false);
 
     m_stateList[enEnemyType2State_Idle] = new EnemyType2IdleState;
     m_stateList[enEnemyType2State_Idle]->SetOwner(this);
@@ -59,10 +70,6 @@ void EnemyType2::Update()
 
     ManagerState();
 
-    HitJump();
-
-    HitPunch();
-
     AttackFlag();
 
     Rotation();
@@ -81,10 +88,7 @@ void EnemyType2::HP()
 
 void EnemyType2::Attack()
 {
-    if (m_player->hp >= 1)
-    {
-        m_player->hp - 1;
-    }
+    
 }
 
 void EnemyType2::AttackFlag()
@@ -108,30 +112,6 @@ void EnemyType2::SetAttack(bool attack)
 void EnemyType2::SetDead(bool dead)
 {
     isDeadFlag = dead;
-}
-
-void EnemyType2::HitPunch()
-{
-    if (m_attackCollision != nullptr)
-    {
-        if (m_attackCollision->m_punchCollision != nullptr)
-        {
-            if (enemyType2Collision.IsHit(m_attackCollision->m_punchCollision))
-            {
-                hp -= 2;
-                HP();
-            }
-        }
-    }
-}
-
-void EnemyType2::HitJump()
-{
-    if (enemyType2JumpCollision.IsHit(m_player->m_characterController))
-    {
-        hp -= 2;
-        HP();
-    }
 }
 
 void EnemyType2::Rotation() {}
@@ -167,22 +147,16 @@ void EnemyType2::ManagerState()
     {
         isDeadFlag == false;
 
-        if (m_attackCollision != nullptr && m_attackCollision->m_punchCollision != nullptr)
+        if (m_deadReason == enDeadReason_Punch)
         {
             considerState(PRI_ATTACKDEAD, enEnemyType2State_AttackDead);
             m_currentState = m_stateList[enEnemyType2State_AttackDead];
             bestState = enEnemyType2State_AttackDead;
         }
 
-        else
+        if (m_deadReason == enDeadReason_Jump)
         {
             considerState(PRI_JUMPDEAD, enEnemyType2State_JumpDead);
-            m_currentState = m_stateList[enEnemyType2State_JumpDead];
-            bestState = enEnemyType2State_JumpDead;
-        }
-
-        if (bestState != enEnemyType2State_AttackDead)
-        {
             m_currentState = m_stateList[enEnemyType2State_JumpDead];
             bestState = enEnemyType2State_JumpDead;
         }
@@ -235,4 +209,22 @@ void EnemyType2::UpdateChangeState()
 void EnemyType2::Render(RenderContext& rc)
 {
     m_enemyType2Model.Draw(rc);
+}
+
+void EnemyType2::DamagePunch(int damageAmount)
+{
+    Damage(damageAmount, enDeadReason_Punch);
+}
+
+void EnemyType2::DamageReceiveHead(int damageAmount)
+{
+    Damage(damageAmount, enDeadReason_Jump);
+}
+
+void EnemyType2::Damage(int damageAmount, int reason)
+{
+    hp -= damageAmount;
+    HP();
+
+    m_deadReason = (EnDeadReason) reason;
 }

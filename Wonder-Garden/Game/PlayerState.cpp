@@ -84,3 +84,44 @@ void PlayerAttackState::Exit()
 {
 	
 }
+
+void PlayerDamageState::Enter()
+{
+    m_player = FindGO<Player>("Player");
+    m_player->m_playerModel.PlayAnimation(m_player->enAnimationClip_Damage);
+    m_player->SetDamage(true);
+}
+
+void PlayerDamageState::Update()
+{
+    if (!m_player->m_playerModel.IsPlayingAnimation())
+    {
+        m_player->SetDamage(false);
+    }
+}
+
+void PlayerDamageState::Exit()
+{
+
+}
+
+void PlayerDeadState::Enter()
+{
+    m_player = FindGO<Player>("Player");
+    m_player->m_playerModel.PlayAnimation(m_player->enAnimationClip_Dead);
+    m_player->SetDead(true);
+}
+
+void PlayerDeadState::Update()
+{
+    if (!m_player->m_playerModel.IsPlayingAnimation())
+    {
+        m_player->SetDead(false);
+        m_player->m_gameoverFlag = true;
+    }
+}
+
+void PlayerDeadState::Exit()
+{
+
+}

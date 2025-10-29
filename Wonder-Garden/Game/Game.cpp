@@ -14,6 +14,8 @@
 #include "Star.h"
 #include "StarCounter.h"
 #include "Title.h"
+#include "Collision/CollisionManager.h"
+#include "HPUI.h"
 
 Game::Game(){
 
@@ -28,6 +30,9 @@ Game::~Game()
     DeleteGO(m_skyCube);
     DeleteGO(m_starCounter);
     DeleteGO(m_gameCamera);
+    DeleteGO(m_hpUI);
+
+    CollisionManager::Delete();
 }
 
 bool Game::Start()
@@ -39,11 +44,17 @@ bool Game::Start()
     m_skyCube = NewGO<SkyCube>(0, "SkyCube");
     m_starCounter = NewGO<StarCounter>(0, "StarCounter");
     m_gameCamera = NewGO<GameCamera>(0, "GameCamera");
+    m_hpUI = NewGO<HPUI>(0, "HPUI");
 
     // コメントアウトする。
     //PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
+    //エネミーの複数対のモデルを生成
     EnemyManager::GetInstance()->Setup();
+
+    //コリジョンマネージャのインスタンスの取得
+    CollisionManager::Create();
+
     return true;
 }
 
@@ -53,7 +64,13 @@ void Game::Update()
 
     EnemyManager::GetInstance()->Update();
 
-    if (m_player->playerPos.y <= -400.0f)
+    // UIに情報を渡す
+    {
+        float hpRatio = m_player->hp / static_cast<float>(m_player->maxHp);
+        m_hpUI->SetRatio(hpRatio);
+    }
+
+    if (m_player->playerPos.y <= -400.0f || m_player->m_gameoverFlag == true)
     {
         m_gameOver = NewGO<GameOver>(0, "GameOver");
         DeleteGO(m_star);
@@ -65,6 +82,8 @@ void Game::Update()
         m_gameClear = NewGO<GameClear>(0, "GameClear");
         DeleteGO(this);
     }
+
+    CollisionManager::Get()->Update();
 }
 
 void Game::CreateStar()

@@ -9,6 +9,12 @@ namespace
 	Vector3 COLPOS_Y = { 0,30,0 };
 }
 
+Boss::~Boss()
+{
+    DeleteGO(m_bossCollision);
+    DeleteGO(m_bossHeadCollision);
+}
+
 bool Boss::Start()
 {
 	m_animationClips[enAnimationClip_Idle].Load("Assets/animData/boss/SkeletonIdle.tka");
@@ -30,7 +36,13 @@ bool Boss::Start()
 	m_bossModel.SetScale(m_scale);
 	m_bossModel.Update();
 
-	m_bossCollision.CreateSphere(m_colPos, m_rot, 70.0);
+    m_bossCollision = NewGO<CollisionObject>(0);
+	m_bossCollision->CreateSphere(m_colPos, m_rot, 70.0);
+    m_bossCollision->SetIsEnableAutoDelete(false);
+
+    m_bossHeadCollision = NewGO<CollisionObject>(0);
+    m_bossHeadCollision->CreateSphere(m_colPos, m_rot, 70.0);
+    m_bossHeadCollision->SetIsEnableAutoDelete(false);
 
 	m_stateList[enBossState_Idle] = new BossIdleState;
 	m_stateList[enBossState_Attack] = new BossAttackState;
@@ -51,10 +63,6 @@ void Boss::Update()
 	m_attackCollision = FindGO<AttackCollision>("AttackCollision");
 
 	ManagerState();
-
-	HitJump();
-
-	HitPunch();
 
 	AttackFlag();
 
@@ -95,30 +103,6 @@ void Boss::SetAttack(bool attack)
 void Boss::SetDead(bool dead)
 {
 	isDeadFlag = dead;
-}
-
-void Boss::HitJump()
-{
-	if (m_bossCollision.IsHit(m_player->m_characterController))
-	{
-		hp -= 2;
-		HP();
-	}
-}
-
-void Boss::HitPunch()
-{
-	if (m_attackCollision != nullptr)
-	{
-		if (m_attackCollision->m_punchCollision != nullptr)
-		{
-			if (m_bossCollision.IsHit(m_attackCollision->m_punchCollision))
-			{
-				hp -= 2;
-				HP();
-			}
-		}
-	}
 }
 
 void Boss::ManagerState()
@@ -198,4 +182,22 @@ void Boss::UpdateChangeState()
 void Boss::Render(RenderContext& rc)
 {
 	m_bossModel.Draw(rc);
+}
+
+void Boss::DamagePunch(int damageAmount)
+{
+    Damage(damageAmount, enDeadReason_Punch);
+}
+
+void Boss::DamageReceiveHead(int damageAmount)
+{
+    Damage(damageAmount, enDeadReason_Jump);
+}
+
+void Boss::Damage(int damageAmount, int reason)
+{
+    hp -= damageAmount;
+    HP();
+
+    m_deadReason = (EnDeadReason) reason;
 }
