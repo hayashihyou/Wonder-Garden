@@ -47,7 +47,7 @@ bool Game::Start()
     m_hpUI = NewGO<HPUI>(0, "HPUI");
 
     // コメントアウトする。
-    //PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+    PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
     //エネミーの複数対のモデルを生成
     EnemyManager::GetInstance()->Setup();

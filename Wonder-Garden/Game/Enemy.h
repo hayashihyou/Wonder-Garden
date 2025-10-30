@@ -98,12 +98,12 @@ private:
 	Vector3 toPlayer;
 	Vector3 toPlayerDir;
 	Vector3 currentToPlayer;
-    const Vector3 attackCol = {0,30,0};
+    const Vector3 attackCol = {0,30,40};
 
     int checkCollision = 10; //誰の当たり判定か確認する変数
 
 	float disToPlayer;
-    float m_attackCoolTimer = 2.0f;
+    float m_attackCoolTimer = 1.0f;
 
 	bool isAttack = false;
 	bool isDead = false;

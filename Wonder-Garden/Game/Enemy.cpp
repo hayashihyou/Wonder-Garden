@@ -10,7 +10,7 @@ namespace
     const Vector3 COLPOS_Y = Vector3{0, 20, 0};
     const Vector3 COLJUMPPOS_Y = Vector3{0, 35, 0};
 
-    const float ATTACK_COOLTIME = 5.0f;
+    const float ATTACK_COOLTIME = 1.0f;
 }
 
 Enemy::~Enemy()
@@ -78,6 +78,8 @@ void Enemy::Update()
     m_attackCoolTimer -= g_gameTime->GetFrameDeltaTime();
     if (m_attackCoolTimer <= 0.0f)
         m_attackCoolTimer = 0.0f;
+
+    m_enemyModel.Update();
 }
 
 void Enemy::HP()
@@ -119,7 +121,7 @@ void Enemy::SetDeadFlag(bool dead)
 
 void Enemy::Move()
 {
-    //if (isStopMove)return;
+    if (isStopMove)return;
     toPlayer = m_player->playerPos - m_pos;
 
     disToPlayer = toPlayer.Length();
@@ -130,6 +132,7 @@ void Enemy::Move()
         toPlayerDir.Normalize();
 
         m_pos += toPlayerDir * 1.0f;
+        m_transform.m_localPosition = m_pos;
 
         if (m_player->enPlayerState_Jump)
         {
@@ -148,7 +151,7 @@ void Enemy::Move()
     enemyCollisionObject->SetPosition(m_colPos);
     enemyJumpCollision->SetPosition(m_colJumpPos);
     m_enemyModel.SetPosition(m_pos);
-    m_enemyModel.Update();
+    
 }
 
 void Enemy::Rotation()
