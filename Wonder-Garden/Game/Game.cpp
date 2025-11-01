@@ -1,21 +1,21 @@
 #include "stdafx.h"
 
-#include "Boss.h"
-#include "Enemy.h"
-#include "EnemyType2.h"
+#include "Enemy/Boss.h"
+#include "Enemy/Enemy.h"
+#include "Enemy/EnemyType2.h"
 #include "EnemyManager.h"
 #include "Game.h"
 #include "GameCamera.h"
 #include "GameClear.h"
 #include "GameOver.h"
-#include "Player.h"
-#include "PlayerState.h"
+#include "Player/Player.h"
+#include "Player/PlayerState.h"
 #include "Stage.h"
 #include "Star.h"
 #include "StarCounter.h"
 #include "Title.h"
 #include "Collision/CollisionManager.h"
-#include "HPUI.h"
+#include "UI/HPUI.h"
 
 Game::Game(){
 

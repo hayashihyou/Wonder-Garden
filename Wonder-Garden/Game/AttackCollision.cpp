@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "AttackCollision.h"
-#include "Player.h"
+#include "Player/Player.h"
 
 AttackCollision::~AttackCollision() {}
 

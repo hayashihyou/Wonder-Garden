@@ -225,23 +225,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AttackCollision.cpp" />
-    <ClCompile Include="Boss.cpp" />
-    <ClCompile Include="BossState.cpp" />
     <ClCompile Include="CharacterBase.cpp" />
     <ClCompile Include="Collision\CollisionManager.cpp" />
-    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
-    <ClCompile Include="EnemyState.cpp" />
-    <ClCompile Include="EnemyType2.cpp" />
-    <ClCompile Include="EnemyType2State.cpp" />
+    <ClCompile Include="Enemy\Boss.cpp" />
+    <ClCompile Include="Enemy\BossState.cpp" />
+    <ClCompile Include="Enemy\Enemy.cpp" />
+    <ClCompile Include="Enemy\EnemyState.cpp" />
+    <ClCompile Include="Enemy\EnemyType2.cpp" />
+    <ClCompile Include="Enemy\EnemyType2State.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="GameOver.cpp" />
-    <ClCompile Include="HPUI.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="PlayerState.cpp" />
+    <ClCompile Include="Player\Player.cpp" />
+    <ClCompile Include="Player\PlayerState.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Star.cpp" />
     <ClCompile Include="StarCounter.cpp" />
@@ -253,25 +252,25 @@
     <ClCompile Include="system\system.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UI\HPUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AttackCollision.h" />
-    <ClInclude Include="Boss.h" />
-    <ClInclude Include="BossState.h" />
     <ClInclude Include="CharacterBase.h" />
     <ClInclude Include="Collision\CollisionManager.h" />
-    <ClInclude Include="Enemy.h" />
     <ClInclude Include="EnemyManager.h" />
-    <ClInclude Include="EnemyState.h" />
-    <ClInclude Include="EnemyType2.h" />
-    <ClInclude Include="EnemyType2State.h" />
+    <ClInclude Include="Enemy\Boss.h" />
+    <ClInclude Include="Enemy\BossState.h" />
+    <ClInclude Include="Enemy\Enemy.h" />
+    <ClInclude Include="Enemy\EnemyState.h" />
+    <ClInclude Include="Enemy\EnemyType2.h" />
+    <ClInclude Include="Enemy\EnemyType2State.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameClear.h" />
     <ClInclude Include="GameOver.h" />
-    <ClInclude Include="HPUI.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="PlayerState.h" />
+    <ClInclude Include="Player\Player.h" />
+    <ClInclude Include="Player\PlayerState.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Star.h" />
     <ClInclude Include="StarCounter.h" />
@@ -279,6 +278,7 @@
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="UI\HPUI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
-#include "Enemy.h"
+#include "Enemy/Enemy.h"
 #include "EnemyManager.h"
-#include "EnemyType2.h"
+#include "Enemy/EnemyType2.h"
 
 EnemyManager* EnemyManager::m_instance = nullptr;
 
