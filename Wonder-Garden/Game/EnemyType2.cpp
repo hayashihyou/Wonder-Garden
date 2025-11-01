@@ -9,6 +9,8 @@ namespace
 {
 const Vector3 POS_Y = {0, 35, 0};
 const Vector3 JUMPPOS = {0, 45, 0};
+
+const float ATTACK_COOL_TIME = 1.0f;
 } // namespace
 
 EnemyType2::~EnemyType2()
@@ -75,6 +77,10 @@ void EnemyType2::Update()
     Rotation();
 
     UpdateChangeState();
+
+     m_attackCoolTime -= g_gameTime->GetFrameDeltaTime();
+    if (m_attackCoolTime <= 0.0f)
+        m_attackCoolTime = 0.0f;
 }
 
 void EnemyType2::HP()
@@ -88,7 +94,11 @@ void EnemyType2::HP()
 
 void EnemyType2::Attack()
 {
-    
+    if (m_attackCoolTime > 0.0f) return;
+
+    MakeCollision();
+
+    m_attackCoolTime = ATTACK_COOL_TIME;
 }
 
 void EnemyType2::AttackFlag()
@@ -101,7 +111,18 @@ void EnemyType2::AttackFlag()
         isAttackFlag = true;
     }
 
+    toPlayerDir = toPlayer;
+    toPlayerDir.Normalize();
+    m_transform.m_localPosition = m_pos;
     m_enemyType2Model.Update();
+}
+
+void EnemyType2::MakeCollision()
+{
+    m_enemyType2Attack = NewGO<AttackCollision>(0);
+    m_enemyType2Attack->InitTransform(m_pos, m_attackPos, m_transform);
+    m_enemyType2Attack->CreateCollision();
+    m_enemyType2Attack->Update();
 }
 
 void EnemyType2::SetAttack(bool attack)
@@ -114,7 +135,12 @@ void EnemyType2::SetDead(bool dead)
     isDeadFlag = dead;
 }
 
-void EnemyType2::Rotation() {}
+void EnemyType2::Rotation()
+{
+    m_rot.SetRotationYFromDirectionXZ(toPlayerDir);
+    m_transform.m_localRotation = m_rot;
+    m_enemyType2Model.SetRotation(m_rot);
+}
 
 void EnemyType2::ManagerState()
 {
