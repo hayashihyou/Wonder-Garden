@@ -42,6 +42,7 @@ private:
     void Render(RenderContext& rc);
     void Rotation();
     void AttackFlag();
+    void MakeCollision();
     void UpdateChangeState();
     void ManagerState();
 
@@ -75,15 +76,18 @@ private:
 	IEnemyType2State* m_currentState = nullptr;
 	IEnemyType2State* m_stateList[enEnemyType2State_Num];
     EnDeadReason m_deadReason = enDeadReason_None;
+    AttackCollision* m_enemyType2Attack = nullptr;
 
 	Vector3 m_pos;
 	Vector3 m_colPos;
 	Vector3 m_colJumpPos;
 	Vector3 toPlayer;
 	Vector3 toPlayerDir;
+    Vector3 m_attackPos{0, 30, 40};
 	Quaternion m_rot;
 
 	float disToPlayer;
+    float m_attackCoolTime = 1.0f;
 
 	bool isDeadFlag = false;
 	bool isAttackFlag = false;
