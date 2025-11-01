@@ -1,11 +1,11 @@
 #include "stdafx.h"
 #include "CollisionManager.h"
 
-#include "Player.h"
+#include "Player/Player.h"
 #include "AttackCollision.h"
-#include "Enemy.h"
-#include "EnemyType2.h"
-#include "Boss.h"
+#include "Enemy/Enemy.h"
+#include "Enemy/EnemyType2.h"
+#include "Enemy/Boss.h"
 
 
 CollisionManager* CollisionManager::m_isntace = nullptr;

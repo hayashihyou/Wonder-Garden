@@ -1,7 +1,7 @@
 #include "stdafx.h"
-#include "Boss.h"
-#include "BossState.h"
-#include "Player.h"
+#include "Enemy/Boss.h"
+#include "Enemy/BossState.h"
+#include "Player/Player.h"
 #include "AttackCollision.h"
 
 namespace

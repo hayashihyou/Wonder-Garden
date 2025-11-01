@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Star.h"
 #include "StarCounter.h"
-#include "Player.h"
+#include "Player/Player.h"
 
 bool Star::Start()
 {

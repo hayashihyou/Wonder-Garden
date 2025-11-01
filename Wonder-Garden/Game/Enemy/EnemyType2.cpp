@@ -3,7 +3,7 @@
 #include "AttackCollision.h"
 #include "EnemyType2.h"
 #include "EnemyType2State.h"
-#include "Player.h"
+#include "Player/Player.h"
 
 namespace
 {
