@@ -49,6 +49,8 @@ bool Player::Start()
 
     m_playerHitCollision.CreateCapsule(m_colPos, m_colRot, 10.0f, 40.0f);
 
+    playerPos = {0.0f, 50.0f, 500.0f};
+
     return true;
 }
 
@@ -171,6 +173,8 @@ void Player::Move()
     m_isStopMove = false;
 
     m_colPos = playerPos + COLPOS_Y;
+
+    m_characterController.SetPosition(playerPos);
 
     // モデルの座標に反映させる
     m_playerModel.SetPosition(m_transform.m_localPosition);

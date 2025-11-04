@@ -16,6 +16,7 @@
 #include "Title.h"
 #include "Collision/CollisionManager.h"
 #include "UI/HPUI.h"
+#include "Gimmic/Warp.h"
 
 Game::Game(){
 
@@ -31,6 +32,7 @@ Game::~Game()
     DeleteGO(m_starCounter);
     DeleteGO(m_gameCamera);
     DeleteGO(m_hpUI);
+    DeleteGO(m_warp);
 
     CollisionManager::Delete();
 }
@@ -45,9 +47,10 @@ bool Game::Start()
     m_starCounter = NewGO<StarCounter>(0, "StarCounter");
     m_gameCamera = NewGO<GameCamera>(0, "GameCamera");
     m_hpUI = NewGO<HPUI>(0, "HPUI");
+    m_warp = NewGO<Warp>(0, "Warp");
 
     // コメントアウトする。
-    PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+    //hysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
     //エネミーの複数対のモデルを生成
     EnemyManager::GetInstance()->Setup();

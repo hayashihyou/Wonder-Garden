@@ -4,6 +4,7 @@ class StarCounter : public IGameObject
 public:
 	StarCounter() {};
 	void AddStarCount();
+
 	int GetStarCount()
 	{
 		return starCount;

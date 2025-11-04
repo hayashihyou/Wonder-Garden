@@ -77,8 +77,8 @@ public:
 	int hp = 8;                 //体力
     int maxHp = 8;
 
-    bool m_invincibleFlag = false;
-    bool m_gameoverFlag = false;
+    bool m_invincibleFlag = false;  //無敵(点滅表示)を作るフラグ
+    bool m_gameoverFlag = false;    //ゲームオーバーフラグ
 
 private:
 	/// <summary>

@@ -1,25 +1,17 @@
 #include "stdafx.h"
-#include "CollisionManager.h"
 
-#include "Player/Player.h"
 #include "AttackCollision.h"
+#include "CollisionManager.h"
+#include "Enemy/Boss.h"
 #include "Enemy/Enemy.h"
 #include "Enemy/EnemyType2.h"
-#include "Enemy/Boss.h"
-
+#include "Player/Player.h"
 
 CollisionManager* CollisionManager::m_isntace = nullptr;
 
+CollisionManager::CollisionManager() {}
 
-CollisionManager::CollisionManager()
-{
-}
-
-
-CollisionManager::~CollisionManager()
-{
-}
-
+CollisionManager::~CollisionManager() {}
 
 void CollisionManager::Update()
 {
@@ -106,8 +98,8 @@ void CollisionManager::Update()
         }
     }
 
-    //プレイヤーの攻撃がボスに当たったか
-    //TODO:ボスクラスの方でコリジョンがnullptrにンっているため原因を探す
+    // プレイヤーの攻撃がボスに当たったか
+    // TODO:ボスクラスの方でコリジョンがnullptrにンっているため原因を探す
 
     {
         if (boss)
@@ -139,12 +131,11 @@ void CollisionManager::Update()
         }
     }
 
-
-    //エネミー、ボスの攻撃がプレイヤーに当たった時
+    // エネミー、ボスの攻撃がプレイヤーに当たった時
     {
         if (player)
         {
-            for  (Enemy* enemy : enemys)
+            for (Enemy* enemy : enemys)
             {
                 if (enemy->enemyAttack)
                 {
@@ -157,10 +148,14 @@ void CollisionManager::Update()
 
             for (EnemyType2* enemyType2 : enemysType2s)
             {
-
+                if (enemyType2->m_enemyType2Attack)
+                {
+                    if (enemyType2->m_enemyType2Attack->m_punchCollision->IsHit(player->m_characterController))
+                    {
+                        player->Damage(1);
+                    }
+                }
             }
         }
-
-        
     }
 }
