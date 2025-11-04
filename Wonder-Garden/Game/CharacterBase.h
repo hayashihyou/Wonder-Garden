@@ -18,6 +18,7 @@ public:
 	/// <returns></returns>
 	virtual bool Start();
 
+protected:
 	/// <summary>
 	/// HPのベース
 	/// </summary>

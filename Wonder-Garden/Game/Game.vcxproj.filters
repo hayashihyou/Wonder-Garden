@@ -16,6 +16,9 @@
     <Filter Include="UI">
       <UniqueIdentifier>{8eda26bf-80d9-4247-ae68-c103d31c83dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Gimmic">
+      <UniqueIdentifier>{cc08f4db-1812-4b6e-bca9-387e7a40253e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -65,6 +68,9 @@
     <ClCompile Include="UI\HPUI.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Gimmic\Warp.cpp">
+      <Filter>Gimmic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -112,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="UI\HPUI.h">
       <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Gimmic\Warp.h">
+      <Filter>Gimmic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

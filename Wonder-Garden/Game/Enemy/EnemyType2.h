@@ -32,6 +32,7 @@ public:
     ModelRender m_enemyType2Model;
     AnimationClip m_animationClips[enAnimationClip_Num];
 
+    AttackCollision* m_enemyType2Attack = nullptr;
     CollisionObject* GetCollision() { return enemyType2Collision; }
     CollisionObject* GetHeadCollision() { return enemyType2Collision; }
 
@@ -76,7 +77,6 @@ private:
 	IEnemyType2State* m_currentState = nullptr;
 	IEnemyType2State* m_stateList[enEnemyType2State_Num];
     EnDeadReason m_deadReason = enDeadReason_None;
-    AttackCollision* m_enemyType2Attack = nullptr;
 
 	Vector3 m_pos;
 	Vector3 m_colPos;

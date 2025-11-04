@@ -6,10 +6,9 @@ class GameCamera : public IGameObject
 {
 public:
 	GameCamera() {};
-private:
-	~GameCamera() {};
-	bool Start();
-	void Update();
+    ~GameCamera(){};
+    bool Start();
+    void Update();
 
 private:
 	Player* m_player = nullptr;
