@@ -5,8 +5,8 @@
 
 namespace
 {
-    const Vector3 PIPE_POS = {490, 5, 2260};
-    const Vector3 PIPE2_POS = {-3690, 5, 800};
+    const Vector3 PIPE_POS = {300, 5, 1300};
+    const Vector3 PIPE2_POS = {-2200, 5, 660};
 }
 
 bool Warp::Start()

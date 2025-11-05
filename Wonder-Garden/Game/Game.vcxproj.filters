@@ -71,6 +71,9 @@
     <ClCompile Include="Gimmic\Warp.cpp">
       <Filter>Gimmic</Filter>
     </ClCompile>
+    <ClCompile Include="Gimmic\Cannon.cpp">
+      <Filter>Gimmic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -120,6 +123,9 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="Gimmic\Warp.h">
+      <Filter>Gimmic</Filter>
+    </ClInclude>
+    <ClInclude Include="Gimmic\Cannon.h">
       <Filter>Gimmic</Filter>
     </ClInclude>
   </ItemGroup>

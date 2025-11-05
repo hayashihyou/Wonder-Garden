@@ -18,6 +18,7 @@ class GameClear;
 class GameOver;
 class HPUI;
 class Warp;
+class Cannon;
 
 class Game : public IGameObject
 {
@@ -71,5 +72,6 @@ private:
 	GameOver* m_gameOver = nullptr;
     HPUI* m_hpUI = nullptr;
     Warp* m_warp = nullptr;
+    Cannon* m_cannon = nullptr;
 };
 
