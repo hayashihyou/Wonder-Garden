@@ -299,4 +299,12 @@ namespace nsK2EngineLow {
 	{
 		PhysicsWorld::GetInstance()->RemoveRigidBody(m_rigidBody);
 	}
+
+	void CharacterController::AddRigidBody()
+	{
+		PhysicsWorld::GetInstance()->AddRigidBody(m_rigidBody);
+
+	}
+
+
 }

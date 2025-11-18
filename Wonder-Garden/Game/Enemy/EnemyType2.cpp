@@ -103,7 +103,7 @@ void EnemyType2::Attack()
 
 void EnemyType2::AttackFlag()
 {
-    toPlayer = m_player->playerPos - m_pos;
+    toPlayer = m_player->GetPosition() - m_pos;
 
     disToPlayer = toPlayer.Length();
     if (disToPlayer < 100)

@@ -84,7 +84,7 @@ void Boss::Attack()
 
 void Boss::AttackFlag()
 {
-	toPlayer = m_player->playerPos - m_pos;
+    toPlayer = m_player->GetPosition() - m_pos;
 
 	disToPlayer = toPlayer.Length();
 	if (disToPlayer < 150)

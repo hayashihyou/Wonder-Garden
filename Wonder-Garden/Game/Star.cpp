@@ -28,7 +28,7 @@ void Star::Update()
 
 void Star::GetFlag()
 {
-	toPlayer = m_player->playerPos - m_pos;
+    toPlayer = m_player->GetPosition() - m_pos;
 	disToPlayer = toPlayer.Length();
 	if (disToPlayer <= 120)
 	{

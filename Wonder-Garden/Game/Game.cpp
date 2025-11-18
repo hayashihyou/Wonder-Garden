@@ -18,6 +18,7 @@
 #include "UI/HPUI.h"
 #include "Gimmic/Warp.h"
 #include "Gimmic/Cannon.h"
+#include "EffectManager.h"
 
 Game::Game(){
 
@@ -35,6 +36,7 @@ Game::~Game()
     DeleteGO(m_hpUI);
     DeleteGO(m_warp);
     DeleteGO(m_cannon);
+    DeleteGO(m_effectManager);
 
     CollisionManager::Delete();
 }
@@ -51,9 +53,10 @@ bool Game::Start()
     m_hpUI = NewGO<HPUI>(0, "HPUI");
     m_warp = NewGO<Warp>(0, "Warp");
     m_cannon = NewGO<Cannon>(0, "Cannon");
+    m_effectManager = NewGO<EffectManager>(0, "EffectManager");
 
     // コメントアウトする。
-    PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+    //PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
     //エネミーの複数対のモデルを生成
     EnemyManager::GetInstance()->Setup();
@@ -72,11 +75,11 @@ void Game::Update()
 
     // UIに情報を渡す
     {
-        float hpRatio = m_player->hp / static_cast<float>(m_player->maxHp);
+        float hpRatio = m_player->GetHP() / static_cast<float>(m_player->GetMaxHP());
         m_hpUI->SetRatio(hpRatio);
     }
 
-    if (m_player->playerPos.y <= -400.0f || m_player->m_gameoverFlag == true)
+    if (m_player->GetPosition().y <= -400.0f || m_player->IsGameOver() == true)
     {
         m_gameOver = NewGO<GameOver>(0, "GameOver");
         DeleteGO(m_star);

@@ -227,6 +227,7 @@
     <ClCompile Include="AttackCollision.cpp" />
     <ClCompile Include="CharacterBase.cpp" />
     <ClCompile Include="Collision\CollisionManager.cpp" />
+    <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="Enemy\Boss.cpp" />
     <ClCompile Include="Enemy\BossState.cpp" />
@@ -251,6 +252,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="system\system.cpp" />
+    <ClCompile Include="testIState.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="UI\HPUI.cpp" />
@@ -260,6 +262,7 @@
     <ClInclude Include="AttackCollision.h" />
     <ClInclude Include="CharacterBase.h" />
     <ClInclude Include="Collision\CollisionManager.h" />
+    <ClInclude Include="EffectManager.h" />
     <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="Enemy\Boss.h" />
     <ClInclude Include="Enemy\BossState.h" />
@@ -279,6 +282,7 @@
     <ClInclude Include="StarCounter.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />
+    <ClInclude Include="testIState.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="UI\HPUI.h" />

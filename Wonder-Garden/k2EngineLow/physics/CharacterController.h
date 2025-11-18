@@ -85,6 +85,8 @@ namespace nsK2EngineLow {
 		* @brief	剛体を物理エンジンから削除。。
 		*/
 		void RemoveRigidBoby();
+
+		void AddRigidBody();
 	private:
 		bool				m_isInited = false;				//!<初期化済み？
 		Vector3 			m_position;						//!<座標。

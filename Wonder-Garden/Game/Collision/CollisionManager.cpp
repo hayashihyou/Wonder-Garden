@@ -2,6 +2,7 @@
 
 #include "AttackCollision.h"
 #include "CollisionManager.h"
+#include "EffectManager.h"
 #include "Enemy/Boss.h"
 #include "Enemy/Enemy.h"
 #include "Enemy/EnemyType2.h"
@@ -9,9 +10,24 @@
 
 CollisionManager* CollisionManager::m_isntace = nullptr;
 
-CollisionManager::CollisionManager() {}
+CollisionManager::CollisionManager()
+{
+    m_effect = NewGO<EffectEmitter>(0);
+}
 
-CollisionManager::~CollisionManager() {}
+CollisionManager::~CollisionManager()
+{
+    DeleteGO(m_effect);
+}
+
+void CollisionManager::CreateEffect(Vector3 position)
+{
+   /* m_effect->Init(EnEffcetType::Hit);
+    m_effect->SetPosition(position);
+    m_effect->SetRotation(Quaternion::Identity);
+    m_effect->SetScale({3.0f, 3.0f, 3.0f});
+    m_effect->Play();*/
+}
 
 void CollisionManager::Update()
 {
@@ -27,42 +43,48 @@ void CollisionManager::Update()
 
     // プレイヤーの攻撃がエネミーに当たったか
     {
-        if (player->punchCollision != nullptr)
+        if (player->GetCollision() != nullptr)
         {
 
             for (Enemy* enemy : enemys)
             {
-                if (player->punchCollision->m_punchCollision->IsHit(enemy->GetColision()))
+                if (player->GetCollision()->m_punchCollision->IsHit(enemy->GetColision()))
                 {
                     // @tod for 数値をどこかに定数とかでおきたいね
                     // プレイヤーの攻撃力みたいなものを使いたい
                     enemy->DamagePunch(2);
+                    /*Vector3 enemyEffectPos = enemy->GetPosition();
+                    enemyEffectPos.y += 50.0f;
+                    CreateEffect(enemyEffectPos);*/
                 }
             }
         }
 
-        if (player->punchCollision != nullptr)
+        if (player->GetCollision() != nullptr)
         {
 
             for (EnemyType2* enemyType2 : enemysType2s)
             {
-                if (player->punchCollision->m_punchCollision->IsHit(enemyType2->GetCollision()))
+                if (player->GetCollision()->m_punchCollision->IsHit(enemyType2->GetCollision()))
                 {
                     enemyType2->DamagePunch(2);
+                    Vector3 enemy2EffectPos = enemyType2->GetPosition();
+                    enemy2EffectPos.y += 50.0f;
+                    CreateEffect(enemy2EffectPos);
                 }
             }
         }
     }
     // プレイヤーがエネミーを踏んだ時
     {
-        if (player->punchCollision != nullptr)
+        if (player->GetCollision() != nullptr)
         {
 
             for (Enemy* enemy : enemys)
             {
-                if (enemy->GetHeadCollision()->IsHit(player->m_characterController))
+                if (enemy->GetHeadCollision()->IsHit(*player->GetCharCon()))
                 {
-                    Vector3 v = enemy->GetPosition() - player->playerPos;
+                    Vector3 v = enemy->GetPosition() - player->GetPosition();
                     v.Normalize();
                     const float dot = v.Dot(Vector3::Down);
                     const float angle = acosf(dot);
@@ -76,14 +98,14 @@ void CollisionManager::Update()
             }
         }
 
-        if (player->punchCollision != nullptr)
+        if (player->GetCollision() != nullptr)
         {
 
             for (EnemyType2* enemyType2 : enemysType2s)
             {
-                if (enemyType2->GetHeadCollision()->IsHit(player->m_characterController))
+                if (enemyType2->GetHeadCollision()->IsHit(*player->GetCharCon()))
                 {
-                    Vector3 v = enemyType2->GetPosition() - player->playerPos;
+                    Vector3 v = enemyType2->GetPosition() - player->GetPosition();
                     v.Normalize();
                     const float dot = v.Dot(Vector3::Down);
                     const float angle = acosf(dot);
@@ -104,19 +126,19 @@ void CollisionManager::Update()
     {
         if (boss)
         {
-            if (player->punchCollision != nullptr)
+            if (player->GetCollision() != nullptr)
             {
-                if (player->punchCollision->m_punchCollision->IsHit(boss->GetCollision()))
+                if (player->GetCollision()->m_punchCollision->IsHit(boss->GetCollision()))
                 {
                     boss->DamagePunch(2);
                 }
             }
 
-            if (player->punchCollision != nullptr)
+            if (player->GetCollision() != nullptr)
             {
-                if (boss->GetHeadCollision()->IsHit(player->m_characterController))
+                if (boss->GetHeadCollision()->IsHit(*player->GetCharCon()))
                 {
-                    Vector3 v = boss->GetPosition() - player->playerPos;
+                    Vector3 v = boss->GetPosition() - player->GetPosition();
                     v.Normalize();
                     const float dot = v.Dot(Vector3::Down);
                     const float angle = acosf(dot);
@@ -139,7 +161,7 @@ void CollisionManager::Update()
             {
                 if (enemy->enemyAttack)
                 {
-                    if (enemy->enemyAttack->m_punchCollision->IsHit(player->m_characterController))
+                    if (enemy->enemyAttack->m_punchCollision->IsHit(*player->GetCharCon()))
                     {
                         player->Damage(1);
                     }
@@ -150,7 +172,7 @@ void CollisionManager::Update()
             {
                 if (enemyType2->m_enemyType2Attack)
                 {
-                    if (enemyType2->m_enemyType2Attack->m_punchCollision->IsHit(player->m_characterController))
+                    if (enemyType2->m_enemyType2Attack->m_punchCollision->IsHit(*player->GetCharCon()))
                     {
                         player->Damage(1);
                     }

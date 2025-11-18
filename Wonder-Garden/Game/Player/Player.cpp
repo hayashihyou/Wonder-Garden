@@ -1,16 +1,20 @@
 #include "stdafx.h"
-#include "Player.h"
-#include "PlayerState.h"
-#include "Enemy/Enemy.h"
-#include "AttackCollision.h"
 
+#include "AttackCollision.h"
+#include "Enemy/Enemy.h"
+#include "Player/Player.h"
+#include "Player/PlayerState.h"
 
 namespace
 {
     const Vector3 COLPOS_Y = {0.0f, 30.0f, 0.0f};
-}
+    const float INVINCIBLE_TIME = 3.0f;
+    const float INVINCIBLE_FLASH_TIME = 0.2f;
+} // namespace
+
 bool Player::Start()
 {
+    m_playerStatePattern = new PlayerStatePattern;
 
     m_animationClips[enAnimationClip_Idle].Load("Assets/animData/player/playerIdle.tka");
     m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
@@ -29,187 +33,87 @@ bool Player::Start()
 
     m_playerModel.Init("Assets/modelData/player/player.tkm", m_animationClips, enAnimationClip_Num);
 
-    m_stateList[enPlayerState_Idle] = new PlayerIdleState;
-    m_stateList[enPlayerState_Walk] = new PlayerWalkState;
-    m_stateList[enPlayerState_Run] = new PlayerRunState;
-    m_stateList[enPlayerState_Jump] = new PlayerJumpState;
-    m_stateList[enPlayerState_Attack] = new PlayerAttackState;
-    m_stateList[enPlayerState_Damage ] = new PlayerDamageState;
-    m_stateList[enPlayerState_Dead] = new PlayerDeadState;
+    // m_position = {-1952.0f, 103.0f, 2418.0f};
 
-    m_currentState = m_stateList[enPlayerState_Idle];
+    // ステートパターンのステートとIDの
+    m_playerStatePattern->RegisterState<PlayerIdleState>(this);
+    m_playerStatePattern->RegisterState<PlayerWalkState>(this);
+    m_playerStatePattern->RegisterState<PlayerRunState>(this);
+    m_playerStatePattern->RegisterState<PlayerJumpState>(this);
+    m_playerStatePattern->RegisterState<PlayerAttackState>(this);
+    m_playerStatePattern->RegisterState<PlayerDamageState>(this);
+    m_playerStatePattern->RegisterState<PlayerDeadState>(this);
+    m_playerStatePattern->RegisterState<PlayerFireState>(this);
+
+    // 最初はIdle(待機)状態から始まるので
+    m_playerStatePattern->InitializeState<PlayerIdleState>();
 
     // キャラクターコントローラーの初期化
-    m_characterController.Init(10.0f, 40.0f, m_transform.m_localPosition);
-
-    m_colPos = playerPos + COLPOS_Y;
-
+    m_characterController.Init(10.0f, 40.0f, m_position);
     m_playerModel.Update();
-    m_playerHitCollision.Update();
-
-    m_playerHitCollision.CreateCapsule(m_colPos, m_colRot, 10.0f, 40.0f);
-
-    playerPos = {0.0f, 50.0f, 500.0f};
-
     return true;
 }
 
 void Player::Update()
 {
-    ManagerState();
-
-    Move();
-
-    Rotation();
-
-    Attack();
-
-    if (m_invincibleFlag == true)
+    if (m_isInvincible)
     {
         m_invincibleTimer -= g_gameTime->GetFrameDeltaTime();
     }
 
-    CheckInvincible();
+    moveDirection.x = g_pad[0]->GetLStickXF();
+    moveDirection.z = g_pad[0]->GetLStickYF();
 
-    UpdateChangeState();
+    m_isJump = g_pad[0]->IsTrigger(enButtonA);
+    m_isRun = g_pad[0]->IsPress(enButtonX);
+
+    m_transform.m_position = m_position;
+    m_transform.m_localRotation = m_rotation;
+
+    Attack();
+    Rotation();
+    CheckInvincible();
+    m_playerStatePattern->Update();
+
+    // モデルの座標に反映させる
+    m_characterController.SetPosition(m_position);
+    m_playerModel.SetPosition(m_position);
+    m_playerModel.SetRotation(m_rotation);
+    m_playerModel.Update();
 }
 
 void Player::HP()
 {
     if (hp > 0)
     {
-        m_damageFlag = true;
+        m_isDamage = true;
     }
 
     if (hp <= 0)
     {
         hp = 0;
-        m_deadFlag = true;
+        m_isDead = true;
     }
 }
 
 void Player::Attack()
 {
-    m_atk = 2;
-
-    if (g_pad[0]->IsTrigger(enButtonB))
-    {
-        /**TODO:現状複数回呼び出されるからアニメーションが終わるまでコリジョンの生成をなくし処理不可を軽くする */
-        MakeAttackCollision();
-    }
-}
-
-void Player::MakeAttackCollision()
-{
-    // 攻撃用の当たり判定を作成
-    punchCollision = NewGO<AttackCollision>(0, "AttackCollision");
-    punchCollision->InitTransform(playerPos, m_atkColPos, m_transform);
-    punchCollision->CreateCollision();
-    punchCollision->Update();
-}
-
-void Player::Move()
-{
-    // xzの移動速度を0にする
-    moveSpeed.x = 0.0f;
-    moveSpeed.z = 0.0f;
-
-    // 左スティックの入力量の取得
-    Vector3 sthickL;
-    sthickL.x = g_pad[0]->GetLStickXF();
-    sthickL.z = g_pad[0]->GetLStickYF();
-
-    // カメラの前方向と右方向のベクトルを持ってくる
-    Vector3 forward = g_camera3D->GetForward();
-    Vector3 right = g_camera3D->GetRight();
-
-    // y方向には移動させない
-    forward.y = 0.0f;
-    right.y = 0.0f;
-
-    // 左スティックの入力量と120.0fを乗算
-    right *= sthickL.x * 120.0f;
-    forward *= sthickL.z * 120.0f;
-
-    // 移動速度に加算
-    moveSpeed += right + forward;
-
-    if (m_characterController.IsOnGround() == true)
-    {
-        if (g_pad[0]->IsTrigger(enButtonA))
-        {
-            if (m_isStopMove == false)
-            {
-                // ジャンプ
-                moveSpeed.y = 350.0f;
-            }
-
-            else
-            {
-
-            }
-        }
-    }
-
-    moveSpeed.y -= 10.0f;
-
-    // ストップムーブがtrueなら移動速度を0にする
-    if (m_isStopMove)
-    {
-        moveSpeed.x = 0.0f;
-        moveSpeed.z = 0.0f;
-    }
-
-    if (g_pad[0]->IsPress(enButtonX))
-    {
-        moveSpeed.x * 10.0f;
-        moveSpeed.z * 10.0f;
-    }
-
-    // キャラクターコントローラーを使って座標を移動させる
-    m_transform.m_localPosition = m_characterController.Execute(moveSpeed, 1.0f / 60.0f);
-    playerPos = m_transform.m_localPosition;
-
-    m_isStopMove = false;
-
-    m_colPos = playerPos + COLPOS_Y;
-
-    m_characterController.SetPosition(playerPos);
-
-    // モデルの座標に反映させる
-    m_playerModel.SetPosition(m_transform.m_localPosition);
-    m_playerHitCollision.SetPosition(m_colPos);
-
-    m_playerModel.Update();
+    m_isAttack = g_pad[0]->IsTrigger(enButtonB);
 }
 
 
 
-void Player::Rotation()
-{
-    if (fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f)
-    {
-        // キャラクターの向きを変える
-        m_transform.m_localRotation.SetRotationYFromDirectionXZ(moveSpeed);
-        m_rot = m_transform.m_localRotation;
-        m_playerModel.SetRotation(m_rot);
-        m_playerHitCollision.SetRotation(m_colRot);
-    }
-}
+void Player::Move() {}
 
-void Player::DamagePunch(int damageAmount)
-{
-    Damage(damageAmount);
-}
+void Player::Rotation() {}
 
 void Player::Damage(int damageAmount)
 {
-    if (m_invincibleFlag == false)
+    if (m_isInvincible == false)
     {
         hp -= damageAmount;
         HP();
-        m_invincibleFlag = true;
-        m_drawFlag = true;
+        m_isInvincible = true;
     }
 }
 
@@ -217,175 +121,33 @@ void Player::CheckInvincible()
 {
     if (m_invincibleTimer <= 0.0f)
     {
-        m_invincibleTimer = 3.0f;
-        m_invincibleFlag = false;
-        m_drawFlag = false;
+        m_invincibleTimer = INVINCIBLE_TIME;
+        m_isInvincible = false;
     }
 }
-
-void Player::ManagerState()
-{
-    // 優先順位
-    enum
-    {
-        PRI__NONE,
-        PRI_IDLE,
-        PRI_WALK,
-        PRI_RUN,
-        PRI_JUMP,
-        PRI_ATTACK,
-        PRI_DAMAGE,
-        PRI_DEAD,
-    };
-
-    // 優先順位の高いものを入れる変数
-    int bestPri = PRI__NONE;
-    // 優先するステート
-    EnPlayerState bestState = enPlayerState_Idle;
-
-    bool isMove = fabsf(moveSpeed.x) >= 0.001f || fabsf(moveSpeed.z) >= 0.001f;
-
-    // 状態を考慮するラムダ式
-    auto considerState = [&](int pri, EnPlayerState state)
-    {
-        // 優先順位が一番高いものを採用する
-        if (bestPri < pri)
-        {
-            bestPri = pri;
-            bestState = state;
-        }
-    };
-
-    // 地面についてないとき
-    if (m_characterController.IsOnGround() == false)
-    {
-        considerState(PRI_JUMP, enPlayerState_Jump);
-    }
-
-    // 移動しているとき
-    if (isMove)
-    {
-        // 歩いている状態にする
-        considerState(PRI_WALK, enPlayerState_Walk);
-    }
-
-    // 走っている状態にする
-    if (g_pad[0]->IsPress(enButtonX) && isMove)
-    {
-        considerState(PRI_RUN, enPlayerState_Run);
-    }
-
-    // 攻撃している状態にする
-    if (g_pad[0]->IsTrigger(enButtonB) || m_attackFlag)
-    {
-        considerState(PRI_ATTACK, enPlayerState_Attack);
-        m_isStopMove = true;
-    }
-
-    if (m_damageFlag == true || m_deadFlag == true)
-    {
-        m_damageFlag = false;
-        m_deadFlag = false;
-
-        if (hp > 0)
-        {
-            considerState(PRI_DAMAGE, enPlayerState_Damage);
-            m_currentState = m_stateList[enPlayerState_Damage];
-            bestState = enPlayerState_Damage;
-            m_isStopMove = true;
-        }
-
-        if (hp <= 0)
-        {
-            considerState(PRI_DEAD, enPlayerState_Dead);
-            m_currentState = m_stateList[enPlayerState_Dead];
-            bestState = enPlayerState_Dead;
-            m_isStopMove = true;
-        }
-
-    }
-
-    // 優先順位が一番高いものを採用する
-    m_currentState = m_stateList[bestState];
-}
-
-void Player::UpdateChangeState()
-{
-
-    IPlayerState* nextState = nullptr;
-
-    if (m_currentState == m_stateList[0])
-    {
-        nextState = m_stateList[enPlayerState_Idle];
-    }
-
-    if (m_currentState == m_stateList[1])
-    {
-        nextState = m_stateList[enPlayerState_Walk];
-    }
-
-    if (m_currentState == m_stateList[2])
-    {
-        nextState = m_stateList[enPlayerState_Run];
-    }
-
-    if (m_currentState == m_stateList[3])
-    {
-        nextState = m_stateList[enPlayerState_Jump];
-    }
-
-    if (m_currentState == m_stateList[4])
-    {
-        nextState = m_stateList[enPlayerState_Attack];
-    }
-
-    if (m_currentState == m_stateList[5])
-    {
-        nextState = m_stateList[enPlayerState_Damage];
-    }
-
-    if (m_currentState == m_stateList[6])
-    {
-        nextState = m_stateList[enPlayerState_Dead];
-    }
-
-    // 状態切り替わり処理
-    if (nextState != nullptr)
-    {
-        m_currentState->Exit();
-        m_currentState = nextState;
-        m_currentState->Enter();
-    }
-
-    m_currentState->Update();
-};
 
 void Player::Render(RenderContext& rc)
 {
-    if (m_invincibleFlag == false)
+    // 通常時
+    if (!m_isInvincible)
     {
         m_playerModel.Draw(rc);
     }
-
+    // 被弾時の無敵の時
     else
     {
+        // 指定秒数ごとに切り替え
+        m_drawTimer += g_gameTime->GetFrameDeltaTime();
+        if (m_drawTimer >= INVINCIBLE_FLASH_TIME)
+        {
+            m_drawTimer = 0.0f;
+            m_isDraw = !m_isDraw;
+        }
 
-        if (m_drawFlag == true)
+        // 描画のon/off
+        if (m_isDraw)
         {
             m_playerModel.Draw(rc);
-            m_drawTimer++;
-
-            if (m_drawTimer == 2)
-            {
-                m_drawFlag = false;
-            }
-        }
-
-        else
-        {
-            m_drawFlag = true;
-            m_drawTimer = 0;
         }
     }
-
 }

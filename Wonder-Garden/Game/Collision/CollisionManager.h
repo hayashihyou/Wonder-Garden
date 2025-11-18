@@ -9,17 +9,15 @@ private:
     ~CollisionManager();
 
 public:
+    void CreateEffect(Vector3 position);
     void Update();
-
-
-
 
     /**
      * シングルトン関連
      */
 private:
     static CollisionManager* m_isntace;
-
+    EffectEmitter* m_effect = nullptr;
 
 public:
     static void Create()
