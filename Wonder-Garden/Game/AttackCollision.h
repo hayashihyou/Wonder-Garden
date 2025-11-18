@@ -12,7 +12,7 @@ public:
 
     void Update();
     void CreateCollision();
-    void InitTransform(const Vector3& position, Vector3 setposition, Transform& transform);
+    void InitTransform(Vector3 position, Vector3 forward, Transform& parentTransform);
     void TimeLimit();
 
 public:

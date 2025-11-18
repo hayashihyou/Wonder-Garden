@@ -33,13 +33,12 @@ void Warp::Update()
 
 void Warp::CheckWarp()
 {
-    if (m_pipeCollision.IsHit(m_player->m_characterController))
+    if (m_pipeCollision.IsHit(*m_player->GetCharCon()))
     {
-        m_player->playerPos = m_pipe2Pos;
-        m_player->m_playerModel.SetPosition(m_player->playerPos);
-        m_player->m_characterController.SetPosition(m_player->playerPos);
-        m_player->m_characterController.GetPosition();
-        m_player->m_playerModel.Update();
+        m_player->GetModel()->SetPosition(m_pipe2Pos);
+        m_player->GetCharCon()->SetPosition(m_pipe2Pos);
+        m_player->GetCharCon()->GetPosition();
+        m_player->GetModel()->Update();
         m_gameCamera->Update();
     }
 }

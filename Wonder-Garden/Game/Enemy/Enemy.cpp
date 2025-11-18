@@ -104,7 +104,7 @@ void Enemy::Attack()
 void Enemy::MakeAttackCollision()
 {
     enemyAttack = NewGO<AttackCollision>(0, "AttackCollision");
-    enemyAttack->InitTransform(m_pos, attackCol, m_transform);
+    enemyAttack->InitTransform(m_pos, attackCol , m_transform);
     enemyAttack->CreateCollision();
     enemyAttack->Update();
 }
@@ -122,7 +122,7 @@ void Enemy::SetDeadFlag(bool dead)
 void Enemy::Move()
 {
     if (isStopMove)return;
-    toPlayer = m_player->playerPos - m_pos;
+    toPlayer = m_player->GetPosition() - m_pos;
 
     disToPlayer = toPlayer.Length();
 

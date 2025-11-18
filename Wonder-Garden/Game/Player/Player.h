@@ -1,158 +1,301 @@
 #pragma once
 #include "CharacterBase.h"
 
-
-class IPlayerState;
 class Enemy;
 class AttackCollision;
+class PlayerStatePattern;
+
 class Player : public CharacterBase
 {
 public:
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	Player() {};
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    Player(){};
 
     /// <summary>
-    /// プレイヤーの攻撃状態を保持
+    /// デストラクタ
     /// </summary>
-    /// <param name="attackFlag"></param>
-    void SetAttack(bool attackFlag) { m_attackFlag = attackFlag; }
+    ~Player(){};
 
     /// <summary>
-    /// 被弾状態を保持
+    /// スタート処理
     /// </summary>
-    /// <param name="damage"></param>
-    void SetDamage(bool damage) { m_damageFlag = damage; };
-
-    /// <summary>
-    /// 死んだ状態を保持
-    /// </summary>
-    /// <param name="dead"></param>
-    void SetDead(bool dead) { m_deadFlag = dead; };
-
-    void DamagePunch(int damageAmount);
-    void Damage(int damageAmount);
-
-public:
-	/// <summary>
-	/// アニメーションの種類
-	/// </summary>
-	enum EnAnimationClip
-	{
-		enAnimationClip_Idle,
-		enAnimationClip_Walk,
-		enAnimationClip_Run,
-		enAnimationClip_Jump,
-		enAnimationClip_Attack,
-        enAnimationClip_Damage,
-        enAnimationClip_Dead,
-		enAnimationClip_Num,
-	};
-
-	/// <summary>
-	/// プレイヤーの状態
-	/// </summary>
-	enum EnPlayerState
-	{
-		enPlayerState_Idle,
-		enPlayerState_Walk,
-		enPlayerState_Run,
-		enPlayerState_Jump,
-		enPlayerState_Attack,
-        enPlayerState_Damage,
-        enPlayerState_Dead,
-		enPlayerState_Num,
-	};
-
-public:
-    AttackCollision* punchCollision;                //攻撃の当たり判定
-	ModelRender m_playerModel;                      //プレイヤーのモデル
-	CharacterController m_characterController;      //キャラコン
-
-public:
-	Vector3 moveSpeed;          //移動速度
-	Vector3 playerPos;          //位置
-    Quaternion m_rot;           //向き
-	int hp = 8;                 //体力
-    int maxHp = 8;
-
-    bool m_invincibleFlag = false;  //無敵(点滅表示)を作るフラグ
-    bool m_gameoverFlag = false;    //ゲームオーバーフラグ
-
-private:
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~Player() {};
-	/// <summary>
-	/// スタート処理
-	/// </summary>
-	/// <returns></returns>
-	bool Start();
+    /// <returns></returns>
+    bool Start();
 
     /// <summary>
     /// 更新処理
     /// </summary>
     void Update();
 
-	/// <summary>
-	///回転処理
-	/// </summary>
-	void Rotation();
+    /// <summary>
+    /// 描画処理
+    /// </summary>
+    /// <param name="rc"></param>
+    void Render(RenderContext& rc);
 
-	/// <summary>
-	/// 描画処理
-	/// </summary>
-	/// <param name="rc"></param>
-	void Render(RenderContext& rc);
+    /// <summary>
+    /// 被ダメージ計算
+    /// </summary>
+    /// <param name="damageAmount"></param>
+    void Damage(int damageAmount);
 
-	/// <summary>
-	/// 攻撃判定の生成
-	/// </summary>
-	void MakeAttackCollision();
+public:
+    /// <summary>
+    /// プレイヤーの座標の保持
+    /// </summary>
+    /// <param name="position"></param>
+    void SetPosition(Vector3& position) { m_position = position; }
 
-	/// <summary>
-	/// ステータス管理
-	/// </summary>
-	void ManagerState();
+    /// <summary>
+    /// プレイヤーの攻撃状態を保持
+    /// </summary>
+    /// <param name="attackFlag"></param>
+    void SetAttack(bool attackFlag) { m_isAttack = attackFlag; }
 
-	/// <summary>
-	/// ステータスの変更
-	/// </summary>
-	void UpdateChangeState();
+    /// <summary>
+    /// 被弾状態を保持
+    /// </summary>
+    /// <param name="damage"></param>
+    void SetDamage(bool damage) { m_isDamage = damage; }
+
+    /// <summary>
+    /// 死んだ状態を保持
+    /// </summary>
+    /// <param name="dead"></param>
+    void SetDead(bool dead) { m_isDead = dead; }
+
+    /// <summary>
+    /// ゲームオーバーのフラグを保持
+    /// </summary>
+    /// <param name="gameover"></param>
+    void SetGameOverFlag(bool gameover) { m_isGameOver = gameover; }
+
+    /// <summary>
+    /// 大砲の発射状態の保持
+    /// </summary>
+    /// <param name="fireflag"></param>
+    void SetFireFlag(bool fireflag) { m_isFire = fireflag; }
+
+    /// <summary>
+    /// プレイヤーが移動を停止しているか確認するフラグの保持
+    /// </summary>
+    /// <param name="stopmove"></param>
+    void SetStopMove(bool stopmove) { m_isStopMove = stopmove; }
+
+    void SetJumpPower(Vector3& jump) { m_jumpPower = jump; }
+
+    void SetInvisTimer(float time) { m_invincibleTimer = time; }
+
+    void SetCollision(AttackCollision* collision) { m_punchCollision = collision; }
+
+    void SetMoveSpeed(Vector3 movespeed) { m_moveSpeed = movespeed; }
+
+public:
+    /// <summary>
+    /// モデルを取得
+    /// </summary>
+    /// <returns></returns>
+    ModelRender* GetModel() { return &m_playerModel; }
+
+    /// <summary>
+    /// 攻撃判定をコリジョンを取得
+    /// </summary>
+    /// <returns></returns>
+    AttackCollision* GetCollision() { return m_punchCollision; }
+
+    /// <summary>
+    /// キャラコンの取得
+    /// </summary>
+    /// <returns></returns>
+    CharacterController* GetCharCon() { return &m_characterController; }
+
+    Transform* GetTransform() { return &m_transform; }
+
+public:
+    /// <summary>
+    /// プレイヤーの移動方向を取得
+    /// </summary>
+    /// <returns></returns>
+    Vector3 GetMoveDir() { return moveDirection; }
+
+    /// <summary>
+    /// プレイヤーの位置を取得
+    /// </summary>
+    /// <returns></returns>
+    Vector3 GetPosition() { return m_position; }
+
+    /// <summary>
+    /// プレイヤーのジャンプ力を取得
+    /// </summary>
+    /// <returns></returns>
+    Vector3 GetJumpPower() { return m_jumpPower; }
+
+    /// <summary>
+    /// プレイヤーの重力の取得
+    /// </summary>
+    /// <returns></returns>
+    Vector3 GetGravity() { return m_gravity; }
+
+    /// <summary>
+    /// プレイヤーの向きを取得
+    /// </summary>
+    /// <returns></returns>
+    Quaternion GetRotation() { return m_rotation; }
+
+    void UpdateRotationY(const Vector3& direction)
+    {
+        m_rotation.SetRotationYFromDirectionXZ(direction);
+    }
+
+    float GetInvisTimer() { return m_invincibleTimer; }
+
+    /// <summary>
+    /// 外部からの力を取得
+    /// </summary>
+    /// <returns></returns>
+    Vector3 GetForce() { return m_addForce; }
+
+    Vector3 GetMoveSpeed() { return m_moveSpeed; }
+
+    /// <summary>
+    /// 現在のHPを取得
+    /// </summary>
+    /// <returns></returns>
+    int GetHP() { return hp; }
+
+    /// <summary>
+    /// 最大HPを取得
+    /// </summary>
+    /// <returns></returns>
+    int GetMaxHP() { return maxHp; }
+
+    /// <summary>
+    /// ゲームオーバーのフラグの取得
+    /// </summary>
+    /// <returns></returns>
+    bool IsGameOver() { return m_isGameOver; }
+
+    /// <summary>
+    /// ジャンプ中のフラグを取得
+    /// </summary>
+    /// <returns></returns>
+    bool IsJump() { return m_isJump; }
+
+    /// <summary>
+    /// 攻撃中のフラグを取得
+    /// </summary>
+    /// <returns></returns>
+    bool IsAttack() { return m_isAttack; }
+
+
+    /// <summary>
+    /// ダメージを受けたか確認
+    /// </summary>
+    /// <returns></returns>
+    bool IsDamage() { return m_isDamage; }
+
+
+    /// <summary>
+    /// 死亡したか確認
+    /// </summary>
+    /// <returns></returns>
+    bool IsDead() { return m_isDead; }
+
+    /// <summary>
+    /// 走っているか確認
+    /// </summary>
+    /// <returns></returns>
+    bool IsRun() { return m_isRun; }
+
+public:
+    /// <summary>
+    /// 外部からの力を保持す
+    /// </summary>
+    /// <param name="addForce"></param>
+    void SetAddForce(const Vector3& addForce) { m_addForce = addForce; }
+
+public:
+    /// <summary>
+    /// アニメーションの種類
+    /// </summary>
+    enum EnAnimationClip
+    {
+        enAnimationClip_Idle,
+        enAnimationClip_Walk,
+        enAnimationClip_Run,
+        enAnimationClip_Jump,
+        enAnimationClip_Attack,
+        enAnimationClip_Damage,
+        enAnimationClip_Dead,
+        enAnimationClip_Num,
+    };
+
+    /// <summary>
+    /// プレイヤーの状態
+    /// </summary>
+    enum EnPlayerState
+    {
+        enPlayerState_Idle,
+        enPlayerState_Walk,
+        enPlayerState_Run,
+        enPlayerState_Jump,
+        enPlayerState_Attack,
+        enPlayerState_Damage,
+        enPlayerState_Dead,
+        enPlayerState_Fire,
+        enPlayerState_Num,
+    };
+
+private:
+    /// <summary>
+    /// 回転処理
+    /// </summary>
+    void Rotation();
 
     /// <summary>
     /// 無敵中か確認
     /// </summary>
     void CheckInvincible();
 
-	void HP()override;
-	void Attack()override;
-	void Move()override;
+    void HP() override;
+    void Attack() override;
+    void Move() override;
 
 private:
-
-	AnimationClip m_animationClips[enAnimationClip_Num];    //アニメーション
-	CharacterBase* m_characterBase;                         //キャラクターベース
-	IPlayerState* m_currentState = nullptr;                 //ステートマシン
-	IPlayerState* m_stateList[enPlayerState_Num];           //ステートマシンのリスト
-	Enemy* m_enemy;                                        
-    CollisionObject m_playerHitCollision;                   //プレイヤー自身の当たり判定
-	Quaternion m_colRot;                                    //当たり判定の向き
-    Vector3 m_colPos;                                       //当たり判定の位置
-    const Vector3 m_atkColPos = {0, 30, 50};                //攻撃した時の当たり判定の位置
+    CharacterController m_characterController;           // キャラコン
+    AttackCollision* m_punchCollision;                   // 攻撃の当たり判定
+    ModelRender m_playerModel;                           // プレイヤーのモデル
+    AnimationClip m_animationClips[enAnimationClip_Num]; // アニメーション
+    PlayerStatePattern* m_playerStatePattern;
 
 private:
-	int playerState = enPlayerState_Idle;                   //プレイヤー自身のステータス
-	int m_atk = 2;                                          //攻撃力
-    int m_drawTimer = 0;                                    //点滅表示する為のタイマー
+    float moveSpeed;                          // 移動速度
+    Vector3 moveDirection;                   // 移動方向
+    Vector3 m_position;                      // 位置
+    Vector3 m_addForce = Vector3::Zero;      // 外部から加えられる力
+    Vector3 m_jumpPower{0.0f, 500.0f, 0.0f}; // ジャンプ力
+    Vector3 m_gravity{0.0f, 150.0f, 0.0f};   //重力
+    Vector3 m_moveSpeed; 
+    Quaternion m_rotation;                   // 向き
+    const Vector3 m_atkCol = {0, 30, 50}; // 攻撃した時の当たり判定の位置
 
-    float m_invincibleTimer = 3.0f;                         //無敵時間
+    int m_atk = 2;       // 攻撃力
+    int hp = 8;          // 体力
+    int maxHp = 8;       // 最大体力
 
-	bool m_attackFlag = false;	                            //攻撃中か確認するフラグ
-	bool m_isStopMove = false;                              //攻撃時や死亡時、プレイヤーの移動を止めるフラグ
-    bool m_deadFlag = false;                                //死亡してるかどうかの確認
-    bool m_damageFlag = false;                              //ダメージを受けているかの確認
-    bool m_drawFlag = false;                                //点滅表示する為のフラグ
+    float m_drawTimer = 0;          // 点滅表示する為のタイマー
+    float m_invincibleTimer = 0.0f; // 無敵時間
+
+    bool m_isAttack = false;     // 攻撃中か確認するフラグ
+    bool m_isStopMove = false;   // 攻撃時や死亡時、プレイヤーの移動を止めるフラグ
+    bool m_isDead = false;       // 死亡してるかどうかの確認
+    bool m_isDamage = false;     // ダメージを受けているかの確認
+    bool m_isDraw = false;       // 点滅表示する為のフラグ
+    bool m_isInvincible = false; // 無敵(点滅表示)を作るフラグ
+    bool m_isGameOver = false;   // ゲームオーバーフラグ
+    bool m_isFire = false;
+    bool m_isJump = false;
+    bool m_isRun = false;
 };

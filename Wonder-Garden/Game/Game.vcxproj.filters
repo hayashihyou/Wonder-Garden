@@ -74,6 +74,8 @@
     <ClCompile Include="Gimmic\Cannon.cpp">
       <Filter>Gimmic</Filter>
     </ClCompile>
+    <ClCompile Include="testIState.cpp" />
+    <ClCompile Include="EffectManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -128,5 +130,7 @@
     <ClInclude Include="Gimmic\Cannon.h">
       <Filter>Gimmic</Filter>
     </ClInclude>
+    <ClInclude Include="testIState.h" />
+    <ClInclude Include="EffectManager.h" />
   </ItemGroup>
 </Project>

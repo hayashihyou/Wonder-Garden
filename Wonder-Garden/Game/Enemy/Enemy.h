@@ -98,7 +98,7 @@ private:
 	Vector3 toPlayer;
 	Vector3 toPlayerDir;
 	Vector3 currentToPlayer;
-    const Vector3 attackCol = {0,30,40};
+    const Vector3 attackCol = {0,30,0};
 
     int checkCollision = 10; //誰の当たり判定か確認する変数
 
