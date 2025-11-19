@@ -241,28 +241,24 @@ bool PlayerRunState::RequestState(uint32_t& request)
 void PlayerJumpState::Enter()
 {
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Jump);
+    jump = m_player->GetJumpPower();
 }
 
 // TODO:重力がうまくいってないから後で聞こう
 void PlayerJumpState::Update()
 {
-
     // 速度変えるため
-    Vector3 accele = {0.0f, -500.0f, 0.0f};
+    Vector3 accele = {0.0f, -200.0f, 0.0f};
 
     accele *= g_gameTime->GetFrameDeltaTime();
 
-    Vector3 jump = m_player->GetJumpPower();
     jump += accele;
-
-    m_player->SetJumpPower(jump);
 
     Vector3 jumpPos = m_player->GetCharCon()->Execute(jump, g_gameTime->GetFrameDeltaTime());
 
     if (m_player->GetCharCon()->IsOnGround() == true)
     {
         jump = Vector3::Zero;
-        m_player->SetJumpPower(jump);
     }
 
     m_player->SetPosition(jumpPos);
@@ -274,21 +270,18 @@ bool PlayerJumpState::RequestState(uint32_t& request)
 {
     if (!m_player->GetModel()->IsPlayingAnimation())
     {
-        request = PlayerIdleState::ID();
-        return true;
-
         if (m_player->GetCharCon()->IsOnGround() == true)
         {
-            Vector3 jump = Vector3::Zero;
-            m_player->SetJumpPower(jump);
+            request = PlayerIdleState::ID();
+            return true;
         }
     }
 
-    if (m_player->IsAttack())
+    /*if (m_player->IsAttack())
     {
         request = PlayerAttackState::ID();
         return true;
-    }
+    }*/
 
     if (m_player->IsDamage())
     {

@@ -275,7 +275,7 @@ private:
     Vector3 moveDirection;                   // 移動方向
     Vector3 m_position;                      // 位置
     Vector3 m_addForce = Vector3::Zero;      // 外部から加えられる力
-    Vector3 m_jumpPower{0.0f, 500.0f, 0.0f}; // ジャンプ力
+    Vector3 m_jumpPower{0.0f, 200.0f, 0.0f}; // ジャンプ力
     Vector3 m_gravity{0.0f, 150.0f, 0.0f};   //重力
     Vector3 m_moveSpeed; 
     Quaternion m_rotation;                   // 向き
