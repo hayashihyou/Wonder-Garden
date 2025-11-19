@@ -133,7 +133,7 @@ class PlayerJumpState : public IPlayerState
     appState(PlayerJumpState);
 
 private:
-    Vector3 jump;
+    float m_jump = 0.0f;
 
 public:
     PlayerJumpState(Player* player) : IPlayerState(player){};
