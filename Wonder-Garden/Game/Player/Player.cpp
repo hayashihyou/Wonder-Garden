@@ -10,6 +10,8 @@ namespace
     const Vector3 COLPOS_Y = {0.0f, 30.0f, 0.0f};
     const float INVINCIBLE_TIME = 3.0f;
     const float INVINCIBLE_FLASH_TIME = 0.2f;
+    const float MOVESPEED = 3.0f;
+    const float JUMPPOWER = 10.0f;
 } // namespace
 
 bool Player::Start()
@@ -34,6 +36,10 @@ bool Player::Start()
     m_playerModel.Init("Assets/modelData/player/player.tkm", m_animationClips, enAnimationClip_Num);
 
     // m_position = {-1952.0f, 103.0f, 2418.0f};
+    m_position = Vector3::Zero;
+    moveDirection = Vector3::Zero;
+    m_moveSpeed = MOVESPEED;
+    m_jumpPower = JUMPPOWER;
 
     // ステートパターンのステートとIDの
     m_playerStatePattern->RegisterState<PlayerIdleState>(this);
@@ -67,11 +73,9 @@ void Player::Update()
     m_isJump = g_pad[0]->IsTrigger(enButtonA);
     m_isRun = g_pad[0]->IsPress(enButtonX);
 
-    m_transform.m_position = m_position;
-    m_transform.m_localRotation = m_rotation;
 
+   
     Attack();
-    Rotation();
     CheckInvincible();
     m_playerStatePattern->Update();
 

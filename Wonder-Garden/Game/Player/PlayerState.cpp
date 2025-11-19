@@ -4,6 +4,32 @@
 #include "Player.h"
 #include "PlayerState.h"
 
+
+namespace
+{
+    /// <summary>
+    /// 移動方向を取得
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <returns></returns>
+    Vector3 GetStickL(const Vector3& direction)
+    {
+        Vector3 forward = g_camera3D->GetForward();
+        Vector3 right = g_camera3D->GetRight();
+
+        forward.y = 0.0f;
+        right.y = 0.0f;
+
+        right *= direction.x;
+        forward *= direction.z;
+
+        Vector3 retDirection = right + forward;
+        retDirection.Normalize();
+        return retDirection;
+    }
+}
+
+
 PlayerStatePattern::PlayerStatePattern() : StatePatternBase() {}
 
 PlayerStatePattern::~PlayerStatePattern() {}
@@ -75,38 +101,18 @@ void PlayerWalkState::Enter()
 
 void PlayerWalkState::Update()
 {
-    Vector3 moveSpeed;
+    const Vector3& moveDirection = GetStickL(m_player->GetMoveDir());
+    Vector3 move = moveDirection * m_player->GetMoveSpeed();
 
-    moveSpeed.x = 0.0f;
-    moveSpeed.z = 0.0f;
-
-    Vector3 moveDirection;
-    moveDirection.x = g_pad[0]->GetLStickXF();
-    moveDirection.z = g_pad[0]->GetLStickYF();
-
-    // カメラの前方向と右方向のベクトルを持ってくる
-    Vector3 forward = g_camera3D->GetForward();
-    Vector3 right = g_camera3D->GetRight();
-
-    // y方向には移動させない
-    forward.y = 0.0f;
-    right.y = 0.0f;
-
-    right *= moveDirection.x * 300.0f;
-    forward *= moveDirection.z * 300.0f;
-
-    moveSpeed += right + forward;
-
-    Vector3 nextPosition = m_player->GetCharCon()->Execute(moveSpeed, 1.0f / 60.0f);
-
+    const Vector3 nextPosition = m_player->GetCharCon()->Execute(move, 1.0f);
     if (fabs(moveDirection.x) >= 0.001f || fabs(moveDirection.z) >= 0.001f)
     {
-        Vector3 moveDirectionTemp = moveSpeed;
+        Vector3 moveDirectionTemp = move;
         moveDirectionTemp.Normalize();
         m_player->UpdateRotationY(moveDirectionTemp);
     }
+
     m_player->SetPosition(nextPosition);
-    m_player->SetMoveSpeed(moveSpeed);
 }
 
 void PlayerWalkState::Exit() {}
@@ -161,36 +167,17 @@ void PlayerRunState::Enter()
 
 void PlayerRunState::Update()
 {
-    Vector3 moveSpeed;
+    const Vector3& moveDirection = GetStickL(m_player->GetMoveDir());
+    Vector3 move = moveDirection * m_player->GetMoveSpeed() * 1.5f;
 
-    moveSpeed.x = 0.0f;
-    moveSpeed.z = 0.0f;
-
-    Vector3 moveDirection;
-    moveDirection.x = g_pad[0]->GetLStickXF();
-    moveDirection.z = g_pad[0]->GetLStickYF();
-
-    // カメラの前方向と右方向のベクトルを持ってくる
-    Vector3 forward = g_camera3D->GetForward();
-    Vector3 right = g_camera3D->GetRight();
-
-    // y方向には移動させない
-    forward.y = 0.0f;
-    right.y = 0.0f;
-
-    right *= moveDirection.x * 500.0f;
-    forward *= moveDirection.z * 500.0f;
-
-    moveSpeed += right + forward;
-
-    Vector3 nextPosition = m_player->GetCharCon()->Execute(moveSpeed, 1.0f / 60.0f);
-
+    const Vector3 nextPosition = m_player->GetCharCon()->Execute(move, 1.0f);
     if (fabs(moveDirection.x) >= 0.001f || fabs(moveDirection.z) >= 0.001f)
     {
-        Vector3 moveDirectionTemp = moveSpeed;
+        Vector3 moveDirectionTemp = move;
         moveDirectionTemp.Normalize();
         m_player->UpdateRotationY(moveDirectionTemp);
     }
+
     m_player->SetPosition(nextPosition);
 }
 
@@ -238,30 +225,41 @@ bool PlayerRunState::RequestState(uint32_t& request)
     return false;
 }
 
+namespace
+{
+    const float GRAVITY = 0.98f;
+}
+
 void PlayerJumpState::Enter()
 {
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Jump);
-    jump = m_player->GetJumpPower();
+    m_jump = m_player->GetJumpPower();
 }
 
-// TODO:重力がうまくいってないから後で聞こう
+// TODO: 移動入力した時にジャンプが前後左右動くことができない
 void PlayerJumpState::Update()
 {
-    // 速度変えるため
-    Vector3 accele = {0.0f, -200.0f, 0.0f};
+    const Vector3& moveDirection = GetStickL(m_player->GetMoveDir());
+    Vector3 move = moveDirection * m_player->GetMoveSpeed();
 
-    accele *= g_gameTime->GetFrameDeltaTime();
+    // 上方向の移動を計算
+    m_jump -= GRAVITY; // 重力の影響（簡易的に固定値で減速）
+    move.y = m_jump;
 
-    jump += accele;
+    move.y = max(move.y, 0.0f); // 地面より下に行かないようにする
 
-    Vector3 jumpPos = m_player->GetCharCon()->Execute(jump, g_gameTime->GetFrameDeltaTime());
+    Vector3 nextPosition = m_player->GetCharCon()->Execute(move, 1.0f);
 
-    if (m_player->GetCharCon()->IsOnGround() == true)
+    if (fabs(moveDirection.x) >= 0.001f || fabs(moveDirection.z) >= 0.001f)
     {
-        jump = Vector3::Zero;
+        Vector3 moveDirectionTemp = move;
+        moveDirectionTemp.Normalize();
+        m_player->UpdateRotationY(moveDirectionTemp);
     }
 
-    m_player->SetPosition(jumpPos);
+     nextPosition.y = max(move.y, 0.0f); // 地面より下に行かないようにする
+
+    m_player->SetPosition(nextPosition);
 }
 
 void PlayerJumpState::Exit() {}
@@ -270,18 +268,10 @@ bool PlayerJumpState::RequestState(uint32_t& request)
 {
     if (!m_player->GetModel()->IsPlayingAnimation())
     {
-        if (m_player->GetCharCon()->IsOnGround() == true)
-        {
-            request = PlayerIdleState::ID();
-            return true;
-        }
-    }
 
-    /*if (m_player->IsAttack())
-    {
-        request = PlayerAttackState::ID();
+        request = PlayerIdleState::ID();
         return true;
-    }*/
+    }
 
     if (m_player->IsDamage())
     {
@@ -336,8 +326,7 @@ void PlayerAttackState::MakeAttackCollision()
 {
     // 攻撃用の当たり判定を作成
     m_player->SetCollision(NewGO<AttackCollision>(0, "AttackCollision"));
-    m_player->GetCollision()->InitTransform(m_player->GetPosition(), m_player->GetMoveSpeed(),
-                                            *m_player->GetTransform());
+    m_player->GetCollision()->InitTransform(m_player->GetPosition(), m_player->GetMoveDir(), *m_player->GetTransform());
     m_player->GetCollision()->CreateCollision();
     m_player->GetCollision()->Update();
 }

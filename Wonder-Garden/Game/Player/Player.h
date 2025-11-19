@@ -46,7 +46,7 @@ public:
     /// プレイヤーの座標の保持
     /// </summary>
     /// <param name="position"></param>
-    void SetPosition(Vector3& position) { m_position = position; }
+    void SetPosition(const Vector3& position) { m_position = position; }
 
     /// <summary>
     /// プレイヤーの攻撃状態を保持
@@ -84,13 +84,13 @@ public:
     /// <param name="stopmove"></param>
     void SetStopMove(bool stopmove) { m_isStopMove = stopmove; }
 
-    void SetJumpPower(Vector3& jump) { m_jumpPower = jump; }
+    void SetJumpPower(float jump) { m_jumpPower = jump; }
 
     void SetInvisTimer(float time) { m_invincibleTimer = time; }
 
     void SetCollision(AttackCollision* collision) { m_punchCollision = collision; }
 
-    void SetMoveSpeed(Vector3 movespeed) { m_moveSpeed = movespeed; }
+    void SetMoveSpeed(float movespeed) { m_moveSpeed = movespeed; }
 
 public:
     /// <summary>
@@ -127,12 +127,6 @@ public:
     Vector3 GetPosition() { return m_position; }
 
     /// <summary>
-    /// プレイヤーのジャンプ力を取得
-    /// </summary>
-    /// <returns></returns>
-    Vector3 GetJumpPower() { return m_jumpPower; }
-
-    /// <summary>
     /// プレイヤーの重力の取得
     /// </summary>
     /// <returns></returns>
@@ -144,20 +138,27 @@ public:
     /// <returns></returns>
     Quaternion GetRotation() { return m_rotation; }
 
-    void UpdateRotationY(const Vector3& direction)
-    {
-        m_rotation.SetRotationYFromDirectionXZ(direction);
-    }
+    void UpdateRotationY(const Vector3& direction) { m_rotation.SetRotationYFromDirectionXZ(direction); }
 
     float GetInvisTimer() { return m_invincibleTimer; }
+
+    /// <summary>
+    /// 移動速度の取得
+    /// </summary>
+    /// <returns></returns>
+    float GetMoveSpeed() { return m_moveSpeed; }
+
+     /// <summary>
+    /// プレイヤーのジャンプ力を取得
+    /// </summary>
+    /// <returns></returns>
+    float GetJumpPower() { return m_jumpPower; }
 
     /// <summary>
     /// 外部からの力を取得
     /// </summary>
     /// <returns></returns>
     Vector3 GetForce() { return m_addForce; }
-
-    Vector3 GetMoveSpeed() { return m_moveSpeed; }
 
     /// <summary>
     /// 現在のHPを取得
@@ -189,13 +190,11 @@ public:
     /// <returns></returns>
     bool IsAttack() { return m_isAttack; }
 
-
     /// <summary>
     /// ダメージを受けたか確認
     /// </summary>
     /// <returns></returns>
     bool IsDamage() { return m_isDamage; }
-
 
     /// <summary>
     /// 死亡したか確認
@@ -271,19 +270,17 @@ private:
     PlayerStatePattern* m_playerStatePattern;
 
 private:
-    float moveSpeed;                          // 移動速度
-    Vector3 moveDirection;                   // 移動方向
-    Vector3 m_position;                      // 位置
-    Vector3 m_addForce = Vector3::Zero;      // 外部から加えられる力
-    Vector3 m_jumpPower{0.0f, 200.0f, 0.0f}; // ジャンプ力
-    Vector3 m_gravity{0.0f, 150.0f, 0.0f};   //重力
-    Vector3 m_moveSpeed; 
-    Quaternion m_rotation;                   // 向き
-    const Vector3 m_atkCol = {0, 30, 50}; // 攻撃した時の当たり判定の位置
+    float m_moveSpeed;                     // 移動速度
+    float m_jumpPower;                     // ジャンプ力
+    Vector3 moveDirection;                 // 移動方向
+    Vector3 m_position;                    // 位置
+    Vector3 m_addForce;                    // 外部から加えられる力
+    Vector3 m_gravity{0.0f, 150.0f, 0.0f}; // 重力
+    Quaternion m_rotation;                 // 向き
 
-    int m_atk = 2;       // 攻撃力
-    int hp = 8;          // 体力
-    int maxHp = 8;       // 最大体力
+    int m_atk = 2; // 攻撃力
+    int hp = 8;    // 体力
+    int maxHp = 8; // 最大体力
 
     float m_drawTimer = 0;          // 点滅表示する為のタイマー
     float m_invincibleTimer = 0.0f; // 無敵時間
