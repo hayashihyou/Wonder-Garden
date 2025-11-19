@@ -132,6 +132,9 @@ class PlayerJumpState : public IPlayerState
 {
     appState(PlayerJumpState);
 
+private:
+    Vector3 jump;
+
 public:
     PlayerJumpState(Player* player) : IPlayerState(player){};
     virtual ~PlayerJumpState(){};
