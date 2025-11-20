@@ -11,7 +11,7 @@ namespace
     const float INVINCIBLE_TIME = 3.0f;
     const float INVINCIBLE_FLASH_TIME = 0.2f;
     const float MOVESPEED = 3.0f;
-    const float JUMPPOWER = 10.0f;
+    const float JUMPPOWER = 15.0f;
 } // namespace
 
 bool Player::Start()
@@ -37,7 +37,7 @@ bool Player::Start()
 
     // m_position = {-1952.0f, 103.0f, 2418.0f};
     m_position = Vector3::Zero;
-    moveDirection = Vector3::Zero;
+    m_moveDirection = Vector3::Zero;
     m_moveSpeed = MOVESPEED;
     m_jumpPower = JUMPPOWER;
 
@@ -67,13 +67,14 @@ void Player::Update()
         m_invincibleTimer -= g_gameTime->GetFrameDeltaTime();
     }
 
-    moveDirection.x = g_pad[0]->GetLStickXF();
-    moveDirection.z = g_pad[0]->GetLStickYF();
+    m_moveDirection.x = g_pad[0]->GetLStickXF();
+    m_moveDirection.z = g_pad[0]->GetLStickYF();
 
     m_isJump = g_pad[0]->IsTrigger(enButtonA);
     m_isRun = g_pad[0]->IsPress(enButtonX);
 
-
+    m_transform.m_localPosition = m_position;
+    m_transform.m_localRotation = m_rotation;
    
     Attack();
     CheckInvincible();

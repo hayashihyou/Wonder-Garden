@@ -4,7 +4,6 @@
 #include "Player.h"
 #include "PlayerState.h"
 
-
 namespace
 {
     /// <summary>
@@ -27,8 +26,10 @@ namespace
         retDirection.Normalize();
         return retDirection;
     }
-}
 
+    const float GRAVITY = 0.98f;
+    const Vector3 ATK_POSITION = {50.0f, 30.0f, 0.0f};
+} // namespace
 
 PlayerStatePattern::PlayerStatePattern() : StatePatternBase() {}
 
@@ -55,7 +56,13 @@ void PlayerIdleState::Enter()
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Idle);
 }
 
-void PlayerIdleState::Update() {}
+void PlayerIdleState::Update()
+{
+    // 待機状態でも重力の影響を受ける
+    Vector3 move = Vector3(0.0f, -GRAVITY, 0.0f);
+    const Vector3 nextPosition = m_player->GetCharCon()->Execute(move, 1.0f);
+    m_player->SetPosition(nextPosition);
+}
 
 void PlayerIdleState::Exit() {}
 
@@ -91,6 +98,12 @@ bool PlayerIdleState::RequestState(uint32_t& request)
         return true;
     }
 
+    if (m_player->IsFire() == true)
+    {
+        request = PlayerFireState::ID();
+        return true;
+    }
+
     return false;
 }
 
@@ -103,6 +116,7 @@ void PlayerWalkState::Update()
 {
     const Vector3& moveDirection = GetStickL(m_player->GetMoveDir());
     Vector3 move = moveDirection * m_player->GetMoveSpeed();
+    move.y -= GRAVITY;
 
     const Vector3 nextPosition = m_player->GetCharCon()->Execute(move, 1.0f);
     if (fabs(moveDirection.x) >= 0.001f || fabs(moveDirection.z) >= 0.001f)
@@ -225,28 +239,20 @@ bool PlayerRunState::RequestState(uint32_t& request)
     return false;
 }
 
-namespace
-{
-    const float GRAVITY = 0.98f;
-}
-
 void PlayerJumpState::Enter()
 {
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Jump);
     m_jump = m_player->GetJumpPower();
 }
 
-// TODO: 移動入力した時にジャンプが前後左右動くことができない
 void PlayerJumpState::Update()
 {
     const Vector3& moveDirection = GetStickL(m_player->GetMoveDir());
     Vector3 move = moveDirection * m_player->GetMoveSpeed();
 
     // 上方向の移動を計算
-    m_jump -= GRAVITY; // 重力の影響（簡易的に固定値で減速）
+    m_jump -= GRAVITY;
     move.y = m_jump;
-
-    move.y = max(move.y, 0.0f); // 地面より下に行かないようにする
 
     Vector3 nextPosition = m_player->GetCharCon()->Execute(move, 1.0f);
 
@@ -257,8 +263,6 @@ void PlayerJumpState::Update()
         m_player->UpdateRotationY(moveDirectionTemp);
     }
 
-     nextPosition.y = max(move.y, 0.0f); // 地面より下に行かないようにする
-
     m_player->SetPosition(nextPosition);
 }
 
@@ -266,23 +270,28 @@ void PlayerJumpState::Exit() {}
 
 bool PlayerJumpState::RequestState(uint32_t& request)
 {
-    if (!m_player->GetModel()->IsPlayingAnimation())
+    if (m_player->GetCharCon()->IsOnGround())
     {
-
         request = PlayerIdleState::ID();
         return true;
     }
 
-    if (m_player->IsDamage())
+    if (m_player->GetCharCon()->IsOnGround())
     {
-        request = PlayerDamageState::ID();
-        return true;
+        if (m_player->IsDamage())
+        {
+            request = PlayerDamageState::ID();
+            return true;
+        }
     }
 
-    if (m_player->IsDead())
+    if (m_player->GetCharCon()->IsOnGround())
     {
-        request = PlayerDeadState::ID();
-        return true;
+        if (m_player->IsDead())
+        {
+            request = PlayerDeadState::ID();
+            return true;
+        }
     }
 
     return false;
@@ -326,7 +335,7 @@ void PlayerAttackState::MakeAttackCollision()
 {
     // 攻撃用の当たり判定を作成
     m_player->SetCollision(NewGO<AttackCollision>(0, "AttackCollision"));
-    m_player->GetCollision()->InitTransform(m_player->GetPosition(), m_player->GetMoveDir(), *m_player->GetTransform());
+    m_player->GetCollision()->InitTransform(ATK_POSITION, GetStickL(m_player->GetMoveDir()), *m_player->GetTransform());
     m_player->GetCollision()->CreateCollision();
     m_player->GetCollision()->Update();
 }
@@ -372,34 +381,38 @@ bool PlayerDeadState::RequestState(uint32_t& request)
     return false;
 }
 
-void PlayerFireState::Enter() {}
+void PlayerFireState::Enter()
+{
+    m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Jump);
+}
 
 void PlayerFireState::Update()
 {
-    //// 外部からの力を適用
-    // if (m_player->GetForce().Length() > 0.0f)
-    //{
-    //     m_player->GetMoveSpeed() += m_player->GetForce();
-    //     m_player->GetForce() *= 0.9f;
+    // 外部からの力を適用
+     if (m_player->GetForce().Length() > 0.0f)
+    {
+         //↓moveSpeedをVector3からfloatにした為エラーが出ている。
+         //m_player->GetMoveSpeed() += m_player->GetForce();
+         m_player->GetForce() *= 0.9f;
 
-    //    // ストップじゃない
-    //    m_player->SetStopMove(false);
+        // ストップじゃない
+        m_player->SetStopMove(false);
 
-    //    if (m_player->GetForce().Length() <= 1.0f)
-    //    {
-    //        m_player->GetForce() = Vector3::Zero;
-    //    }
-    //}
+        if (m_player->GetForce().Length() <= 1.0f)
+        {
+            m_player->GetForce() = Vector3::Zero;
+        }
+    }
 
-    // if (m_player->GetCharCon()->IsOnGround() == true)
-    //{
-    //     m_player->SetFireFlag(false);
-    // }
+     if (m_player->GetCharCon()->IsOnGround() == true)
+    {
+         m_player->SetFireFlag(false);
+     }
 }
 
 void PlayerFireState::Exit()
 {
-    /* m_player->SetAddForce({0.0f,0.0f,0.0f});*/
+    m_player->SetAddForce({0.0f, 0.0f, 0.0f});
 }
 
 bool PlayerFireState::RequestState(uint32_t& request)
