@@ -118,7 +118,7 @@ public:
     /// プレイヤーの移動方向を取得
     /// </summary>
     /// <returns></returns>
-    Vector3 GetMoveDir() { return moveDirection; }
+    Vector3 GetMoveDir() { return m_moveDirection; }
 
     /// <summary>
     /// プレイヤーの位置を取得
@@ -208,6 +208,12 @@ public:
     /// <returns></returns>
     bool IsRun() { return m_isRun; }
 
+
+    /// <summary>
+    /// 大砲が発射したかどうか
+    /// </summary>
+    bool IsFire() { return m_isFire; }
+
 public:
     /// <summary>
     /// 外部からの力を保持す
@@ -272,7 +278,7 @@ private:
 private:
     float m_moveSpeed;                     // 移動速度
     float m_jumpPower;                     // ジャンプ力
-    Vector3 moveDirection;                 // 移動方向
+    Vector3 m_moveDirection;                 // 移動方向
     Vector3 m_position;                    // 位置
     Vector3 m_addForce;                    // 外部から加えられる力
     Vector3 m_gravity{0.0f, 150.0f, 0.0f}; // 重力
