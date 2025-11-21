@@ -49,6 +49,7 @@ bool Player::Start()
     m_playerStatePattern->RegisterState<PlayerAttackState>(this);
     m_playerStatePattern->RegisterState<PlayerDamageState>(this);
     m_playerStatePattern->RegisterState<PlayerDeadState>(this);
+    m_playerStatePattern->RegisterState<PlayerCannonState>(this);
     m_playerStatePattern->RegisterState<PlayerFireState>(this);
 
     // 最初はIdle(待機)状態から始まるので

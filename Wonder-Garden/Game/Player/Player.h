@@ -92,6 +92,11 @@ public:
 
     void SetMoveSpeed(float movespeed) { m_moveSpeed = movespeed; }
 
+    /// <summary>
+    /// 大砲の中に入った時のフラグ
+    /// </summary>
+    void SetCannonFlag(bool cannonReady) { m_isCannonReady = cannonReady; }
+
 public:
     /// <summary>
     /// モデルを取得
@@ -214,6 +219,10 @@ public:
     /// </summary>
     bool IsFire() { return m_isFire; }
 
+
+    bool IsCannon() { return m_isCannonReady; }
+
+
 public:
     /// <summary>
     /// 外部からの力を保持す
@@ -301,4 +310,5 @@ private:
     bool m_isFire = false;
     bool m_isJump = false;
     bool m_isRun = false;
+    bool m_isCannonReady = false;
 };

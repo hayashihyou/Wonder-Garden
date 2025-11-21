@@ -193,6 +193,20 @@ public:
     virtual bool RequestState(uint32_t& request) override;
 };
 
+class PlayerCannonState : public IPlayerState
+{
+    appState(PlayerCannonState);
+
+public:
+    PlayerCannonState(Player* player) : IPlayerState(player){};
+    virtual ~PlayerCannonState(){};
+    void Enter() override;
+    void Update() override;
+    void Exit() override;
+
+    virtual bool RequestState(uint32_t& request) override;
+};
+
 class PlayerFireState : public IPlayerState
 {
     appState(PlayerFireState);

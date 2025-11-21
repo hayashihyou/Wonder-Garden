@@ -98,9 +98,12 @@ bool PlayerIdleState::RequestState(uint32_t& request)
         return true;
     }
 
-    if (m_player->IsFire() == true)
+
+    if (m_player->IsCannon() == true)
     {
-        request = PlayerFireState::ID();
+        request = PlayerCannonState::ID();
+=======
+   
         return true;
     }
 
@@ -381,6 +384,29 @@ bool PlayerDeadState::RequestState(uint32_t& request)
     return false;
 }
 
+
+void PlayerCannonState::Enter()
+{
+    m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Idle);
+}
+
+void PlayerCannonState::Update() {}
+
+void PlayerCannonState::Exit() {}
+
+bool PlayerCannonState::RequestState(uint32_t& request)
+{
+    if (m_player->IsFire() == true)
+    {
+        request = PlayerFireState::ID();
+        return true;
+    }
+    return false;
+}
+
+
+
+
 void PlayerFireState::Enter()
 {
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Jump);
@@ -391,12 +417,15 @@ void PlayerFireState::Update()
     // 外部からの力を適用
      if (m_player->GetForce().Length() > 0.0f)
     {
-         //↓moveSpeedをVector3からfloatにした為エラーが出ている。
-         //m_player->GetMoveSpeed() += m_player->GetForce();
-         m_player->GetForce() *= 0.9f;
 
-        // ストップじゃない
-        m_player->SetStopMove(false);
+         m_player->SetAddForce(m_player->GetForce() - Vector3(0.0f,GRAVITY,0.0f));
+
+         Vector3 move = m_player->GetForce();
+         
+         Vector3 nextpostion = m_player->GetCharCon()->Execute(move,1.0f);
+
+         m_player->SetPosition(nextpostion);
+        
 
         if (m_player->GetForce().Length() <= 1.0f)
         {
@@ -417,5 +446,10 @@ void PlayerFireState::Exit()
 
 bool PlayerFireState::RequestState(uint32_t& request)
 {
+    if (m_player->GetCharCon()->IsOnGround() == true)
+    {
+        request = PlayerIdleState::ID();
+        return true;
+    }
     return false;
 }
