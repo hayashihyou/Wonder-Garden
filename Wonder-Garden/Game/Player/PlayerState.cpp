@@ -98,9 +98,12 @@ bool PlayerIdleState::RequestState(uint32_t& request)
         return true;
     }
 
+
     if (m_player->IsCannon() == true)
     {
         request = PlayerCannonState::ID();
+=======
+   
         return true;
     }
 
@@ -381,6 +384,7 @@ bool PlayerDeadState::RequestState(uint32_t& request)
     return false;
 }
 
+
 void PlayerCannonState::Enter()
 {
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Idle);
@@ -402,6 +406,7 @@ bool PlayerCannonState::RequestState(uint32_t& request)
 
 
 
+
 void PlayerFireState::Enter()
 {
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Jump);
@@ -412,6 +417,7 @@ void PlayerFireState::Update()
     // 外部からの力を適用
      if (m_player->GetForce().Length() > 0.0f)
     {
+
          m_player->SetAddForce(m_player->GetForce() - Vector3(0.0f,GRAVITY,0.0f));
 
          Vector3 move = m_player->GetForce();
@@ -419,6 +425,7 @@ void PlayerFireState::Update()
          Vector3 nextpostion = m_player->GetCharCon()->Execute(move,1.0f);
 
          m_player->SetPosition(nextpostion);
+        
 
         if (m_player->GetForce().Length() <= 1.0f)
         {

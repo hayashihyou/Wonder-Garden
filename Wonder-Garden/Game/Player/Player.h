@@ -219,7 +219,9 @@ public:
     /// </summary>
     bool IsFire() { return m_isFire; }
 
+
     bool IsCannon() { return m_isCannonReady; }
+
 
 public:
     /// <summary>
