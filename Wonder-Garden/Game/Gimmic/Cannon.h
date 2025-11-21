@@ -57,5 +57,6 @@ private:
     Quaternion modelRot;
     Quaternion rotation;
 
-    bool changeFlag = false;    // 位置の変更をしたか確認するフラグ　されたらtrue。
+    bool changeFlag = false;        // 位置の変更をしたか確認するフラグ　されたらtrue。
+    bool m_isCannonReady = false;   //
 };

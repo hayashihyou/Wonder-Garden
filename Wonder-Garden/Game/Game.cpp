@@ -56,7 +56,7 @@ bool Game::Start()
     m_effectManager = NewGO<EffectManager>(0, "EffectManager");
 
     // コメントアウトする。
-    PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+    //PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
     //エネミーの複数対のモデルを生成
     EnemyManager::GetInstance()->Setup();
