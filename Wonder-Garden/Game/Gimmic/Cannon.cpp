@@ -80,11 +80,11 @@ void Cannon::Fire()
         // ここの方向は大砲の向き
         Vector3 fireDirection = Vector3::Front;
         fireDirection.x = 20.0f;
-        fireDirection.y = 50.0f;
+        fireDirection.y = 15.0f;
         fireDirection.Normalize();
 
         // 大砲の威力
-        fireDirection *= 100.0f; // ここの数値を定数にして調整して
+        fireDirection *= 65.0f; // ここの数値を定数にして調整して
 
         m_player->SetAddForce(fireDirection);
     }

@@ -102,8 +102,6 @@ bool PlayerIdleState::RequestState(uint32_t& request)
     if (m_player->IsCannon() == true)
     {
         request = PlayerCannonState::ID();
-=======
-   
         return true;
     }
 
@@ -416,7 +414,7 @@ void PlayerFireState::Update()
 {
     // 外部からの力を適用
      if (m_player->GetForce().Length() > 0.0f)
-    {
+     {
 
          m_player->SetAddForce(m_player->GetForce() - Vector3(0.0f,GRAVITY,0.0f));
 
@@ -431,10 +429,10 @@ void PlayerFireState::Update()
         {
             m_player->GetForce() = Vector3::Zero;
         }
-    }
+     }
 
      if (m_player->GetCharCon()->IsOnGround() == true)
-    {
+     {
          m_player->SetFireFlag(false);
      }
 }
