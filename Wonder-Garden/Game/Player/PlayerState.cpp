@@ -446,6 +446,7 @@ bool PlayerFireState::RequestState(uint32_t& request)
 {
     if (m_player->GetCharCon()->IsOnGround() == true)
     {
+        m_player->SetCannonFlag(false);
         request = PlayerIdleState::ID();
         return true;
     }
