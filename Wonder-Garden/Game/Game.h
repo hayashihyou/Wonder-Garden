@@ -75,5 +75,6 @@ private:
     Warp* m_warp = nullptr;
     Cannon* m_cannon = nullptr;
     EffectManager* m_effectManager = nullptr;
+    LevelRender m_levelRender;
 };
 

@@ -55,8 +55,19 @@ bool Game::Start()
     m_cannon = NewGO<Cannon>(0, "Cannon");
     m_effectManager = NewGO<EffectManager>(0, "EffectManager");
 
+    m_levelRender.Init("Assets/stage/stage.tkl",[&](LevelObjectData& objData)
+    {
+        if (objData.EqualObjectName(L"Slime") == true)
+        {
+            m_enemy = NewGO<Enemy>(0, "Enemy");
+            m_enemy->SetPosition(objData.position);
+            return true;
+        }
+        return true;
+    });
+
     // コメントアウトする。
-    PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+    //PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
     //エネミーの複数対のモデルを生成
     EnemyManager::GetInstance()->Setup();

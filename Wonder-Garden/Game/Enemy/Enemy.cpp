@@ -21,6 +21,8 @@ Enemy::~Enemy()
 
 bool Enemy::Start()
 {
+    m_enemyStatePattern = new EnemyStatePattern;
+
     m_animationClips[enAnimationClip_Idle].Load("Assets/animData/enemy/slime/slime_Idle.tka");
     m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
     m_animationClips[enAnimationClip_Attack].Load("Assets/animData/enemy/slime/slime_Attack.tka");
@@ -31,31 +33,32 @@ bool Enemy::Start()
     m_animationClips[enAnimationClip_AttackDead].SetLoopFlag(false);
 
     m_enemyModel.Init("Assets/modelData/enemy/slime/slime.tkm", m_animationClips, enAnimationClip_Num);
-    m_colPos = m_pos + COLPOS_Y;
 
-    m_colJumpPos = m_pos + COLJUMPPOS_Y;
 
-    m_enemyModel.SetPosition(m_pos);
-    m_enemyModel.SetRotation(m_rot);
+     // ステートパターンのステートとIDの登録
+    m_enemyStatePattern->RegisterState<EnemyIdleState>(this);
+    m_enemyStatePattern->RegisterState<EnemyMoveState>(this);
+    m_enemyStatePattern->RegisterState<EnemyAttackState>(this);
+    m_enemyStatePattern->RegisterState<EnemyJumpDeadState>(this);
+    m_enemyStatePattern->RegisterState<EnemyAttackDeadState>(this);
+
+    m_enemyStatePattern->InitializeState<EnemyIdleState>();
+
+
+    m_colPos = m_position + COLPOS_Y;
+    m_colJumpPos = m_position + COLJUMPPOS_Y;
+    m_enemyModel.SetPosition(m_position);
+    m_enemyModel.SetRotation(m_rotation);
     m_enemyModel.Update();
 
+
     enemyCollisionObject = NewGO<CollisionObject>(0);
-    enemyCollisionObject->CreateSphere(m_colPos, m_rot, 40.0f);
+    enemyCollisionObject->CreateSphere(m_colPos, m_rotation, 40.0f);
     enemyCollisionObject->SetIsEnableAutoDelete(false);
     enemyJumpCollision = NewGO<CollisionObject>(0);
-    enemyJumpCollision->CreateSphere(m_colJumpPos, m_rot, 25.0f);
+    enemyJumpCollision->CreateSphere(m_colJumpPos, m_rotation, 25.0f);
     enemyJumpCollision->SetIsEnableAutoDelete(false);
 
-    m_stateList[enEnemyState_Idle] = new EnemyIdleState;
-    m_stateList[enEnemyState_Idle]->SetOwner(this);
-    m_stateList[enEnemyState_Attack] = new EnemyAttackState;
-    m_stateList[enEnemyState_Attack]->SetOwner(this);
-    m_stateList[enEnemyState_JumpDead] = new EnemyJumpDeadState;
-    m_stateList[enEnemyState_JumpDead]->SetOwner(this);
-    m_stateList[enEnemyState_AttackDead] = new EnemyAttackDeadState;
-    m_stateList[enEnemyState_AttackDead]->SetOwner(this);
-
-    m_currentState = m_stateList[enEnemyState_Idle];
 
     return true;
 }
@@ -67,17 +70,9 @@ void Enemy::Update()
         m_player = FindGO<Player>("Player");
     }
 
-    ManagerState();
-
     Move();
 
     Rotation();
-
-    UpdateChangeState();
-
-    m_attackCoolTimer -= g_gameTime->GetFrameDeltaTime();
-    if (m_attackCoolTimer <= 0.0f)
-        m_attackCoolTimer = 0.0f;
 
     m_enemyModel.Update();
 }
@@ -103,10 +98,10 @@ void Enemy::Attack()
 
 void Enemy::MakeAttackCollision()
 {
-    enemyAttack = NewGO<AttackCollision>(0, "AttackCollision");
-    enemyAttack->InitTransform(m_pos, attackCol , m_transform);
+   /* enemyAttack = NewGO<AttackCollision>(0, "AttackCollision");
+    enemyAttack->InitTransform(m_position, attackCol , m_transform);
     enemyAttack->CreateCollision();
-    enemyAttack->Update();
+    enemyAttack->Update();*/
 }
 
 void Enemy::SetAttackFlag(bool attack)
@@ -121,138 +116,45 @@ void Enemy::SetDeadFlag(bool dead)
 
 void Enemy::Move()
 {
-    if (isStopMove)return;
-    toPlayer = m_player->GetPosition() - m_pos;
+    m_toPlayer = m_player->GetPosition() - m_position;
 
-    disToPlayer = toPlayer.Length();
+    m_disToPlayer = m_toPlayer.Length();
 
-    if (disToPlayer < 200)
+    if (m_disToPlayer < 200)
     {
-        toPlayerDir = toPlayer;
+        toPlayerDir = m_toPlayer;
         toPlayerDir.Normalize();
 
-        m_pos += toPlayerDir * 1.0f;
-        m_transform.m_localPosition = m_pos;
+        m_position += toPlayerDir * 1.0f;
+        m_transform.m_localPosition = m_position;
 
         if (m_player->enPlayerState_Jump)
         {
-            m_pos.y = 0;
+            m_position.y = 0;
         }
     }
 
-    if (disToPlayer < 100)
+    if (m_disToPlayer < 100)
     {
         isAttack = true;
     }
 
-    m_colPos = m_pos + COLPOS_Y;
-    m_colJumpPos = m_pos + COLJUMPPOS_Y;
+    m_colPos = m_position + COLPOS_Y;
+    m_colJumpPos = m_position + COLJUMPPOS_Y;
 
     enemyCollisionObject->SetPosition(m_colPos);
     enemyJumpCollision->SetPosition(m_colJumpPos);
-    m_enemyModel.SetPosition(m_pos);
+    m_enemyModel.SetPosition(m_position);
     
 }
 
 void Enemy::Rotation()
 {
-    m_rot.SetRotationYFromDirectionXZ(toPlayerDir);
-    m_transform.m_localRotation = m_rot;
-    m_enemyModel.SetRotation(m_rot);
+    m_rotation.SetRotationYFromDirectionXZ(toPlayerDir);
+    m_transform.m_localRotation = m_rotation;
+    m_enemyModel.SetRotation(m_rotation);
 }
 
-void Enemy::ManagerState()
-{
-    // 優先順位
-    enum
-    {
-        PRI_NONE,
-        PRI_IDLE,
-        PRI_ATTACK,
-        PRI_JUMPDEAD,
-        PRI_ATTACKDEAD,
-    };
-
-    // 優先順位の高いものを入れる変数
-    int bestPri = PRI_NONE;
-    // 優先するステート
-    EnEnemyState bestState = enEnemyState_Idle;
-
-    // 状態を考慮するラムダ式
-    auto considerState = [&](int pri, EnEnemyState state)
-    {
-        // 優先順位が一番高いものを採用する
-        if (bestPri < pri)
-        {
-            bestPri = pri;
-            bestState = state;
-        }
-    };
-
-    if (isDead == true)
-    {
-        isDead = false;
-
-        if (m_deadReason == enDeadReason_Punch)
-        {
-            considerState(PRI_ATTACKDEAD, enEnemyState_AttackDead);
-            m_currentState = m_stateList[enEnemyState_AttackDead];
-            bestState = enEnemyState_AttackDead;
-            isStopMove = true;
-        }
-        if (m_deadReason ==enDeadReason_Jump)
-        {
-            considerState(PRI_JUMPDEAD, enEnemyState_JumpDead);
-            m_currentState = m_stateList[enEnemyState_JumpDead];
-            bestState = enEnemyState_JumpDead;
-            isStopMove = true;
-        }
-    }
-
-    if (isAttack == true)
-    {
-        considerState(PRI_ATTACK, enEnemyState_Attack);
-        Attack();
-        isStopMove = true;
-    }
-
-    m_currentState = m_stateList[bestState];
-}
-
-void Enemy::UpdateChangeState()
-{
-    IEnemyState* nextState = nullptr;
-
-    if (m_currentState == m_stateList[0])
-    {
-        nextState = m_stateList[enEnemyState_Idle];
-    }
-
-    if (m_currentState == m_stateList[1])
-    {
-        nextState = m_stateList[enEnemyState_Attack];
-    }
-
-    if (m_currentState == m_stateList[2])
-    {
-        nextState = m_stateList[enEnemyState_JumpDead];
-    }
-
-    if (m_currentState == m_stateList[3])
-    {
-        nextState = m_stateList[enEnemyState_AttackDead];
-    }
-
-    // 状態切り替わり処理
-    if (nextState != nullptr)
-    {
-        m_currentState->Exit();
-        m_currentState = nextState;
-        m_currentState->Enter();
-    }
-
-    m_currentState->Update();
-}
 
 void Enemy::Render(RenderContext& rc)
 {
