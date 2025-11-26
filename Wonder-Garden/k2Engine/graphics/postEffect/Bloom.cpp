@@ -78,7 +78,8 @@ namespace nsK2Engine {
     }
     void Bloom::OnRender(RenderContext& rc, RenderTarget& mainRenderTarget)
     {
-        m_samplingLuminanceCB1.isTonemap = g_renderingEngine->IsEnableTonemap() ? 1 : 0;
+        //NOTE: トーンマッピングを入れるとスカイキューブで輝度が高くなりすぎてしまうため向こうにしている。
+        //m_samplingLuminanceCB1.isTonemap = g_renderingEngine->IsEnableTonemap() ? 1 : 0;
         m_samplingLuminanceCB1.middlegray = g_renderingEngine->GetSceneMiddleGray();
         g_graphicsEngine->BeginGPUEvent("Bloom");
         // 輝度抽出
