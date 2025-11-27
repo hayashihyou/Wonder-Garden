@@ -243,6 +243,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player\Player.cpp" />
     <ClCompile Include="Player\PlayerState.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Star.cpp" />
     <ClCompile Include="StarCounter.cpp" />
@@ -277,6 +278,7 @@
     <ClInclude Include="Gimmic\Cannon.h" />
     <ClInclude Include="Player\Player.h" />
     <ClInclude Include="Player\PlayerState.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Star.h" />
     <ClInclude Include="StarCounter.h" />

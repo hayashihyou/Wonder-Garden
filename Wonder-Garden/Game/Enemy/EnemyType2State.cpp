@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "EnemyType2State.h"
 #include "EnemyType2.h"
+#include "SoundManager.h"
 
 void EnemyType2IdleState::Enter()
 {
@@ -19,6 +20,9 @@ void EnemyType2AttackState::Enter()
 {
 	m_enemyType2->m_enemyType2Model.PlayAnimation(m_enemyType2->enAnimationClip_Attack);
 	m_enemyType2->SetAttack(true);
+
+    // 攻撃音再生
+    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyAttackSE);
 }
 
 void EnemyType2AttackState::Update()
@@ -35,6 +39,9 @@ void EnemyType2AttackState::Exit()
 
 void EnemyType2AttackDeadState::Enter()
 {
+    // 攻撃音再生
+    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
+
 	m_enemyType2->m_enemyType2Model.PlayAnimation(m_enemyType2->enAnimationClip_AttackDead);
 	m_enemyType2->SetDead(true);
 }
@@ -53,6 +60,9 @@ void EnemyType2AttackDeadState::Exit()
 
 void EnemyType2JumpDeadState::Enter()
 {
+    // 攻撃音再生
+    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
+
 	m_enemyType2->m_enemyType2Model.PlayAnimation(m_enemyType2->enAnimationClip_JumpDead);
 	m_enemyType2->SetDead(true);
 }

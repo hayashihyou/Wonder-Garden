@@ -11,7 +11,7 @@ const Vector3 POS_Y = {0, 35, 0};
 const Vector3 JUMPPOS = {0, 45, 0};
 
 const float ATTACK_COOL_TIME = 1.0f;
-} // namespace
+}
 
 EnemyType2::~EnemyType2()
 {

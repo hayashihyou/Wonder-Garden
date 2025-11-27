@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "BossState.h"
 #include "Boss.h"
+#include "SoundManager.h"
 
 void BossIdleState::Enter()
 {
@@ -21,6 +22,9 @@ void BossAttackState::Enter()
 	m_boss = FindGO<Boss>("Boss");
 	m_boss->m_bossModel.PlayAnimation(m_boss->enAnimationClip_Attack);
 	m_boss->SetAttack(true);
+
+    // 攻撃音再生
+    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyAttackSE);
 }
 
 void BossAttackState::Update()
@@ -46,6 +50,9 @@ void BossDeadState::Update()
 {
 	if (!m_boss->m_bossModel.IsPlayingAnimation())
 	{
+        // 攻撃音再生
+        SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
+
 		DeleteGO(m_boss);
 	}
 }

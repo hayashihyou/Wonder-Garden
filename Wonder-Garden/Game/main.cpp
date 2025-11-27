@@ -6,6 +6,7 @@
 
 #include "Game.h"
 #include "Title.h"
+#include "SoundManager.h"
 
 
 
@@ -36,6 +37,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
 	//Gameクラスのオブジェクトを作成。
 	NewGO<Title>(0, "Title");
+
+    // サウンドマネージャー
+    NewGO<SoundManager>(0);
 
 	//////////////////////////////////////
 	// 初期化を行うコードを書くのはここまで！！！

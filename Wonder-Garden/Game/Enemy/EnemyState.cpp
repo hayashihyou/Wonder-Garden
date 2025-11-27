@@ -2,6 +2,7 @@
 #include "EnemyState.h"
 #include "Enemy.h"
 #include "Player/Player.h"
+#include "SoundManager.h"
 
 namespace
 {
@@ -71,6 +72,9 @@ void EnemyAttackState::Enter()
 {
 	m_enemy->m_enemyModel.PlayAnimation(m_enemy->enAnimationClip_Attack);
 	m_enemy->SetAttackFlag(true);
+
+    // 攻撃音再生
+    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyAttackSE);
 }
 
 void EnemyAttackState::Update()
@@ -94,6 +98,9 @@ bool EnemyAttackState::RequestState(uint32_t& request)
 
 void EnemyJumpDeadState::Enter()
 {
+    // 攻撃音再生
+    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
+
 	m_enemy->m_enemyModel.PlayAnimation(m_enemy->enAnimationClip_JumpDead);
 	m_enemy->SetDeadFlag(true);
 }
@@ -128,6 +135,9 @@ void EnemyAttackDeadState::Update()
 {
 	if (!m_enemy->m_enemyModel.IsPlayingAnimation())
 	{
+        // 攻撃音再生
+        SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
+
 		m_enemy->isStopMove = false;
 		DeleteGO(m_enemy);
 

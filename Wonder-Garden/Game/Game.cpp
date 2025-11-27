@@ -19,6 +19,7 @@
 #include "Gimmic/Warp.h"
 #include "Gimmic/Cannon.h"
 #include "EffectManager.h"
+#include "SoundManager.h"
 
 Game::Game(){
 
@@ -43,6 +44,9 @@ Game::~Game()
 
 bool Game::Start()
 {
+    // サウンドマネージャーのインスタンスを取得し、BGMを再生
+    SoundManager::GetInstance().PlayBGM(SoundManager::SoundNumber::InGameBGM);
+
     m_player = NewGO<Player>(0, "Player");
     EnemyManager::CreateInstance();
     m_boss = NewGO<Boss>(0, "Boss");

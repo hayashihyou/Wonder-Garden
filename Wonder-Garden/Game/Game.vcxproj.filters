@@ -76,6 +76,7 @@
     </ClCompile>
     <ClCompile Include="testIState.cpp" />
     <ClCompile Include="EffectManager.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -132,5 +133,6 @@
     </ClInclude>
     <ClInclude Include="testIState.h" />
     <ClInclude Include="EffectManager.h" />
+    <ClInclude Include="SoundManager.h" />
   </ItemGroup>
 </Project>

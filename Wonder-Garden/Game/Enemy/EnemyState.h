@@ -77,7 +77,6 @@ public:
     {
         // TのID()をキーにして、stateMap_からステートを探し、m_currentStateに設定する
         m_currentState = FindState(T::ID());
-        m_currentState->Enter();
     }
 };
 
