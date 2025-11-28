@@ -226,6 +226,8 @@
   <ItemGroup>
     <ClCompile Include="AttackCollision.cpp" />
     <ClCompile Include="CharacterBase.cpp" />
+    <ClCompile Include="Coin.cpp" />
+    <ClCompile Include="CoinCount.cpp" />
     <ClCompile Include="Collision\CollisionManager.cpp" />
     <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="EnemyManager.cpp" />
@@ -243,6 +245,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player\Player.cpp" />
     <ClCompile Include="Player\PlayerState.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="Star.cpp" />
     <ClCompile Include="StarCounter.cpp" />
@@ -255,12 +258,15 @@
     <ClCompile Include="testIState.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UI\CoinUI.cpp" />
     <ClCompile Include="UI\HPUI.cpp" />
     <ClCompile Include="Gimmic\Warp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AttackCollision.h" />
     <ClInclude Include="CharacterBase.h" />
+    <ClInclude Include="Coin.h" />
+    <ClInclude Include="CoinCount.h" />
     <ClInclude Include="Collision\CollisionManager.h" />
     <ClInclude Include="EffectManager.h" />
     <ClInclude Include="EnemyManager.h" />
@@ -277,6 +283,7 @@
     <ClInclude Include="Gimmic\Cannon.h" />
     <ClInclude Include="Player\Player.h" />
     <ClInclude Include="Player\PlayerState.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="Star.h" />
     <ClInclude Include="StarCounter.h" />
@@ -285,6 +292,7 @@
     <ClInclude Include="testIState.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="UI\CoinUI.h" />
     <ClInclude Include="UI\HPUI.h" />
     <ClInclude Include="Gimmic\Warp.h" />
   </ItemGroup>

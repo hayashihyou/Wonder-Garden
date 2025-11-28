@@ -3,6 +3,10 @@
 #include "Level3DRender/LevelRender.h"
 #include "nature/SkyCube.h"
 
+
+class Coin;
+class CoinCount;
+class CoinUI;
 class Player;
 class IEnemyState;
 class Enemy;
@@ -58,6 +62,9 @@ public:
 	void Render(RenderContext& rc);
 
 private:
+    Coin* m_coin = nullptr;
+    CoinCount* m_coinCount = nullptr;
+    CoinUI* m_coinUI = nullptr;
 	Player* m_player = nullptr;
 	IEnemyState* m_iState = nullptr;
 	Enemy* m_enemy = nullptr;

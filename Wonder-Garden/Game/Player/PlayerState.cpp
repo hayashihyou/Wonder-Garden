@@ -3,6 +3,7 @@
 #include "AttackCollision.h"
 #include "Player.h"
 #include "PlayerState.h"
+#include "SoundManager.h"
 
 namespace
 {
@@ -97,7 +98,6 @@ bool PlayerIdleState::RequestState(uint32_t& request)
         request = PlayerDeadState::ID();
         return true;
     }
-
 
     if (m_player->IsCannon() == true)
     {
@@ -244,6 +244,9 @@ void PlayerJumpState::Enter()
 {
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Jump);
     m_jump = m_player->GetJumpPower();
+
+    // ジャンプ音再生
+    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::PlayerJumpSE);
 }
 
 void PlayerJumpState::Update()
@@ -303,6 +306,9 @@ void PlayerAttackState::Enter()
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Attack);
     m_player->SetAttack(true);
     MakeAttackCollision();
+
+    // パンチ音再生
+    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::PlayerPunchSE);
 }
 
 void PlayerAttackState::Update() {}
@@ -345,6 +351,9 @@ void PlayerDamageState::Enter()
 {
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Damage);
     m_player->SetDamage(false);
+
+    // ダメージ音再生
+    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::PlayerDamageSE);
 }
 
 void PlayerDamageState::Update() {}
@@ -382,7 +391,6 @@ bool PlayerDeadState::RequestState(uint32_t& request)
     return false;
 }
 
-
 void PlayerCannonState::Enter()
 {
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Idle);
@@ -402,39 +410,38 @@ bool PlayerCannonState::RequestState(uint32_t& request)
     return false;
 }
 
-
-
-
 void PlayerFireState::Enter()
 {
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Jump);
+
+    // 発射音再生
+    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::CanonFireSE);
 }
 
 void PlayerFireState::Update()
 {
     // 外部からの力を適用
-     if (m_player->GetForce().Length() > 0.0f)
-     {
+    if (m_player->GetForce().Length() > 0.0f)
+    {
 
-         m_player->SetAddForce(m_player->GetForce() - Vector3(0.0f,GRAVITY,0.0f));
+        m_player->SetAddForce(m_player->GetForce() - Vector3(0.0f, GRAVITY, 0.0f));
 
-         Vector3 move = m_player->GetForce();
-         
-         Vector3 nextpostion = m_player->GetCharCon()->Execute(move,1.0f);
+        Vector3 move = m_player->GetForce();
 
-         m_player->SetPosition(nextpostion);
-        
+        Vector3 nextpostion = m_player->GetCharCon()->Execute(move, 1.0f);
+
+        m_player->SetPosition(nextpostion);
 
         if (m_player->GetForce().Length() <= 1.0f)
         {
             m_player->GetForce() = Vector3::Zero;
         }
-     }
+    }
 
-     if (m_player->GetCharCon()->IsOnGround() == true)
-     {
-         m_player->SetFireFlag(false);
-     }
+    if (m_player->GetCharCon()->IsOnGround() == true)
+    {
+        m_player->SetFireFlag(false);
+    }
 }
 
 void PlayerFireState::Exit()

@@ -44,11 +44,17 @@ bool Boss::Start()
     m_bossHeadCollision->CreateSphere(m_colPos, m_rot, 70.0);
     m_bossHeadCollision->SetIsEnableAutoDelete(false);
 
-	m_stateList[enBossState_Idle] = new BossIdleState;
-	m_stateList[enBossState_Attack] = new BossAttackState;
-	m_stateList[enBossState_Dead] = new BossDeadState;
+    m_stateMap.emplace(BossIdleState::ID(), new BossIdleState(this));
+    m_stateMap.emplace(BossAttackState::ID(), new BossAttackState(this));
+    m_stateMap.emplace(BossDeadState::ID(), new BossDeadState(this));
+    // 初期状態設定
+    m_currentStateId = BossIdleState::ID();
+    auto it = m_stateMap.find(m_currentStateId);
+    if (it != m_stateMap.end())
+    {
+        it->second->Enter();
+    }
 
-	m_currentState = m_stateList[enBossState_Idle];
 
 	return true;
 }
@@ -90,7 +96,11 @@ void Boss::AttackFlag()
 	if (disToPlayer < 150)
 	{
 		isAttackFlag = true;
-	}
+    }
+    else
+    {
+        isAttackFlag = false;
+    }
 
 	m_bossModel.Update();
 }
@@ -107,76 +117,98 @@ void Boss::SetDead(bool dead)
 
 void Boss::ManagerState()
 {
-	//優先順位
-	enum {
-		PRI_NONE,
-		PRI_IDLE,
-		PRI_ATTACK,
-		PRI_DEAD,
-	};
+	////優先順位
+	//enum {
+	//	PRI_NONE,
+	//	PRI_IDLE,
+	//	PRI_ATTACK,
+	//	PRI_DEAD,
+	//};
 
-	//優先順位の高いものを入れる変数
-	int bestPri = PRI_NONE;
-	//優先するステート
-	EnBossState bestState = enBossState_Idle;
+	////優先順位の高いものを入れる変数
+	//int bestPri = PRI_NONE;
+	////優先するステート
+	//EnBossState bestState = enBossState_Idle;
 
-	//状態を考慮するラムダ式
-	auto considerState = [&](int pri, EnBossState state)
-		{
-			//優先順位が一番高いものを採用する
-			if (bestPri < pri)
-			{
-				bestPri = pri;
-				bestState = state;
-			}
-		};
+	////状態を考慮するラムダ式
+	//auto considerState = [&](int pri, EnBossState state)
+	//	{
+	//		//優先順位が一番高いものを採用する
+	//		if (bestPri < pri)
+	//		{
+	//			bestPri = pri;
+	//			bestState = state;
+	//		}
+	//	};
 
-	if (isDeadFlag == true)
-	{
-		isDeadFlag = false;
-		considerState(PRI_DEAD, enBossState_Dead);
-		m_currentState = m_stateList[enBossState_Dead];
-		bestState = enBossState_Dead;
-	}
+	//if (isDeadFlag == true)
+	//{
+	//	isDeadFlag = false;
+	//	considerState(PRI_DEAD, enBossState_Dead);
+	//	m_currentState = m_stateList[enBossState_Dead];
+	//	bestState = enBossState_Dead;
+	//}
 
-	if (isAttackFlag == true)
-	{
-		considerState(PRI_ATTACK, enBossState_Attack);
-		Attack();
-	}
+	//if (isAttackFlag == true)
+	//{
+	//	considerState(PRI_ATTACK, enBossState_Attack);
+	//	Attack();
+	//}
 
-	m_currentState = m_stateList[bestState];
+	//m_currentState = m_stateList[bestState];
 
 }
 
 void Boss::UpdateChangeState()
 {
-	IBossState* nextState = nullptr;
+    auto it = m_stateMap.find(m_currentStateId);
+    if (it == m_stateMap.end())
+    {
+        // 処理できない
+        return;
+    }
+    auto* currentState = it->second;
 
-	if (m_currentState == m_stateList[0])
-	{
-		nextState = m_stateList[enBossState_Idle];
-	}
+    uint32_t request;
+    if (currentState->RequestState(request))
+    {
+        currentState->Exit();
+        m_currentStateId = request;
+        auto it = m_stateMap.find(m_currentStateId);
+        if (it != m_stateMap.end())
+        {
+            currentState = it->second;
+            currentState->Enter();
+        }
+    }
+    currentState->Update();
 
-	if (m_currentState == m_stateList[1])
-	{
-		nextState = m_stateList[enBossState_Attack];
-	}
+	//IBossState* nextState = nullptr;
 
-	if (m_currentState == m_stateList[2])
-	{
-		nextState = m_stateList[enBossState_Dead];
-	}
+	//if (m_currentState == m_stateList[0])
+	//{
+	//	nextState = m_stateList[enBossState_Idle];
+	//}
 
-	//状態切り替わり処理
-	if (nextState != nullptr)
-	{
-		m_currentState->Exit();
-		m_currentState = nextState;
-		m_currentState->Enter();
-	}
+	//if (m_currentState == m_stateList[1])
+	//{
+	//	nextState = m_stateList[enBossState_Attack];
+	//}
 
-	m_currentState->Update();
+	//if (m_currentState == m_stateList[2])
+	//{
+	//	nextState = m_stateList[enBossState_Dead];
+	//}
+
+	////状態切り替わり処理
+	//if (nextState != nullptr)
+	//{
+	//	m_currentState->Exit();
+	//	m_currentState = nextState;
+	//	m_currentState->Enter();
+	//}
+
+	//m_currentState->Update();
 }
 
 void Boss::Render(RenderContext& rc)

@@ -2,6 +2,7 @@
 #include "Warp.h"
 #include "Player/Player.h"
 #include "GameCamera.h"
+#include "SoundManager.h"
 
 namespace
 {
@@ -40,6 +41,9 @@ void Warp::CheckWarp()
         m_player->GetCharCon()->GetPosition();
         m_player->GetModel()->Update();
         m_gameCamera->Update();
+
+        // ワープ音再生
+        SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::WarpPipeSE);
     }
 }
 

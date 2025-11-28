@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
 #include "AttackCollision.h"
-#include "Enemy.h"
-#include "EnemyState.h"
+#include "Enemy/Enemy.h"
+#include "Enemy/EnemyState.h"
 #include "Player/Player.h"
 
 namespace
@@ -23,6 +23,7 @@ bool Enemy::Start()
 {
     m_enemyStatePattern = new EnemyStatePattern;
 
+
     m_animationClips[enAnimationClip_Idle].Load("Assets/animData/enemy/slime/slime_Idle.tka");
     m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
     m_animationClips[enAnimationClip_Attack].Load("Assets/animData/enemy/slime/slime_Attack.tka");
@@ -31,6 +32,7 @@ bool Enemy::Start()
     m_animationClips[enAnimationClip_JumpDead].SetLoopFlag(false);
     m_animationClips[enAnimationClip_AttackDead].Load("Assets/animData/enemy/slime/slime_Dead2.tka");
     m_animationClips[enAnimationClip_AttackDead].SetLoopFlag(false);
+
 
     m_enemyModel.Init("Assets/modelData/enemy/slime/slime.tkm", m_animationClips, enAnimationClip_Num);
 
@@ -70,10 +72,17 @@ void Enemy::Update()
         m_player = FindGO<Player>("Player");
     }
 
-    Move();
+    m_toPlayer = m_player->GetPosition() - m_position;
+    m_disToPlayer = m_toPlayer.Length();
 
-    Rotation();
+    m_colPos = m_position + COLPOS_Y;
+    m_colJumpPos = m_position + COLJUMPPOS_Y;
 
+    enemyCollisionObject->SetPosition(m_colPos);
+    enemyJumpCollision->SetPosition(m_colJumpPos);
+    m_enemyModel.SetPosition(m_position);
+
+    m_enemyStatePattern->Update();
     m_enemyModel.Update();
 }
 
@@ -86,67 +95,6 @@ void Enemy::HP()
     }
 }
 
-void Enemy::Attack()
-{
-    if (m_attackCoolTimer > 0.0f)
-        return;
-
-    MakeAttackCollision();
-
-    m_attackCoolTimer = ATTACK_COOLTIME;
-}
-
-void Enemy::MakeAttackCollision()
-{
-   /* enemyAttack = NewGO<AttackCollision>(0, "AttackCollision");
-    enemyAttack->InitTransform(m_position, attackCol , m_transform);
-    enemyAttack->CreateCollision();
-    enemyAttack->Update();*/
-}
-
-void Enemy::SetAttackFlag(bool attack)
-{
-    isAttack = attack;
-}
-
-void Enemy::SetDeadFlag(bool dead)
-{
-    isDead = dead;
-}
-
-void Enemy::Move()
-{
-    m_toPlayer = m_player->GetPosition() - m_position;
-
-    m_disToPlayer = m_toPlayer.Length();
-
-    if (m_disToPlayer < 200)
-    {
-        toPlayerDir = m_toPlayer;
-        toPlayerDir.Normalize();
-
-        m_position += toPlayerDir * 1.0f;
-        m_transform.m_localPosition = m_position;
-
-        if (m_player->enPlayerState_Jump)
-        {
-            m_position.y = 0;
-        }
-    }
-
-    if (m_disToPlayer < 100)
-    {
-        isAttack = true;
-    }
-
-    m_colPos = m_position + COLPOS_Y;
-    m_colJumpPos = m_position + COLJUMPPOS_Y;
-
-    enemyCollisionObject->SetPosition(m_colPos);
-    enemyJumpCollision->SetPosition(m_colJumpPos);
-    m_enemyModel.SetPosition(m_position);
-    
-}
 
 void Enemy::Rotation()
 {

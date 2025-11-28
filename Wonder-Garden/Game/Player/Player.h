@@ -84,6 +84,8 @@ public:
     /// <param name="stopmove"></param>
     void SetStopMove(bool stopmove) { m_isStopMove = stopmove; }
 
+    void SetHP(int hp) { m_hp = hp; }
+
     void SetJumpPower(float jump) { m_jumpPower = jump; }
 
     void SetInvisTimer(float time) { m_invincibleTimer = time; }
@@ -169,7 +171,7 @@ public:
     /// 現在のHPを取得
     /// </summary>
     /// <returns></returns>
-    int GetHP() { return hp; }
+    int GetHP() { return m_hp; }
 
     /// <summary>
     /// 最大HPを取得
@@ -220,6 +222,10 @@ public:
     bool IsFire() { return m_isFire; }
 
 
+    /// <summary>
+    /// 大砲の中にいる状態の取得
+    /// </summary>
+    /// <returns></returns>
     bool IsCannon() { return m_isCannonReady; }
 
 
@@ -294,7 +300,7 @@ private:
     Quaternion m_rotation;                 // 向き
 
     int m_atk = 2; // 攻撃力
-    int hp = 8;    // 体力
+    int m_hp = 8;    // 体力
     int maxHp = 8; // 最大体力
 
     float m_drawTimer = 0;          // 点滅表示する為のタイマー

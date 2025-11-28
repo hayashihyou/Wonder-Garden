@@ -8,8 +8,8 @@
 namespace
 {
     const Vector3 COLPOS_Y = {0.0f, 30.0f, 0.0f};
-    const float INVINCIBLE_TIME = 3.0f;
-    const float INVINCIBLE_FLASH_TIME = 0.2f;
+    const float INVINCIBLE_TIME = 2.0f;
+    const float INVINCIBLE_FLASH_TIME = 0.05f;
     const float MOVESPEED = 3.0f;
     const float JUMPPOWER = 15.0f;
 } // namespace
@@ -90,14 +90,14 @@ void Player::Update()
 
 void Player::HP()
 {
-    if (hp > 0)
+    if (m_hp > 0)
     {
         m_isDamage = true;
     }
 
-    if (hp <= 0)
+    if (m_hp <= 0)
     {
-        hp = 0;
+        m_hp = 0;
         m_isDead = true;
     }
 }
@@ -117,7 +117,7 @@ void Player::Damage(int damageAmount)
 {
     if (m_isInvincible == false)
     {
-        hp -= damageAmount;
+        m_hp -= damageAmount;
         HP();
         m_isInvincible = true;
     }
