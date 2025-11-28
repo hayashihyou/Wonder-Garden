@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "EnemyState.h"
+
 #include "Enemy.h"
+#include "EnemyState.h"
 #include "Player/Player.h"
-#include "SoundManager.h"
 
 namespace
 {
@@ -31,65 +31,87 @@ void EnemyStatePattern::Update()
 
 void EnemyIdleState::Enter()
 {
-	m_enemy->m_enemyModel.PlayAnimation(m_enemy->enAnimationClip_Idle);
+    m_enemy->GetModel()->PlayAnimation(m_enemy->enAnimationClip_Idle);
 }
 
-void EnemyIdleState::Update()
-{
-    // 待機状態でも重力の影響を受ける
-    Vector3 position = Vector3(0.0f, -GRAVITY, 0.0f);
-    m_enemy->SetPosition(position);
-}
+void EnemyIdleState::Update() {}
 
-void EnemyIdleState::Exit()
-{
-
-}
+void EnemyIdleState::Exit() {}
 
 bool EnemyIdleState::RequestState(uint32_t& request)
 {
-    if (m_enemy->GetDisToPlayer() < 150.0f)
+    if (m_enemy->GetDisToPlayer() < 200.0f)
     {
         request = EnemyMoveState ::ID();
+        return true;
+    }
+
+    if (m_enemy->GetDisToPlayer() < 100.0f)
+    {
+        request = EnemyAttackState::ID();
+        return true;
+    }
+
+    if (m_enemy->IsDead() == true && m_enemy->GetDeadReason() == m_enemy->enDeadReason_Jump)
+    {
+        request = EnemyJumpDeadState::ID();
+        return true;
+    }
+
+    if (m_enemy->IsDead() == true && m_enemy->GetDeadReason() == m_enemy->enDeadReason_Punch)
+    {
+        request = EnemyAttackDeadState::ID();
         return true;
     }
 
     return false;
 }
 
-void EnemyMoveState::Enter() {}
+void EnemyMoveState::Enter()
+{
+    m_enemy->GetModel()->PlayAnimation(m_enemy->enAnimationClip_Idle);
+}
 
-void EnemyMoveState::Update() {}
+void EnemyMoveState::Update()
+{
+    // 待機状態でも重力の影響を受ける
+    Vector3 gravity = Vector3(0.0f, GRAVITY, 0.0f);
+
+    Vector3 toPlayerDir = m_enemy->GetToPlayer();
+    toPlayerDir.Normalize();
+    Vector3 position = m_enemy->GetPosition() + toPlayerDir * 1.0f;
+
+    m_enemy->SetPosition(position);
+}
 
 void EnemyMoveState::Exit() {}
 
 bool EnemyMoveState::RequestState(uint32_t& request)
 {
+    if (m_enemy->GetDisToPlayer() > 200.0f)
+    {
+        request = EnemyIdleState::ID();
+        return true;
+    }
     return false;
 }
 
 void EnemyAttackState::Enter()
 {
-	m_enemy->m_enemyModel.PlayAnimation(m_enemy->enAnimationClip_Attack);
-	m_enemy->SetAttackFlag(true);
-
-    // 攻撃音再生
-    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyAttackSE);
+    m_enemy->m_enemyModel.PlayAnimation(m_enemy->enAnimationClip_Attack);
+    m_enemy->SetAttackFlag(true);
 }
 
 void EnemyAttackState::Update()
 {
-	if (!m_enemy->m_enemyModel.IsPlayingAnimation())
-	{
-		m_enemy->SetAttackFlag(false);
-		m_enemy->isStopMove = false;
-	}
+    if (!m_enemy->m_enemyModel.IsPlayingAnimation())
+    {
+        m_enemy->SetAttackFlag(false);
+        m_enemy->isStopMove = false;
+    }
 }
 
-void EnemyAttackState::Exit()
-{
-
-}
+void EnemyAttackState::Exit() {}
 
 bool EnemyAttackState::RequestState(uint32_t& request)
 {
@@ -98,26 +120,18 @@ bool EnemyAttackState::RequestState(uint32_t& request)
 
 void EnemyJumpDeadState::Enter()
 {
-    // 攻撃音再生
-    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
-
-	m_enemy->m_enemyModel.PlayAnimation(m_enemy->enAnimationClip_JumpDead);
-	m_enemy->SetDeadFlag(true);
+    m_enemy->m_enemyModel.PlayAnimation(m_enemy->enAnimationClip_JumpDead);
 }
 
 void EnemyJumpDeadState::Update()
 {
-	if (!m_enemy->m_enemyModel.IsPlayingAnimation())
-	{
-		m_enemy->isStopMove = false;
-		DeleteGO(m_enemy);
-	}
+    if (!m_enemy->m_enemyModel.IsPlayingAnimation())
+    {
+        DeleteGO(m_enemy);
+    }
 }
 
-void EnemyJumpDeadState::Exit()
-{
-
-}
+void EnemyJumpDeadState::Exit() {}
 
 bool EnemyJumpDeadState::RequestState(uint32_t& request)
 {
@@ -126,28 +140,18 @@ bool EnemyJumpDeadState::RequestState(uint32_t& request)
 
 void EnemyAttackDeadState::Enter()
 {
-	m_enemy->m_enemyModel.PlayAnimation(m_enemy->enAnimationClip_AttackDead);
-	m_enemy->SetDeadFlag(true);
-
+    m_enemy->m_enemyModel.PlayAnimation(m_enemy->enAnimationClip_AttackDead);
 }
 
 void EnemyAttackDeadState::Update()
 {
-	if (!m_enemy->m_enemyModel.IsPlayingAnimation())
-	{
-        // 攻撃音再生
-        SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
-
-		m_enemy->isStopMove = false;
-		DeleteGO(m_enemy);
-
-	}
+    if (!m_enemy->m_enemyModel.IsPlayingAnimation())
+    {
+        DeleteGO(m_enemy);
+    }
 }
 
-void EnemyAttackDeadState::Exit()
-{
-
-}
+void EnemyAttackDeadState::Exit() {}
 
 bool EnemyAttackDeadState::RequestState(uint32_t& request)
 {

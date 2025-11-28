@@ -69,8 +69,8 @@ bool HPUI::Start()
     for (int i = 0; i < Maximum; i++)
     {
         std::unique_ptr<SpriteRender> render = std::make_unique<SpriteRender>();
-        render->Init(HP_ICON_INFO_LIST[i].path.c_str(), 500.0f, 300.0f);
-        render->SetPosition(Vector3(0.0f, 400.0f, 0.0f));
+        render->Init(HP_ICON_INFO_LIST[i].path.c_str(), 450.0f, 250.0f);
+        render->SetPosition(Vector3(0.0f, 425.0f, 0.0f));
         render->Update();
         m_hpList.push_back(std::move(render));
     }

@@ -112,7 +112,7 @@ void Game::Update()
 
 void Game::CreateStar()
 {
-    if (m_boss->isDeadFlag == true)
+    if (m_boss->IsDead() == true)
     {
         if (m_star == nullptr)
         {

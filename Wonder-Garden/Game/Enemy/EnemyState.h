@@ -9,13 +9,11 @@ public:                                                                         
     }
 
 class Enemy;
-class Player;
 
 class IEnemyState : public IGameObject
 {
 protected:
     Enemy* m_enemy;
-    Player* m_player;
 
 public:
     IEnemyState(Enemy* enemy) : m_enemy(enemy){};

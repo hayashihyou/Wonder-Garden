@@ -76,7 +76,11 @@
     </ClCompile>
     <ClCompile Include="testIState.cpp" />
     <ClCompile Include="EffectManager.cpp" />
-    <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="Coin.cpp" />
+    <ClCompile Include="CoinCount.cpp" />
+    <ClCompile Include="UI\CoinUI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -133,6 +137,10 @@
     </ClInclude>
     <ClInclude Include="testIState.h" />
     <ClInclude Include="EffectManager.h" />
-    <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="Coin.h" />
+    <ClInclude Include="CoinCount.h" />
+    <ClInclude Include="UI\CoinUI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
