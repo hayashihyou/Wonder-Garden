@@ -1,5 +1,7 @@
 #include "stdafx.h"
-
+#include "Coin.h"
+#include "CoinCount.h"
+#include "UI/CoinUI.h"
 #include "Enemy/Boss.h"
 #include "Enemy/Enemy.h"
 #include "Enemy/EnemyType2.h"
@@ -58,6 +60,8 @@ bool Game::Start()
     m_warp = NewGO<Warp>(0, "Warp");
     m_cannon = NewGO<Cannon>(0, "Cannon");
     m_effectManager = NewGO<EffectManager>(0, "EffectManager");
+    m_coinCount = NewGO<CoinCount>(0, "CoinCount");
+    m_coinUI = NewGO<CoinUI>(0, "CoinUI");
 
     m_levelRender.Init("Assets/stage/stage.tkl",[&](LevelObjectData& objData)
     {
@@ -67,6 +71,14 @@ bool Game::Start()
             m_enemy->SetPosition(objData.position);
             return true;
         }
+
+        if (objData.EqualObjectName(L"Coin") == true)
+        {
+            m_coin = NewGO<Coin>(0, "Coin");
+            m_coin->SetPosition(objData.position);
+            return true;
+        }
+
         return true;
     });
 
