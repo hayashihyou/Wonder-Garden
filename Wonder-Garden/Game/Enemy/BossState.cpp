@@ -1,21 +1,18 @@
 #include "stdafx.h"
-#include "BossState.h"
+
 #include "Boss.h"
+#include "BossState.h"
 #include "SoundManager.h"
 
 void BossIdleState::Enter()
 {
-	m_boss = FindGO<Boss>("Boss");
+    m_boss = FindGO<Boss>("Boss");
     m_boss->GetModelRender()->PlayAnimation(m_boss->enAnimationClip_Idle);
 }
 
-void BossIdleState::Update()
-{
-}
+void BossIdleState::Update() {}
 
-void BossIdleState::Exit()
-{
-}
+void BossIdleState::Exit() {}
 
 bool BossIdleState::RequestState(uint32_t& request)
 {
@@ -34,9 +31,9 @@ bool BossIdleState::RequestState(uint32_t& request)
 
 void BossAttackState::Enter()
 {
-	m_boss = FindGO<Boss>("Boss");
+    m_boss = FindGO<Boss>("Boss");
     m_boss->GetModelRender()->PlayAnimation(m_boss->enAnimationClip_Attack);
-	m_boss->SetAttack(true);
+    m_boss->SetAttack(true);
 
     // 攻撃音再生
     SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyAttackSE);
@@ -46,14 +43,12 @@ void BossAttackState::Update()
 {
     m_boss->Attack();
     if (!m_boss->GetModelRender()->IsPlayingAnimation())
-	{
-		m_boss->SetAttack(false);
-	}
+    {
+        m_boss->SetAttack(false);
+    }
 }
 
-void BossAttackState::Exit()
-{
-}
+void BossAttackState::Exit() {}
 
 bool BossAttackState::RequestState(uint32_t& request)
 {
@@ -67,25 +62,23 @@ bool BossAttackState::RequestState(uint32_t& request)
 
 void BossDeadState::Enter()
 {
-	m_boss = FindGO<Boss>("Boss");
+    m_boss = FindGO<Boss>("Boss");
     m_boss->GetModelRender()->PlayAnimation(m_boss->enAnimationClip_Dead);
-	m_boss->SetDead(true);
+    m_boss->SetDead(true);
 }
 
 void BossDeadState::Update()
 {
     if (!m_boss->GetModelRender()->IsPlayingAnimation())
-	{
+    {
         // 攻撃音再生
         SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
 
-		DeleteGO(m_boss);
-	}
+        DeleteGO(m_boss);
+    }
 }
 
-void BossDeadState::Exit()
-{
-}
+void BossDeadState::Exit() {}
 
 bool BossDeadState::RequestState(uint32_t& request)
 {

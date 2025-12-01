@@ -24,26 +24,24 @@ public:
     };
 
 public:
-	Boss() {};
+    Boss(){};
     ~Boss();
     bool Start();
     void Update();
     void Render(RenderContext& rc);
     void AttackFlag();
-    void ManagerState();
     void UpdateChangeState();
 
     void HP() override;
     void Attack() override;
-    void Move() override {};
+    void Move() override{};
     void SetAttack(bool attack);
-	void SetDead(bool dead);
+    void SetDead(bool dead);
     Vector3 GetPosition() { return m_pos; };
 
     void DamagePunch(int damageAmount);
     void DamageReceiveHead(int damageAmount);
     void Damage(int damageAmount, int reason);
-
 
 public:
     ModelRender* GetModelRender() { return &m_bossModel; }
@@ -55,25 +53,25 @@ public:
     CollisionObject* GetHeadCollision() { return m_bossHeadCollision; }
 
 private:
-	ModelRender m_bossModel;
-	AnimationClip m_animationClips[enAnimationClip_Num];
+    ModelRender m_bossModel;
+    AnimationClip m_animationClips[enAnimationClip_Num];
 
-	bool isDeadFlag = false;
+    bool isDeadFlag = false;
 
-	Vector3 m_pos;
-	Vector3 m_colPos;
-	Quaternion m_rot;
-	Vector3 m_scale;
-	Vector3 toPlayer;
-	CollisionObject* m_bossCollision = nullptr;
-	CollisionObject* m_bossHeadCollision = nullptr;
-	Player* m_player = nullptr;
-	AttackCollision* m_attackCollision = nullptr;
+    Vector3 m_pos;
+    Vector3 m_colPos;
+    Quaternion m_rot;
+    Vector3 m_scale;
+    Vector3 toPlayer;
+    CollisionObject* m_bossCollision = nullptr;
+    CollisionObject* m_bossHeadCollision = nullptr;
+    Player* m_player = nullptr;
+    AttackCollision* m_attackCollision = nullptr;
 
     uint32_t m_currentStateId;
     std::map<uint32_t, IBossState*> m_stateMap;
     EnDeadReason m_deadReason = enDeadReason_None;
 
-	float disToPlayer;
-	bool isAttackFlag = false;
+    float disToPlayer;
+    bool isAttackFlag = false;
 };

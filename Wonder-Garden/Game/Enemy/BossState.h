@@ -8,22 +8,20 @@ public:                                                                         
         return Hash32(#name);                                                                                          \
     }
 
-
 class Boss;
-
 
 class IBossState : public Noncopyable
 {
 public:
-	IBossState(Boss* owner) : m_boss(owner) {};
-	virtual ~IBossState() {};
-	virtual void Enter() = 0;
-	virtual void Update() = 0;
-	virtual void Exit() = 0;
+    IBossState(Boss* owner) : m_boss(owner){};
+    virtual ~IBossState(){};
+    virtual void Enter() = 0;
+    virtual void Update() = 0;
+    virtual void Exit() = 0;
     virtual bool RequestState(uint32_t& request) = 0;
 
 protected:
-	Boss* m_boss = nullptr;
+    Boss* m_boss = nullptr;
 };
 
 class BossIdleState : public IBossState
@@ -31,11 +29,11 @@ class BossIdleState : public IBossState
     appState(BossIdleState);
 
 public:
-    BossIdleState(Boss* owner) : IBossState(owner) {};
-	virtual ~BossIdleState() {};
-	void Enter();
-	void Update();
-	void Exit();
+    BossIdleState(Boss* owner) : IBossState(owner){};
+    virtual ~BossIdleState(){};
+    void Enter();
+    void Update();
+    void Exit();
     bool RequestState(uint32_t& request);
 };
 
@@ -44,11 +42,11 @@ class BossAttackState : public IBossState
     appState(BossAttackState);
 
 public:
-    BossAttackState(Boss* owner) : IBossState(owner) {};
-	virtual ~BossAttackState() {};
-	void Enter();
-	void Update();
-	void Exit();
+    BossAttackState(Boss* owner) : IBossState(owner){};
+    virtual ~BossAttackState(){};
+    void Enter();
+    void Update();
+    void Exit();
     bool RequestState(uint32_t& request);
 };
 
@@ -57,11 +55,10 @@ class BossDeadState : public IBossState
     appState(BossDeadState);
 
 public:
-    BossDeadState(Boss* owner) : IBossState(owner) {};
-	virtual ~BossDeadState() {};
-	void Enter();
-	void Update();
-	void Exit();
+    BossDeadState(Boss* owner) : IBossState(owner){};
+    virtual ~BossDeadState(){};
+    void Enter();
+    void Update();
+    void Exit();
     bool RequestState(uint32_t& request);
 };
-
