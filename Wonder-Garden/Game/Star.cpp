@@ -7,7 +7,7 @@ bool Star::Start()
 {
 	m_star.Init("Assets/modelData/star.tkm");
 
-	m_pos = { 0,70,200 };
+	m_pos = { 2300,300,2730 };
 
 	m_star.SetPosition(m_pos);
 	m_star.Update();
@@ -42,7 +42,7 @@ void Star::GetFlag()
 
 void Star::Rotation()
 {
-	m_rot.AddRotationDegY(2.0f);
+	m_rot.AddRotationDegY(3.0f);
 	m_star.SetRotation(m_rot);
 }
 

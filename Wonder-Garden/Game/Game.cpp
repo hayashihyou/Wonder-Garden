@@ -51,7 +51,6 @@ bool Game::Start()
 
     m_player = NewGO<Player>(0, "Player");
     EnemyManager::CreateInstance();
-    m_boss = NewGO<Boss>(0, "Boss");
     m_stage = NewGO<Stage>(0, "Stage");
     m_skyCube = NewGO<SkyCube>(0, "SkyCube");
     m_starCounter = NewGO<StarCounter>(0, "StarCounter");
@@ -79,6 +78,12 @@ bool Game::Start()
             return true;
         }
 
+        if (objData.EqualObjectName(L"Boss") == true)
+        {
+            m_boss = NewGO<Boss>(0, "Boss");
+            m_boss->SetPosition(objData.position);
+            return true;
+        }
         return true;
     });
 
