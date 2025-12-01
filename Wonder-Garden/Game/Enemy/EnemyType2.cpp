@@ -1,17 +1,17 @@
 #include "stdafx.h"
-#include "EnemyType2.h"
 
 #include "AttackCollision.h"
+#include "EnemyType2.h"
 #include "EnemyType2State.h"
 #include "Player/Player.h"
 
 namespace
 {
-const Vector3 POS_Y = {0, 35, 0};
-const Vector3 JUMPPOS = {0, 45, 0};
+    const Vector3 POS_Y = {0, 35, 0};
+    const Vector3 JUMPPOS = {0, 45, 0};
 
-const float ATTACK_COOL_TIME = 1.0f;
-}
+    const float ATTACK_COOL_TIME = 1.0f;
+} // namespace
 
 EnemyType2::~EnemyType2()
 {
@@ -72,15 +72,13 @@ void EnemyType2::Update()
 
     m_attackCollision = FindGO<AttackCollision>("AttackCollision");
 
-    //ManagerState();
-
     AttackFlag();
 
     Rotation();
 
     UpdateChangeState();
 
-     m_attackCoolTime -= g_gameTime->GetFrameDeltaTime();
+    m_attackCoolTime -= g_gameTime->GetFrameDeltaTime();
     if (m_attackCoolTime <= 0.0f)
         m_attackCoolTime = 0.0f;
 }
@@ -96,7 +94,8 @@ void EnemyType2::HP()
 
 void EnemyType2::Attack()
 {
-    if (m_attackCoolTime > 0.0f) return;
+    if (m_attackCoolTime > 0.0f)
+        return;
 
     MakeCollision();
 
@@ -115,7 +114,6 @@ void EnemyType2::AttackFlag()
     else
     {
         isAttackFlag = false;
-
     }
 
     toPlayerDir = toPlayer;
@@ -149,64 +147,9 @@ void EnemyType2::Rotation()
     m_enemyType2Model.SetRotation(m_rot);
 }
 
-void EnemyType2::ManagerState()
-{
-    //enum
-    //{
-    //    PRI_NONE,
-    //    PRI_IDLE,
-    //    PRI_ATTACK,
-    //    PRI_ATTACKDEAD,
-    //    PRI_JUMPDEAD,
-    //};
-
-    //// 優先順位の高いものを入れる変数
-    //int bestPri = PRI_NONE;
-    //// 優先するステート
-    //uint32_t bestState = EnemyType2IdleState::ID();
-
-    //// 状態を考慮するラムダ式
-    //auto considerState = [&](int pri, uint32_t state)
-    //{
-    //    // 優先順位が一番高いものを採用する
-    //    if (bestPri < pri)
-    //    {
-    //        bestPri = pri;
-    //        bestState = state;
-    //    }
-    //};
-
-    //if (isDeadFlag == true)
-    //{
-    //    //isDeadFlag == false;
-
-    //    if (m_deadReason == enDeadReason_Punch)
-    //    {
-    //        considerState(PRI_ATTACKDEAD, enEnemyType2State_AttackDead);
-    //        m_currentState = m_stateList[enEnemyType2State_AttackDead];
-    //        bestState = enEnemyType2State_AttackDead;
-    //    }
-
-    //    if (m_deadReason == enDeadReason_Jump)
-    //    {
-    //        considerState(PRI_JUMPDEAD, enEnemyType2State_JumpDead);
-    //        m_currentState = m_stateList[enEnemyType2State_JumpDead];
-    //        bestState = enEnemyType2State_JumpDead;
-    //    }
-    //}
-
-    //if (isAttackFlag == true)
-    //{
-    //    considerState(PRI_ATTACK, enEnemyType2State_Attack);
-    //    Attack();
-    //}
-
-    //m_currentState = m_stateList[bestState];
-}
-
 void EnemyType2::UpdateChangeState()
 {
-    auto it = m_stateList.find(m_enemyType2State); 
+    auto it = m_stateList.find(m_enemyType2State);
     if (it == m_stateList.end())
     {
         // 処理できない

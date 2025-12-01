@@ -40,23 +40,20 @@ public:
     void DamageReceiveHead(int damageAmount);
     void Damage(int damageAmount, int reason);
 
-
     void Rotation();
     void AttackFlag();
     void MakeCollision();
     void UpdateChangeState();
-    void ManagerState();
 
     void HP() override;
     void Attack() override;
-    void Move() override {};
-
+    void Move() override{};
 
 public:
     CollisionObject* GetCollision() { return enemyType2Collision; }
     CollisionObject* GetHeadCollision() { return enemyType2Collision; }
 
-    ModelRender* GetModelRender() { return &m_enemyType2Model; } 
+    ModelRender* GetModelRender() { return &m_enemyType2Model; }
     EnDeadReason GetDeadReason() { return m_deadReason; }
 
     bool IsAttack() { return isAttackFlag; }
@@ -72,27 +69,25 @@ private:
 
     CollisionObject* enemyType2Collision = nullptr;
     CollisionObject* enemyType2JumpCollision = nullptr;
-	Player* m_player;
-	AttackCollision* m_attackCollision;
+    Player* m_player;
+    AttackCollision* m_attackCollision;
 
     uint32_t m_enemyType2State;
     std::map<uint32_t, IEnemyType2State*> m_stateList;
 
     EnDeadReason m_deadReason = enDeadReason_None;
 
-	Vector3 m_pos;
-	Vector3 m_colPos;
-	Vector3 m_colJumpPos;
-	Vector3 toPlayer;
-	Vector3 toPlayerDir;
+    Vector3 m_pos;
+    Vector3 m_colPos;
+    Vector3 m_colJumpPos;
+    Vector3 toPlayer;
+    Vector3 toPlayerDir;
     Vector3 m_attackPos{0, 30, 40};
-	Quaternion m_rot;
+    Quaternion m_rot;
 
-	float disToPlayer;
+    float disToPlayer;
     float m_attackCoolTime = 1.0f;
 
-	bool isDeadFlag = false;
-	bool isAttackFlag = false;
-
+    bool isDeadFlag = false;
+    bool isAttackFlag = false;
 };
-
