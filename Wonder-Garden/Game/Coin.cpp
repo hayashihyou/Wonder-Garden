@@ -6,7 +6,7 @@
 
 bool Coin::Start()
 {
-    m_modelRender.Init("Assets/item/coin.tkm");
+    m_modelRender.Init("Assets/item/coin/coin.tkm");
 
     m_modelRender.SetPosition(m_position);
     m_modelRender.SetRotation(m_rotation);

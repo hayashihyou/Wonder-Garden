@@ -18,21 +18,28 @@ Boss::~Boss()
 
 bool Boss::Start()
 {
-    m_animationClips[enAnimationClip_Idle].Load("Assets/animData/boss/SkeletonIdle.tka");
+    m_animationClips[enAnimationClip_Idle].Load("Assets/animData/boss/boss_Idle.tka");
     m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
-    m_animationClips[enAnimationClip_Attack].Load("Assets/animData/boss/SkeletonAttack.tka");
-    m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
-    m_animationClips[enAnimationClip_Dead].Load("Assets/animData/boss/SkeletonDeath.tka");
+    m_animationClips[enAnimationClip_Walk].Load("Assets/animData/boss/boss_Walk.tka");
+    m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
+    m_animationClips[enAnimationClip_Attack].Load("Assets/animData/boss/boss_Attack.tka");
+    m_animationClips[enAnimationClip_Attack].SetLoopFlag(true);
+    m_animationClips[enAnimationClip_Attack2].Load("Assets/animData/boss/boss_Attack2.tka");
+    m_animationClips[enAnimationClip_Attack2].SetLoopFlag(false);
+    m_animationClips[enAnimationClip_JumpAttack].Load("Assets/animData/boss/boss_JumpAttack.tka");
+    m_animationClips[enAnimationClip_JumpAttack].SetLoopFlag(true);
+    m_animationClips[enAnimationClip_Damage].Load("Assets/animData/boss/boss_Damage.tka");
+    m_animationClips[enAnimationClip_Damage].SetLoopFlag(true);
+    m_animationClips[enAnimationClip_Dead].Load("Assets/animData/boss/boss_Dead.tka");
     m_animationClips[enAnimationClip_Dead].SetLoopFlag(false);
 
-    m_bossModel.Init("Assets/modelData/boss/Skeleton.tkm", m_animationClips, enAnimationClip_Num);
+    m_bossModel.Init("Assets/modelData/boss/boss.tkm", m_animationClips, enAnimationClip_Num);
 
-    m_pos = {0, 0, -200};
-    m_scale = {8, 8, 8};
+    m_scale = {1, 1, 1};
 
-    m_colPos = m_pos + COLPOS_Y;
+    m_colPos = m_position + COLPOS_Y;
 
-    m_bossModel.SetPosition(m_pos);
+    m_bossModel.SetPosition(m_position);
     m_bossModel.SetRotation(m_rot);
     m_bossModel.SetScale(m_scale);
     m_bossModel.Update();
@@ -68,8 +75,6 @@ void Boss::Update()
 
     m_attackCollision = FindGO<AttackCollision>("AttackCollision");
 
-    ManagerState();
-
     AttackFlag();
 
     UpdateChangeState();
@@ -88,7 +93,7 @@ void Boss::Attack() {}
 
 void Boss::AttackFlag()
 {
-    toPlayer = m_player->GetPosition() - m_pos;
+    toPlayer = m_player->GetPosition() - m_position;
 
     disToPlayer = toPlayer.Length();
     if (disToPlayer < 150)

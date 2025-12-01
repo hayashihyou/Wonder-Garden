@@ -18,7 +18,11 @@ public:
     enum enBossAnimationClip
     {
         enAnimationClip_Idle,
+        enAnimationClip_Walk,
         enAnimationClip_Attack,
+        enAnimationClip_Attack2,
+        enAnimationClip_JumpAttack,
+        enAnimationClip_Damage,
         enAnimationClip_Dead,
         enAnimationClip_Num,
     };
@@ -35,9 +39,10 @@ public:
     void HP() override;
     void Attack() override;
     void Move() override{};
+    void SetPosition(Vector3 position) { m_position = position; }
     void SetAttack(bool attack);
     void SetDead(bool dead);
-    Vector3 GetPosition() { return m_pos; };
+    Vector3 GetPosition() { return m_position; };
 
     void DamagePunch(int damageAmount);
     void DamageReceiveHead(int damageAmount);
@@ -58,7 +63,7 @@ private:
 
     bool isDeadFlag = false;
 
-    Vector3 m_pos;
+    Vector3 m_position;
     Vector3 m_colPos;
     Quaternion m_rot;
     Vector3 m_scale;
