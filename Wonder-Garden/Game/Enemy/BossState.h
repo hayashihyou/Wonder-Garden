@@ -22,6 +22,7 @@ public:
 
 protected:
     Boss* m_boss = nullptr;
+    Player* m_player = nullptr;
 };
 
 class BossIdleState : public IBossState
@@ -37,9 +38,36 @@ public:
     bool RequestState(uint32_t& request);
 };
 
+class BossMoveState : public IBossState
+{
+    appState(BossMoveState);
+
+private:
+    bool isAttack = false;
+
+public:
+    BossMoveState(Boss* owner) : IBossState(owner){};
+    virtual ~BossMoveState(){};
+    void Enter();
+    void Update();
+    void Exit();
+    bool RequestState(uint32_t& request);
+};
+
 class BossAttackState : public IBossState
 {
     appState(BossAttackState);
+
+private:
+    enum EnAttackPattern
+    {
+        enNormalAttack,
+        enDoubleHitAttack,
+        enJumpAttack,
+        enAttackNum,
+    };
+
+    EnAttackPattern m_attackPattern = enAttackNum;
 
 public:
     BossAttackState(Boss* owner) : IBossState(owner){};

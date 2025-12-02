@@ -33,50 +33,57 @@ public:
     bool Start();
     void Update();
     void Render(RenderContext& rc);
-    void AttackFlag();
     void UpdateChangeState();
+    void Rotation();
 
     void HP() override;
-    void Attack() override;
+    void Attack() override{};
     void Move() override{};
-    void SetPosition(Vector3 position) { m_position = position; }
-    void SetAttack(bool attack);
-    void SetDead(bool dead);
-    Vector3 GetPosition() { return m_position; };
 
     void DamagePunch(int damageAmount);
     void DamageReceiveHead(int damageAmount);
     void Damage(int damageAmount, int reason);
 
 public:
+    void SetPosition(Vector3 position) { m_position = position; }
+    void SetRotation(Quaternion rotation) { m_rotation = rotation; }
+    void SetAttackCoolTime(float time) { m_attackCoolTime = time; }
+    void SetAttack(bool attack) { m_isAttackFlag = attack; }
+    void SetDead(bool dead) { m_isDeadFlag = dead; }
+
+public:
     ModelRender* GetModelRender() { return &m_bossModel; }
     EnDeadReason GetDeadReason() { return m_deadReason; }
-    bool IsDead() { return isDeadFlag; }
-    bool IsAttack() { return isAttackFlag; }
-
     CollisionObject* GetCollision() { return m_bossCollision; }
     CollisionObject* GetHeadCollision() { return m_bossHeadCollision; }
 
+    Vector3 GetPosition() { return m_position; }
+    Vector3 GetToPlayer() { return toPlayer; }
+    float GetDisToPlayer() { return disToPlayer; }
+    float GetAttackCoolTime() { return m_attackCoolTime; }
+    bool GetAttackFlag() { return m_isAttackFlag; }
+    bool IsDead() { return m_isDeadFlag; }
+    bool IsAttack() { return m_isAttackFlag; }
+
 private:
+    Player* m_player = nullptr;
     ModelRender m_bossModel;
+    EnDeadReason m_deadReason = enDeadReason_None;
     AnimationClip m_animationClips[enAnimationClip_Num];
-
-    bool isDeadFlag = false;
-
-    Vector3 m_position;
-    Vector3 m_colPos;
-    Quaternion m_rot;
-    Vector3 m_scale;
-    Vector3 toPlayer;
     CollisionObject* m_bossCollision = nullptr;
     CollisionObject* m_bossHeadCollision = nullptr;
-    Player* m_player = nullptr;
     AttackCollision* m_attackCollision = nullptr;
-
     uint32_t m_currentStateId;
     std::map<uint32_t, IBossState*> m_stateMap;
-    EnDeadReason m_deadReason = enDeadReason_None;
+
+    Vector3 m_position;
+    Vector3 m_colPosition;
+    Quaternion m_rotation;
+    Vector3 m_scale;
+    Vector3 toPlayer;
 
     float disToPlayer;
-    bool isAttackFlag = false;
+    float m_attackCoolTime = 5.0f;
+    bool m_isAttackFlag = false;
+    bool m_isDeadFlag = false;
 };

@@ -23,13 +23,13 @@ bool Boss::Start()
     m_animationClips[enAnimationClip_Walk].Load("Assets/animData/boss/boss_Walk.tka");
     m_animationClips[enAnimationClip_Walk].SetLoopFlag(true);
     m_animationClips[enAnimationClip_Attack].Load("Assets/animData/boss/boss_Attack.tka");
-    m_animationClips[enAnimationClip_Attack].SetLoopFlag(true);
+    m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
     m_animationClips[enAnimationClip_Attack2].Load("Assets/animData/boss/boss_Attack2.tka");
     m_animationClips[enAnimationClip_Attack2].SetLoopFlag(false);
     m_animationClips[enAnimationClip_JumpAttack].Load("Assets/animData/boss/boss_JumpAttack.tka");
-    m_animationClips[enAnimationClip_JumpAttack].SetLoopFlag(true);
+    m_animationClips[enAnimationClip_JumpAttack].SetLoopFlag(false);
     m_animationClips[enAnimationClip_Damage].Load("Assets/animData/boss/boss_Damage.tka");
-    m_animationClips[enAnimationClip_Damage].SetLoopFlag(true);
+    m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
     m_animationClips[enAnimationClip_Dead].Load("Assets/animData/boss/boss_Dead.tka");
     m_animationClips[enAnimationClip_Dead].SetLoopFlag(false);
 
@@ -37,24 +37,26 @@ bool Boss::Start()
 
     m_scale = {1, 1, 1};
 
-    m_colPos = m_position + COLPOS_Y;
+    m_colPosition = m_position + COLPOS_Y;
 
     m_bossModel.SetPosition(m_position);
-    m_bossModel.SetRotation(m_rot);
+    m_bossModel.SetRotation(m_rotation);
     m_bossModel.SetScale(m_scale);
     m_bossModel.Update();
 
     m_bossCollision = NewGO<CollisionObject>(0);
-    m_bossCollision->CreateSphere(m_colPos, m_rot, 70.0);
+    m_bossCollision->CreateSphere(m_colPosition, m_rotation, 70.0);
     m_bossCollision->SetIsEnableAutoDelete(false);
 
     m_bossHeadCollision = NewGO<CollisionObject>(0);
-    m_bossHeadCollision->CreateSphere(m_colPos, m_rot, 70.0);
+    m_bossHeadCollision->CreateSphere(m_colPosition, m_rotation, 70.0);
     m_bossHeadCollision->SetIsEnableAutoDelete(false);
 
     m_stateMap.emplace(BossIdleState::ID(), new BossIdleState(this));
+    m_stateMap.emplace(BossMoveState::ID(), new BossMoveState(this));
     m_stateMap.emplace(BossAttackState::ID(), new BossAttackState(this));
     m_stateMap.emplace(BossDeadState::ID(), new BossDeadState(this));
+
     // 初期状態設定
     m_currentStateId = BossIdleState::ID();
     auto it = m_stateMap.find(m_currentStateId);
@@ -73,11 +75,34 @@ void Boss::Update()
         m_player = FindGO<Player>("Player");
     }
 
+    if (m_isAttackFlag == true)
+    {
+        if (m_attackCoolTime > 0.0f)
+        {
+            m_attackCoolTime -= g_gameTime->GetFrameDeltaTime();
+        }
+    }
+
+    if (m_attackCoolTime <= 0.0f)
+    {
+        m_isAttackFlag = false;
+        m_attackCoolTime = 5.0f;
+    }
+
     m_attackCollision = FindGO<AttackCollision>("AttackCollision");
 
-    AttackFlag();
+    toPlayer = m_player->GetPosition() - m_position;
+    disToPlayer = toPlayer.Length();
+
+    m_colPosition = m_position + COLPOS_Y;
 
     UpdateChangeState();
+
+    m_bossModel.SetPosition(m_position);
+    m_bossModel.SetRotation(m_rotation);
+    m_bossCollision->SetPosition(m_colPosition);
+    m_bossHeadCollision->SetPosition(m_colPosition);
+    m_bossModel.Update();
 }
 
 void Boss::HP()
@@ -85,37 +110,8 @@ void Boss::HP()
     if (hp <= 0)
     {
         hp = 0;
-        isDeadFlag = true;
+        m_isDeadFlag = true;
     }
-}
-
-void Boss::Attack() {}
-
-void Boss::AttackFlag()
-{
-    toPlayer = m_player->GetPosition() - m_position;
-
-    disToPlayer = toPlayer.Length();
-    if (disToPlayer < 150)
-    {
-        isAttackFlag = true;
-    }
-    else
-    {
-        isAttackFlag = false;
-    }
-
-    m_bossModel.Update();
-}
-
-void Boss::SetAttack(bool attack)
-{
-    isAttackFlag = attack;
-}
-
-void Boss::SetDead(bool dead)
-{
-    isDeadFlag = dead;
 }
 
 void Boss::UpdateChangeState()

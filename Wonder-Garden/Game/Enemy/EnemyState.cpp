@@ -93,21 +93,27 @@ bool EnemyMoveState::RequestState(uint32_t& request)
         request = EnemyIdleState::ID();
         return true;
     }
+
+    if(m_enemy->GetDisToPlayer() < 100.0f)
+    {
+        request = EnemyAttackState::ID();
+        return true;
+    }
+
     return false;
 }
 
 void EnemyAttackState::Enter()
 {
-    m_enemy->m_enemyModel.PlayAnimation(m_enemy->enAnimationClip_Attack);
+    m_enemy->GetModel()->PlayAnimation(m_enemy->enAnimationClip_Attack);
     m_enemy->SetAttackFlag(true);
 }
 
 void EnemyAttackState::Update()
 {
-    if (!m_enemy->m_enemyModel.IsPlayingAnimation())
+    if (!m_enemy->GetModel()->IsPlayingAnimation())
     {
         m_enemy->SetAttackFlag(false);
-        m_enemy->isStopMove = false;
     }
 }
 
@@ -115,6 +121,11 @@ void EnemyAttackState::Exit() {}
 
 bool EnemyAttackState::RequestState(uint32_t& request)
 {
+    if (!m_enemy->GetModel()->IsPlayingAnimation())
+    {
+        request = EnemyIdleState::ID();
+        return true;
+    }
     return false;
 }
 

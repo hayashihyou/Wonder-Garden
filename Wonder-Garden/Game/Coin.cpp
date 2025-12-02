@@ -32,7 +32,7 @@ void Coin::CoinGet()
 {
     Vector3 toPlayer = m_player->GetPosition() - m_position;
     float disToPlayer = toPlayer.Length();
-    if (disToPlayer < 30.0f)
+    if (disToPlayer < 40.0f)
     {
         m_coinCount = FindGO<CoinCount>("CoinCount");
         m_coinCount->AddCoinCount();
