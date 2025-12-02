@@ -22,11 +22,11 @@ CollisionManager::~CollisionManager()
 
 void CollisionManager::CreateEffect(Vector3 position)
 {
-   /* m_effect->Init(EnEffcetType::Hit);
-    m_effect->SetPosition(position);
-    m_effect->SetRotation(Quaternion::Identity);
-    m_effect->SetScale({3.0f, 3.0f, 3.0f});
-    m_effect->Play();*/
+    /* m_effect->Init(EnEffcetType::Hit);
+     m_effect->SetPosition(position);
+     m_effect->SetRotation(Quaternion::Identity);
+     m_effect->SetScale({3.0f, 3.0f, 3.0f});
+     m_effect->Play();*/
 }
 
 void CollisionManager::Update()

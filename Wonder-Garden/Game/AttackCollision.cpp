@@ -31,7 +31,7 @@ void AttackCollision::InitTransform(Vector3 position, Vector3 forward, Transform
     toTargetPos.Set(position);
     m_transform.m_localRotation.Apply(forward);
     float rot = atan2(forward.x, forward.z);
-    rot -= 3.141592/2;
+    rot -= 3.141592 / 2;
     Quaternion q;
     q.SetRotationY(rot);
     q.Apply(toTargetPos);
