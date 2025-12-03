@@ -1,52 +1,61 @@
 #include "stdafx.h"
+
+#include "Player/Player.h"
 #include "Star.h"
 #include "StarCounter.h"
-#include "Player/Player.h"
+
+namespace
+{
+    const float ROTATION_SPEED = 3.0f;                        // 回転速度
+    const float GET_STAR_DISTANCE = 120.0f;                   // 星取得距離
+    const Vector3 STAR_POSITION = {2300.0f, 300.0f, 2730.0f}; // 星の座標
+} // namespace
 
 bool Star::Start()
 {
-	m_star.Init("Assets/modelData/star.tkm");
+    m_player = FindGO<Player>("Player");
 
-	m_pos = { 2300,300,2730 };
+    // 初期化
+    Init();
 
-	m_star.SetPosition(m_pos);
-	m_star.Update();
-	return true;
+    return true;
 }
 
 void Star::Update()
 {
-	if (m_player == nullptr)
-	{
-		m_player = FindGO<Player>("Player");
-	}
+    m_toPlayer = m_player->GetPosition() - m_pos;
+    m_distanceToPlayer = m_toPlayer.Length();
 
-	GetFlag();
+    // 星取得判定
+    if (m_distanceToPlayer <= GET_STAR_DISTANCE)
+    {
+        m_starCounter = FindGO<StarCounter>("StarCounter");
+        m_starCounter->AddStarCount();
+        DeleteGO(this);
+    }
 
-	Rotation();
+    // 回転
+    Rotation();
+
+    // モデル更新
+    m_model.Update();
 }
 
-void Star::GetFlag()
+void Star::Init()
 {
-    toPlayer = m_player->GetPosition() - m_pos;
-	disToPlayer = toPlayer.Length();
-	if (disToPlayer <= 120)
-	{
-		m_starCounter = FindGO<StarCounter>("StarCounter");
-		m_starCounter->AddStarCount();
-		DeleteGO(this);
-	}
-
-	m_star.Update();
+    m_model.Init("Assets/modelData/star.tkm");
+    m_pos = STAR_POSITION;
+    m_model.SetPosition(m_pos);
+    m_model.Update();
 }
 
 void Star::Rotation()
 {
-	m_rot.AddRotationDegY(3.0f);
-	m_star.SetRotation(m_rot);
+    m_rot.AddRotationDegY(ROTATION_SPEED);
+    m_model.SetRotation(m_rot);
 }
 
 void Star::Render(RenderContext& rc)
 {
-	m_star.Draw(rc);
+    m_model.Draw(rc);
 }

@@ -170,9 +170,9 @@ void CollisionManager::Update()
 
             for (EnemyType2* enemyType2 : enemysType2s)
             {
-                if (enemyType2->GetAttackCollision2())
+                if (enemyType2->GetAttackCollision())
                 {
-                    if (enemyType2->GetAttackCollision2()->m_punchCollision->IsHit(*player->GetCharCon()))
+                    if (enemyType2->GetAttackCollision()->m_punchCollision->IsHit(*player->GetCharCon()))
                     {
                         player->Damage(1);
                     }
