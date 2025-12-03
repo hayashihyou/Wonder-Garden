@@ -78,6 +78,9 @@ void Enemy::Update()
     m_colPos = m_position + COLPOS_Y;
     m_colJumpPos = m_position + COLJUMPPOS_Y;
 
+    m_transform.m_localPosition = m_position;
+    m_transform.m_localRotation = m_rotation;
+
     UpdateChangeState();
 
     enemyCollisionObject->SetPosition(m_colPos);

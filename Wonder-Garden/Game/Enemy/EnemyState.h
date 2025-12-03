@@ -65,6 +65,8 @@ public:
     void Exit() override;
 
     virtual bool RequestState(uint32_t& request) override;
+private:
+    void MakeAttackCollision();
 };
 
 class EnemyJumpDeadState : public IEnemyState

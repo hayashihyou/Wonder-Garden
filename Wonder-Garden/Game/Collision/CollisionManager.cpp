@@ -159,9 +159,9 @@ void CollisionManager::Update()
         {
             for (Enemy* enemy : enemys)
             {
-                if (enemy->enemyAttack)
+                if (enemy->GetAttackCollision())
                 {
-                    if (enemy->enemyAttack->m_punchCollision->IsHit(*player->GetCharCon()))
+                    if (enemy->GetAttackCollision()->m_punchCollision->IsHit(*player->GetCharCon()))
                     {
                         player->Damage(1);
                     }

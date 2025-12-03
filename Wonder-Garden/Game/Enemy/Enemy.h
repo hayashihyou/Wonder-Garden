@@ -88,6 +88,9 @@ public:
     void SetAttackFlag(bool attack) { isAttack = attack; }
 
 
+    void SetCollision(AttackCollision* collision) { m_attackCollision = collision; }
+
+
     /// <summary>
     /// 死んでる状態の保持
     /// </summary>
@@ -109,6 +112,9 @@ public:
     Vector3 GetToPlayer() { return m_toPlayer; }
 
 
+    Vector3 GetForward() { return m_forward; }
+
+
     /// <summary>
     /// 向きの取得
     /// </summary>
@@ -121,6 +127,9 @@ public:
     /// </summary>
     /// <returns></returns>
     float GetDisToPlayer() { return m_disToPlayer; }
+
+
+    AttackCollision* GetAttackCollision() { return m_attackCollision; }
 
 
     /// <summary>
@@ -144,6 +153,9 @@ public:
     ModelRender* GetModel() { return &m_enemyModel; }
 
 
+    Transform* GetTransform() { return &m_transform; }
+
+
     /// <summary>
     /// 死亡理由の取得
     /// </summary>
@@ -161,8 +173,6 @@ public:
 public:
     PhysicsStaticObject m_enemyCollision;
     ModelRender m_enemyModel;
-    AttackCollision* m_attackCollision = nullptr;
-    AttackCollision* enemyAttack = nullptr;
 
 
     bool isStopMove = false;
@@ -183,6 +193,7 @@ public:
 
 private:
     AnimationClip m_animationClips[enAnimationClip_Num];
+    AttackCollision* m_attackCollision = nullptr;
     CollisionObject* enemyCollisionObject = nullptr;
     CollisionObject* enemyJumpCollision = nullptr;
     Quaternion m_rotation;
@@ -199,6 +210,7 @@ private:
     Vector3 m_colJumpPos;
     Vector3 m_toPlayer;
     Vector3 toPlayerDir;
+    Vector3 m_forward;
 
 
     float m_disToPlayer;
