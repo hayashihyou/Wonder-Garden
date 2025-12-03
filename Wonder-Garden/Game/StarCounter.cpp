@@ -1,14 +1,8 @@
 #include "stdafx.h"
-#include "StarCounter.h"
 
-bool StarCounter::Start()
-{
-	return true;
-}
+#include "StarCounter.h"
 
 void StarCounter::AddStarCount()
 {
-	starCount++;
+    m_starCount++;
 }
-
-

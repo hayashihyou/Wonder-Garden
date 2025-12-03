@@ -1,23 +1,23 @@
 #include "stdafx.h"
-#include "Stage.h"
 
+#include "Stage.h"
 
 bool Stage::Start()
 {
-    m_stage.Init("Assets/stage/stage.tkm");
-    m_stage.Update();
-    physicsStaticObject.CreateFromModel(m_stage.GetModel(), m_stage.GetModel().GetWorldMatrix());
-   
+    // 初期化
+    Init();
 
     return true;
 }
 
-void Stage::Update()
-{
-  
-}
-
 void Stage::Render(RenderContext& rc)
 {
-    m_stage.Draw(rc);
+    m_stageModel.Draw(rc);
+}
+
+void Stage::Init()
+{
+    m_stageModel.Init("Assets/stage/stage.tkm");
+    m_stageModel.Update();
+    m_physicsStaticObject.CreateFromModel(m_stageModel.GetModel(), m_stageModel.GetModel().GetWorldMatrix());
 }

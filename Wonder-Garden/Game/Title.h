@@ -1,16 +1,42 @@
 #pragma once
+
+/// <summary>
+/// タイトル画面
+/// </summary>
 class Title : public IGameObject
 {
 public:
-	Title() {};
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    Title() {};
 
 private:
-	~Title() {};
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
+    /// <summary>
+    /// デストラクタ
+    /// </summary>
+    ~Title() {};
+
+    /// <summary>
+    /// 開始処理
+    /// </summary>
+    bool Start();
+
+    /// <summary>
+    /// 更新処理
+    /// </summary>
+    void Update();
+
+    /// <summary>
+    /// 描画処理
+    /// </summary>
+    void Render(RenderContext& rc);
+
+    /// <summary>
+    /// 画像初期化
+    /// </summary>
+    void InitSprite();
 
 private:
-	SpriteRender m_title;
+    SpriteRender m_titleSprite; // タイトル画面スプライト
 };
-

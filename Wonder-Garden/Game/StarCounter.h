@@ -1,21 +1,32 @@
 #pragma once
+
+/// <summary>
+/// スターの取得数
+/// </summary>
 class StarCounter : public IGameObject
 {
 public:
-	StarCounter() {};
-	void AddStarCount();
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    StarCounter() {};
 
-	int GetStarCount()
-	{
-		return starCount;
-	}
+    /// <summary>
+    /// スターの取得数を増やす
+    /// </summary>
+    void AddStarCount();
+
+    /// <summary>
+    /// スターの取得数取得
+    /// </summary>
+    int GetStarCount() { return m_starCount; }
 
 private:
-	~StarCounter() {};
-	bool Start();
-
+    /// <summary>
+    /// デストラクタ
+    /// </summary>
+    ~StarCounter() {};
 
 private:
-	int starCount = 0;
+    int m_starCount = 0; // スターの取得数
 };
-

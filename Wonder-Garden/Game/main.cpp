@@ -1,27 +1,25 @@
 #include "stdafx.h"
-#include "system/system.h"
 
-#include<InitGUID.h>
-#include<dxgidebug.h>
+#include <InitGUID.h>
+#include <dxgidebug.h>
 
 #include "Game.h"
-#include "Title.h"
 #include "SoundManager.h"
-
-
+#include "Title.h"
+#include "system/system.h"
 
 void ReportLiveObjects()
 {
-	IDXGIDebug* pDxgiDebug;
+    IDXGIDebug* pDxgiDebug;
 
-	typedef HRESULT(__stdcall* fPtr)(const IID&, void**);
-	HMODULE hDll = GetModuleHandleW(L"dxgidebug.dll");
-	fPtr DXGIGetDebugInterface = (fPtr)GetProcAddress(hDll, "DXGIGetDebugInterface");
+    typedef HRESULT(__stdcall * fPtr)(const IID&, void**);
+    HMODULE hDll = GetModuleHandleW(L"dxgidebug.dll");
+    fPtr DXGIGetDebugInterface = (fPtr) GetProcAddress(hDll, "DXGIGetDebugInterface");
 
-	DXGIGetDebugInterface(__uuidof(IDXGIDebug), (void**)&pDxgiDebug);
+    DXGIGetDebugInterface(__uuidof(IDXGIDebug), (void**) &pDxgiDebug);
 
-	// 出力。
-	pDxgiDebug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_DETAIL);
+    // 出力。
+    pDxgiDebug->ReportLiveObjects(DXGI_DEBUG_D3D12, DXGI_DEBUG_RLO_DETAIL);
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -29,36 +27,36 @@ void ReportLiveObjects()
 ///////////////////////////////////////////////////////////////////
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
-	//ゲームの初期化。
-	InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, TEXT("Game"));
-	//////////////////////////////////////
-	// ここから初期化を行うコードを記述する。
-	//////////////////////////////////////
+    // ゲームの初期化。
+    InitGame(hInstance, hPrevInstance, lpCmdLine, nCmdShow, TEXT("Game"));
+    //////////////////////////////////////
+    // ここから初期化を行うコードを記述する。
+    //////////////////////////////////////
 
-	//Gameクラスのオブジェクトを作成。
-	NewGO<Title>(0, "Title");
+    // タイトル
+    NewGO<Title>(0, "Title");
 
     // サウンドマネージャー
     NewGO<SoundManager>(0);
 
-	//////////////////////////////////////
-	// 初期化を行うコードを書くのはここまで！！！
-	//////////////////////////////////////
-	
-	// ここからゲームループ。
-	while (DispatchWindowMessage())
-	{
-		if (g_pad[0]->IsTrigger(enButtonA) ){
-			g_pad[0]->SetVibration(/*durationSec=*/0.5f, /*normalizedPower=*/1.0f);
-		}
-		K2Engine::GetInstance()->Execute();
-	}
+    //////////////////////////////////////
+    // 初期化を行うコードを書くのはここまで！！！
+    //////////////////////////////////////
 
-	K2Engine::DeleteInstance();
+    // ここからゲームループ。
+    while (DispatchWindowMessage())
+    {
+        if (g_pad[0]->IsTrigger(enButtonA))
+        {
+            g_pad[0]->SetVibration(/*durationSec=*/0.5f, /*normalizedPower=*/1.0f);
+        }
+        K2Engine::GetInstance()->Execute();
+    }
+
+    K2Engine::DeleteInstance();
 
 #ifdef _DEBUG
-	ReportLiveObjects();
+    ReportLiveObjects();
 #endif // _DEBUG
-	return 0;
+    return 0;
 }
-
