@@ -1,12 +1,15 @@
 #include "stdafx.h"
+
 #include "Coin.h"
 #include "CoinCount.h"
-#include "UI/CoinUI.h"
 #include "Player/Player.h"
+#include "UI/CoinUI.h"
 
 bool Coin::Start()
 {
     m_modelRender.Init("Assets/item/coin/coin.tkm");
+
+    m_player = FindGO<Player>("Player");
 
     m_modelRender.SetPosition(m_position);
     m_modelRender.SetRotation(m_rotation);
@@ -17,11 +20,6 @@ bool Coin::Start()
 
 void Coin::Update()
 {
-    if (m_player == nullptr)
-    {
-        m_player = FindGO<Player>("Player");
-    }
-
     CoinGet();
     Rotation();
 
@@ -41,7 +39,7 @@ void Coin::CoinGet()
         DeleteGO(this);
     }
 
-     m_modelRender.SetPosition(m_position);
+    m_modelRender.SetPosition(m_position);
 }
 
 void Coin::Rotation()

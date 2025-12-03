@@ -342,7 +342,7 @@ void PlayerAttackState::MakeAttackCollision()
 {
     // 攻撃用の当たり判定を作成
     m_player->SetCollision(NewGO<AttackCollision>(0, "AttackCollision"));
-    m_player->GetCollision()->InitTransform(ATK_POSITION, GetStickL(m_player->GetMoveDir()), *m_player->GetTransform());
+    m_player->GetCollision()->InitTransform(ATK_POSITION, m_player->GetForward(), *m_player->GetTransform());
     m_player->GetCollision()->CreateCollision();
     m_player->GetCollision()->Update();
 }

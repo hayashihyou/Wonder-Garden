@@ -24,14 +24,13 @@ void AttackCollision::CreateCollision()
     m_punchCollision->SetIsEnableAutoDelete(false);
 }
 
-void AttackCollision::InitTransform(Vector3 position, Vector3 forward, Transform& parentTransform)
+void AttackCollision::InitTransform(Vector3 position,Vector3 forward, Transform& parentTransform)
 {
-    parentTransform.SetParent(&m_transform);
     Vector3 toTargetPos = {0, 0, 0};
     toTargetPos.Set(position);
     m_transform.m_localRotation.Apply(forward);
     float rot = atan2(forward.x, forward.z);
-    rot -= 3.141592/2;
+    rot -= 3.141592 / 2;
     Quaternion q;
     q.SetRotationY(rot);
     q.Apply(toTargetPos);

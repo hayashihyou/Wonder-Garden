@@ -29,9 +29,33 @@ Game::Game(){
 
 Game::~Game()
 {
-    DeleteGO(m_player);
+    const auto& coins = FindGOs<Coin>("Coin");
+    for (auto m_coin : coins)
+    {
+        DeleteGO(m_coin);
+    }
+
+
+    const auto& enemys = FindGOs<Enemy>("Enemy");
+    for (auto m_enemy : enemys)
+    {
+        DeleteGO(m_enemy);
+    }
+
+
+    if (m_boss != nullptr)
+    {
+        DeleteGO(m_boss);
+    }
+
+
+    if (m_star != nullptr)
+    {
+        DeleteGO(m_star);
+    }
+
     EnemyManager::DeleteInstance();
-    DeleteGO(m_boss);
+    DeleteGO(m_player);
     DeleteGO(m_stage);
     DeleteGO(m_skyCube);
     DeleteGO(m_starCounter);
@@ -88,7 +112,7 @@ bool Game::Start()
     });
 
     // コメントアウトする。
-    //PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+    PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
     //エネミーの複数対のモデルを生成
     EnemyManager::GetInstance()->Setup();
@@ -113,14 +137,13 @@ void Game::Update()
 
     if (m_player->GetPosition().y <= -400.0f || m_player->IsGameOver() == true)
     {
-        m_gameOver = NewGO<GameOver>(0, "GameOver");
-        DeleteGO(m_star);
+        NewGO<GameOver>(0, "GameOver");
         DeleteGO(this);
     }
 
     if (m_starCounter->GetStarCount() == 1)
     {
-        m_gameClear = NewGO<GameClear>(0, "GameClear");
+        NewGO<GameClear>(0, "GameClear");
         DeleteGO(this);
     }
 
@@ -133,6 +156,7 @@ void Game::CreateStar()
     {
         if (m_star == nullptr)
         {
+            DeleteGO(m_boss);
             m_star = NewGO<Star>(0, "Star");
         }
     }

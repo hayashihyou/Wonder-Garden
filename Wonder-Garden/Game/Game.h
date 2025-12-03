@@ -76,8 +76,6 @@ private:
 	StarCounter* m_starCounter = nullptr;
 	Title* m_title = nullptr;
 	GameCamera* m_gameCamera = nullptr;
-	GameClear* m_gameClear = nullptr;
-	GameOver* m_gameOver = nullptr;
     HPUI* m_hpUI = nullptr;
     Warp* m_warp = nullptr;
     Cannon* m_cannon = nullptr;

@@ -71,6 +71,12 @@ void Player::Update()
     m_moveDirection.x = g_pad[0]->GetLStickXF();
     m_moveDirection.z = g_pad[0]->GetLStickYF();
 
+    // 移動方向があるなら前方向を更新
+    if ( m_moveDirection.LengthSq() > 0.0f )
+    {
+        m_forward = m_moveDirection;
+    }
+
     m_isJump = g_pad[0]->IsTrigger(enButtonA);
     m_isRun = g_pad[0]->IsPress(enButtonX);
 
@@ -82,7 +88,6 @@ void Player::Update()
     m_playerStatePattern->Update();
 
     // モデルの座標に反映させる
-    m_characterController.SetPosition(m_position);
     m_playerModel.SetPosition(m_position);
     m_playerModel.SetRotation(m_rotation);
     m_playerModel.Update();
