@@ -2,7 +2,7 @@
 #include "CharacterBase.h"
 
 class Player;
-class EnemyStatePattern;
+class IEnemyState;
 class AttackCollision;
 class Enemy : public CharacterBase
 {
@@ -39,6 +39,12 @@ public:
     void Render(RenderContext& rc);
 
 
+    /// <summary>
+    /// 敵の状態の更新
+    /// </summary>
+    void UpdateChangeState();
+
+
 public:
     enum EnDeadReason
     {
@@ -47,9 +53,11 @@ public:
         enDeadReason_Punch,
     };
 
+
     enum EnAnimationClip
     {
         enAnimationClip_Idle,
+        enAnimationClip_Move,
         enAnimationClip_Attack,
         enAnimationClip_JumpDead,
         enAnimationClip_AttackDead,
@@ -58,13 +66,19 @@ public:
 
    
 
-
 public:
     /// <summary>
     /// 位置を保持
     /// </summary>
     /// <param name="pos"></param>
     void SetPosition(Vector3 pos) { m_position = pos; };
+
+
+    /// <summary>
+    /// 向きの保持
+    /// </summary>
+    /// <param name="rot"></param>
+    void SetRotation(Quaternion rot) { m_rotation = rot; };
 
    
     /// <summary>
@@ -90,13 +104,20 @@ public:
 
 
     /// <summary>
-    /// 敵とプレイヤーとの距離を取得
+    /// 敵とプレイヤーとのベクトルを取得
     /// </summary>
     Vector3 GetToPlayer() { return m_toPlayer; }
 
 
     /// <summary>
-    /// 敵とプレイヤーとの距離の長さを取得
+    /// 向きの取得
+    /// </summary>
+    /// <returns></returns>
+    Quaternion GetRotation() { return m_rotation; }
+
+
+    /// <summary>
+    /// 敵とプレイヤーとの距離を取得
     /// </summary>
     /// <returns></returns>
     float GetDisToPlayer() { return m_disToPlayer; }
@@ -115,14 +136,25 @@ public:
     /// <returns></returns>
     CollisionObject* GetHeadCollision() { return enemyJumpCollision; }
 
+
     /// <summary>
     /// モデルを取得
     /// </summary>
     /// <returns></returns>
     ModelRender* GetModel() { return &m_enemyModel; }
 
+
+    /// <summary>
+    /// 死亡理由の取得
+    /// </summary>
+    /// <returns></returns>
     EnDeadReason GetDeadReason() { return m_deadReason; }
 
+
+    /// <summary>
+    /// 死亡しているか確認するためのフラグの取得
+    /// </summary>
+    /// <returns></returns>
     bool IsDead() { return isDead; }
 
 
@@ -131,6 +163,7 @@ public:
     ModelRender m_enemyModel;
     AttackCollision* m_attackCollision = nullptr;
     AttackCollision* enemyAttack = nullptr;
+
 
     bool isStopMove = false;
 
@@ -147,14 +180,18 @@ public:
     void DamageReceiveHead(int damageAmount);
     void Damge(int damageAmount, int reason);
 
+
 private:
     AnimationClip m_animationClips[enAnimationClip_Num];
     CollisionObject* enemyCollisionObject = nullptr;
     CollisionObject* enemyJumpCollision = nullptr;
     Quaternion m_rotation;
     Player* m_player;
-    EnemyStatePattern* m_enemyStatePattern;
     EnDeadReason m_deadReason = enDeadReason_None;
+
+
+    uint32_t m_enemyState;
+    std::map<uint32_t, IEnemyState*> m_stateList;
 
 
     Vector3 m_position;

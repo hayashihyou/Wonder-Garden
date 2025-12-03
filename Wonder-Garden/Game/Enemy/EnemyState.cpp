@@ -9,26 +9,6 @@ namespace
     const float GRAVITY = 0.98f;
 }
 
-EnemyStatePattern::EnemyStatePattern() : StatePatternBase() {}
-
-EnemyStatePattern::~EnemyStatePattern() {}
-
-void EnemyStatePattern::Update()
-{
-    K2_ASSERT(m_currentState != nullptr, "カレントステートねえぞこの野郎");
-    if (m_currentState)
-    {
-        uint32_t request;
-        if (m_currentState->RequestState(request))
-        {
-            m_currentState->Exit();
-            m_currentState = FindState(request);
-            m_currentState->Enter();
-        }
-        m_currentState->Update();
-    }
-}
-
 void EnemyIdleState::Enter()
 {
     m_enemy->GetModel()->PlayAnimation(m_enemy->enAnimationClip_Idle);
@@ -69,19 +49,18 @@ bool EnemyIdleState::RequestState(uint32_t& request)
 
 void EnemyMoveState::Enter()
 {
-    m_enemy->GetModel()->PlayAnimation(m_enemy->enAnimationClip_Idle);
+    m_enemy->GetModel()->PlayAnimation(m_enemy->enAnimationClip_Move);
 }
 
 void EnemyMoveState::Update()
 {
-    // 待機状態でも重力の影響を受ける
-    Vector3 gravity = Vector3(0.0f, GRAVITY, 0.0f);
-
     Vector3 toPlayerDir = m_enemy->GetToPlayer();
     toPlayerDir.Normalize();
-    Vector3 position = m_enemy->GetPosition() + toPlayerDir * 1.0f;
-
+    Vector3 position = m_enemy->GetPosition() + toPlayerDir * 1.5f;
+    Quaternion rotation = m_enemy->GetRotation();
+    rotation.SetRotationYFromDirectionXZ(toPlayerDir);
     m_enemy->SetPosition(position);
+    m_enemy->SetRotation(rotation);
 }
 
 void EnemyMoveState::Exit() {}
@@ -94,9 +73,21 @@ bool EnemyMoveState::RequestState(uint32_t& request)
         return true;
     }
 
-    if(m_enemy->GetDisToPlayer() < 100.0f)
+    if (m_enemy->GetDisToPlayer() < 100.0f)
     {
         request = EnemyAttackState::ID();
+        return true;
+    }
+
+    if (m_enemy->IsDead() == true && m_enemy->GetDeadReason() == m_enemy->enDeadReason_Jump)
+    {
+        request = EnemyJumpDeadState::ID();
+        return true;
+    }
+
+    if (m_enemy->IsDead() == true && m_enemy->GetDeadReason() == m_enemy->enDeadReason_Punch)
+    {
+        request = EnemyAttackDeadState::ID();
         return true;
     }
 
@@ -106,16 +97,9 @@ bool EnemyMoveState::RequestState(uint32_t& request)
 void EnemyAttackState::Enter()
 {
     m_enemy->GetModel()->PlayAnimation(m_enemy->enAnimationClip_Attack);
-    m_enemy->SetAttackFlag(true);
 }
 
-void EnemyAttackState::Update()
-{
-    if (!m_enemy->GetModel()->IsPlayingAnimation())
-    {
-        m_enemy->SetAttackFlag(false);
-    }
-}
+void EnemyAttackState::Update() {}
 
 void EnemyAttackState::Exit() {}
 
@@ -124,6 +108,18 @@ bool EnemyAttackState::RequestState(uint32_t& request)
     if (!m_enemy->GetModel()->IsPlayingAnimation())
     {
         request = EnemyIdleState::ID();
+        return true;
+    }
+
+    if (m_enemy->IsDead() == true && m_enemy->GetDeadReason() == m_enemy->enDeadReason_Jump)
+    {
+        request = EnemyJumpDeadState::ID();
+        return true;
+    }
+
+    if (m_enemy->IsDead() == true && m_enemy->GetDeadReason() == m_enemy->enDeadReason_Punch)
+    {
+        request = EnemyAttackDeadState::ID();
         return true;
     }
     return false;

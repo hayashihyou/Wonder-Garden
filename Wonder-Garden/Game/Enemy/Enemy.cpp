@@ -21,11 +21,10 @@ Enemy::~Enemy()
 
 bool Enemy::Start()
 {
-    m_enemyStatePattern = new EnemyStatePattern;
-
-
     m_animationClips[enAnimationClip_Idle].Load("Assets/animData/enemy/slime/slime_Idle.tka");
     m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
+    m_animationClips[enAnimationClip_Move].Load("Assets/animData/enemy/slime/slime_Move.tka");
+    m_animationClips[enAnimationClip_Move].SetLoopFlag(true);
     m_animationClips[enAnimationClip_Attack].Load("Assets/animData/enemy/slime/slime_Attack.tka");
     m_animationClips[enAnimationClip_Attack].SetLoopFlag(false);
     m_animationClips[enAnimationClip_JumpDead].Load("Assets/animData/enemy/slime/slime_Dead.tka");
@@ -36,23 +35,11 @@ bool Enemy::Start()
 
     m_enemyModel.Init("Assets/modelData/enemy/slime/slime.tkm", m_animationClips, enAnimationClip_Num);
 
-
-     // ステートパターンのステートとIDの登録
-    m_enemyStatePattern->RegisterState<EnemyIdleState>(this);
-    m_enemyStatePattern->RegisterState<EnemyMoveState>(this);
-    m_enemyStatePattern->RegisterState<EnemyAttackState>(this);
-    m_enemyStatePattern->RegisterState<EnemyJumpDeadState>(this);
-    m_enemyStatePattern->RegisterState<EnemyAttackDeadState>(this);
-
-    m_enemyStatePattern->InitializeState<EnemyIdleState>();
-
-
     m_colPos = m_position + COLPOS_Y;
     m_colJumpPos = m_position + COLJUMPPOS_Y;
     m_enemyModel.SetPosition(m_position);
     m_enemyModel.SetRotation(m_rotation);
     m_enemyModel.Update();
-
 
     enemyCollisionObject = NewGO<CollisionObject>(0);
     enemyCollisionObject->CreateSphere(m_colPos, m_rotation, 40.0f);
@@ -61,6 +48,19 @@ bool Enemy::Start()
     enemyJumpCollision->CreateSphere(m_colJumpPos, m_rotation, 25.0f);
     enemyJumpCollision->SetIsEnableAutoDelete(false);
 
+    // 状態追加
+    m_stateList.emplace(EnemyIdleState::ID(), new EnemyIdleState(this));
+    m_stateList.emplace(EnemyMoveState::ID(), new EnemyMoveState(this));
+    m_stateList.emplace(EnemyAttackState::ID(), new EnemyAttackState(this));
+    m_stateList.emplace(EnemyAttackDeadState::ID(), new EnemyAttackDeadState(this));
+    m_stateList.emplace(EnemyJumpDeadState::ID(), new EnemyJumpDeadState(this));
+    // 初期状態設定
+    m_enemyState = EnemyIdleState::ID();
+    auto it = m_stateList.find(m_enemyState);
+    if (it != m_stateList.end())
+    {
+        it->second->Enter();
+    } 
 
     return true;
 }
@@ -78,11 +78,14 @@ void Enemy::Update()
     m_colPos = m_position + COLPOS_Y;
     m_colJumpPos = m_position + COLJUMPPOS_Y;
 
+    UpdateChangeState();
+
     enemyCollisionObject->SetPosition(m_colPos);
     enemyJumpCollision->SetPosition(m_colJumpPos);
     m_enemyModel.SetPosition(m_position);
+    m_enemyModel.SetRotation(m_rotation);
 
-    m_enemyStatePattern->Update();
+
     m_enemyModel.Update();
 }
 
@@ -95,18 +98,35 @@ void Enemy::HP()
     }
 }
 
-
-void Enemy::Rotation()
-{
-    m_rotation.SetRotationYFromDirectionXZ(toPlayerDir);
-    m_transform.m_localRotation = m_rotation;
-    m_enemyModel.SetRotation(m_rotation);
-}
-
-
 void Enemy::Render(RenderContext& rc)
 {
     m_enemyModel.Draw(rc);
+}
+
+
+void Enemy::UpdateChangeState()
+{
+    auto it = m_stateList.find(m_enemyState);
+    if (it == m_stateList.end())
+    {
+        // 処理できない
+        return;
+    }
+    auto* currentState = it->second;
+
+    uint32_t request;
+    if (currentState->RequestState(request))
+    {
+        currentState->Exit();
+        m_enemyState = request;
+        auto it = m_stateList.find(m_enemyState);
+        if (it != m_stateList.end())
+        {
+            currentState = it->second;
+            currentState->Enter();
+        }
+    }
+    currentState->Update();
 }
 
 

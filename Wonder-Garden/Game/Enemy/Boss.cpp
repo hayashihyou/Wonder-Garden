@@ -110,7 +110,6 @@ void Boss::HP()
     if (hp <= 0)
     {
         hp = 0;
-        m_isDeadFlag = true;
     }
 }
 
