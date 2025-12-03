@@ -16,7 +16,7 @@ void BossIdleState::Enter()
 
 void BossIdleState::Update() {}
 
-void BossIdleState::Exit(){}
+void BossIdleState::Exit() {}
 
 bool BossIdleState::RequestState(uint32_t& request)
 {
@@ -26,9 +26,15 @@ bool BossIdleState::RequestState(uint32_t& request)
         return true;
     }
 
-    if (m_boss->GetDisToPlayer() < 150.0f && m_boss->GetAttackFlag() == false)
+    if (m_boss->GetDisToPlayer() < 150.0f && m_boss->IsAttack() == false)
     {
         request = BossAttackState::ID();
+        return true;
+    }
+
+    if (m_boss->IsDead() == true)
+    {
+        request = BossDeadState::ID();
         return true;
     }
 
@@ -63,9 +69,16 @@ bool BossMoveState::RequestState(uint32_t& request)
         request = BossIdleState::ID();
         return true;
     }
-    if (m_boss->GetDisToPlayer() < 150.0f && m_boss->GetAttackFlag() == false)
+
+    if (m_boss->GetDisToPlayer() < 150.0f && m_boss->IsAttack() == false)
     {
         request = BossAttackState::ID();
+        return true;
+    }
+
+    if (m_boss->IsDead() == true)
+    {
+        request = BossDeadState::ID();
         return true;
     }
 
@@ -107,6 +120,12 @@ bool BossAttackState::RequestState(uint32_t& request)
     if (!m_boss->GetModelRender()->IsPlayingAnimation())
     {
         request = BossIdleState::ID();
+        return true;
+    }
+
+    if (m_boss->IsDead() == true)
+    {
+        request = BossDeadState::ID();
         return true;
     }
 
