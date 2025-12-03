@@ -48,6 +48,9 @@ public:
     void Update() override;
     void Exit() override;
     bool RequestState(uint32_t& request) override;
+
+private:
+        void MakeAttackCollision();
 };
 
 class EnemyType2AttackDeadState : public IEnemyType2State

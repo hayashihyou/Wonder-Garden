@@ -1,20 +1,40 @@
 #include "stdafx.h"
 
+#include "AttackCollision.h"
 #include "EnemyType2.h"
 #include "EnemyType2State.h"
 #include "SoundManager.h"
+
+namespace
+{
+    const Vector3 ATK_POSITION = Vector3(40.0f, 30.0f, 0.0f);
+} 
 
 void EnemyType2IdleState::Enter()
 {
     m_enemyType2->GetModelRender()->PlayAnimation(m_enemyType2->enAnimationClip_Idle);
 }
 
-void EnemyType2IdleState::Update() {}
+void EnemyType2IdleState::Update()
+{
+    Vector3 toPlayerDir = m_enemyType2->GetToPlayer();
+    toPlayerDir.Normalize();
+    Vector3 position = m_enemyType2->GetPosition() * 0.0f + toPlayerDir ;
+    Quaternion rotation = m_enemyType2->GetRotation();
+    rotation.SetRotationYFromDirectionXZ(toPlayerDir);
+    m_enemyType2->SetRotation(rotation);
+}
 
 void EnemyType2IdleState::Exit() {}
 
 bool EnemyType2IdleState::RequestState(uint32_t& request)
 {
+    if (m_enemyType2->GetDisToPlayer() < 100.0f)
+    {
+        request = EnemyType2AttackState::ID();
+        return true;
+    }
+
     if (m_enemyType2->IsDead())
     {
         if (m_enemyType2->GetDeadReason() == EnemyType2::enDeadReason_Punch)
@@ -27,11 +47,6 @@ bool EnemyType2IdleState::RequestState(uint32_t& request)
         }
         return true;
     }
-    if (m_enemyType2->IsAttack())
-    {
-        request = EnemyType2AttackState::ID();
-        return true;
-    }
 
     return false;
 }
@@ -39,20 +54,20 @@ bool EnemyType2IdleState::RequestState(uint32_t& request)
 void EnemyType2AttackState::Enter()
 {
     m_enemyType2->GetModelRender()->PlayAnimation(m_enemyType2->enAnimationClip_Attack);
-    // m_enemyType2->SetAttack(true);
 
     // 攻撃音再生
     SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyAttackSE);
+    MakeAttackCollision();
 }
 
 void EnemyType2AttackState::Update()
 {
-    m_enemyType2->Attack();
-
-    if (!m_enemyType2->GetModelRender()->IsPlayingAnimation())
-    {
-        m_enemyType2->SetAttack(false);
-    }
+    Vector3 toPlayerDir = m_enemyType2->GetToPlayer();
+    toPlayerDir.Normalize();
+    Vector3 position = m_enemyType2->GetPosition() * 0.0f + toPlayerDir;
+    Quaternion rotation = m_enemyType2->GetRotation();
+    rotation.SetRotationYFromDirectionXZ(toPlayerDir);
+    m_enemyType2->SetRotation(rotation);
 }
 
 void EnemyType2AttackState::Exit() {}
@@ -64,7 +79,30 @@ bool EnemyType2AttackState::RequestState(uint32_t& request)
         request = EnemyType2IdleState::ID();
         return true;
     }
+
+    if (m_enemyType2->IsDead())
+    {
+        if (m_enemyType2->GetDeadReason() == EnemyType2::enDeadReason_Punch)
+        {
+            request = EnemyType2AttackDeadState::ID();
+        }
+
+        else
+        {
+            request = EnemyType2JumpDeadState::ID();
+        }
+        return true;
+    }
+    
     return false;
+}
+
+void EnemyType2AttackState::MakeAttackCollision()
+{
+    m_enemyType2->SetCollision(NewGO<AttackCollision>(0, "AttackCollision"));
+    m_enemyType2->GetAttackCollision()->InitTransform(ATK_POSITION, m_enemyType2->GetToPlayer(),*m_enemyType2->GetTransform());
+    m_enemyType2->GetAttackCollision()->CreateCollision();
+    m_enemyType2->GetAttackCollision()->Update();
 }
 
 void EnemyType2AttackDeadState::Enter()
@@ -73,7 +111,6 @@ void EnemyType2AttackDeadState::Enter()
     SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
 
     m_enemyType2->GetModelRender()->PlayAnimation(m_enemyType2->enAnimationClip_AttackDead);
-    // m_enemyType2->SetDead(true);
 }
 
 void EnemyType2AttackDeadState::Update()
@@ -97,7 +134,6 @@ void EnemyType2JumpDeadState::Enter()
     SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
 
     m_enemyType2->GetModelRender()->PlayAnimation(m_enemyType2->enAnimationClip_JumpDead);
-    // m_enemyType2->SetDead(true);
 }
 
 void EnemyType2JumpDeadState::Update()

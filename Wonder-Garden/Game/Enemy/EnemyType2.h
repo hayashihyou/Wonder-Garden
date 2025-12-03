@@ -31,22 +31,27 @@ public:
     void Update() override;
     void Render(RenderContext& rc) override;
 
-    void SetAttack(bool attack);
-    void SetDead(bool dead);
-    void SetPosition(Vector3 pos) { m_pos = pos; };
-    Vector3 GetPosition() { return m_pos; };
+    void SetAttack(bool attack) { m_isAttackFlag = attack; }
+    void SetDead(bool dead) { m_isDeadFlag = dead; }
+    void SetPosition(Vector3 position) { m_position = position; }
+    void SetRotation(Quaternion rotation) { m_rotation = rotation; }
+    void SetCollision(AttackCollision* collision) { m_attackCollision = collision; }
+
+
+    Vector3 GetPosition() { return m_position; };
+    Vector3 GetToPlayer() { return toPlayerDir; };
+    float GetDisToPlayer() { return disToPlayer; };
 
     void DamagePunch(int damageAmount);
     void DamageReceiveHead(int damageAmount);
     void Damage(int damageAmount, int reason);
 
     void Rotation();
-    void AttackFlag();
     void MakeCollision();
     void UpdateChangeState();
 
     void HP() override;
-    void Attack() override;
+    void Attack() override{};
     void Move() override{};
 
 public:
@@ -56,11 +61,11 @@ public:
     ModelRender* GetModelRender() { return &m_enemyType2Model; }
     EnDeadReason GetDeadReason() { return m_deadReason; }
 
-    bool IsAttack() { return isAttackFlag; }
-    bool IsDead() { return isDeadFlag; }
+    bool IsAttack() { return m_isAttackFlag; }
+    bool IsDead() { return m_isDeadFlag; }
 
-    AttackCollision* GetAttackCollision2() { return m_enemyType2Attack; }
     AttackCollision* GetAttackCollision() { return m_attackCollision; }
+    Transform* GetTransform() { return &m_transform; }
 
 private:
     ModelRender m_enemyType2Model;
@@ -77,17 +82,16 @@ private:
 
     EnDeadReason m_deadReason = enDeadReason_None;
 
-    Vector3 m_pos;
+    Vector3 m_position;
     Vector3 m_colPos;
     Vector3 m_colJumpPos;
     Vector3 toPlayer;
     Vector3 toPlayerDir;
-    Vector3 m_attackPos{0, 30, 40};
-    Quaternion m_rot;
+    Quaternion m_rotation;
 
     float disToPlayer;
     float m_attackCoolTime = 1.0f;
 
-    bool isDeadFlag = false;
-    bool isAttackFlag = false;
+    bool m_isDeadFlag = false;
+    bool m_isAttackFlag = false;
 };
