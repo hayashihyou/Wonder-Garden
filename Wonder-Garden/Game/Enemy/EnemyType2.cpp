@@ -125,7 +125,7 @@ void EnemyType2::AttackFlag()
 void EnemyType2::MakeCollision()
 {
     m_enemyType2Attack = NewGO<AttackCollision>(0);
-    m_enemyType2Attack->InitTransform(m_pos, m_attackPos, m_transform);
+    //m_enemyType2Attack->InitTransform(m_pos, m_attackPos, m_transform);
     m_enemyType2Attack->CreateCollision();
     m_enemyType2Attack->Update();
 }

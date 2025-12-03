@@ -22,7 +22,6 @@ public:
 
 protected:
     Boss* m_boss = nullptr;
-    Player* m_player = nullptr;
 };
 
 class BossIdleState : public IBossState

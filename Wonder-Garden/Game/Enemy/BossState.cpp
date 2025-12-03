@@ -9,8 +9,6 @@
 
 void BossIdleState::Enter()
 {
-    m_boss = FindGO<Boss>("Boss");
-    m_player = FindGO<Player>("Player");
     m_boss->GetModelRender()->PlayAnimation(m_boss->enAnimationClip_Idle);
 }
 
@@ -32,7 +30,7 @@ bool BossIdleState::RequestState(uint32_t& request)
         return true;
     }
 
-    if (m_boss->IsDead() == true)
+    if (m_boss->GetBossHP() == 0)
     {
         request = BossDeadState::ID();
         return true;
@@ -43,8 +41,6 @@ bool BossIdleState::RequestState(uint32_t& request)
 
 void BossMoveState::Enter()
 {
-    m_boss = FindGO<Boss>("Boss");
-    m_player = FindGO<Player>("Player");
     m_boss->GetModelRender()->PlayAnimation(m_boss->enAnimationClip_Walk);
 }
 
@@ -76,7 +72,7 @@ bool BossMoveState::RequestState(uint32_t& request)
         return true;
     }
 
-    if (m_boss->IsDead() == true)
+    if (m_boss->GetBossHP() == 0)
     {
         request = BossDeadState::ID();
         return true;
@@ -88,7 +84,6 @@ bool BossMoveState::RequestState(uint32_t& request)
 void BossAttackState::Enter()
 {
     srand(time(nullptr));
-    m_boss = FindGO<Boss>("Boss");
     m_boss->SetAttack(true);
     int attack = rand() % 3;
 
@@ -123,7 +118,7 @@ bool BossAttackState::RequestState(uint32_t& request)
         return true;
     }
 
-    if (m_boss->IsDead() == true)
+    if (m_boss->GetBossHP() == 0)
     {
         request = BossDeadState::ID();
         return true;
@@ -134,19 +129,17 @@ bool BossAttackState::RequestState(uint32_t& request)
 
 void BossDeadState::Enter()
 {
-    m_boss = FindGO<Boss>("Boss");
     m_boss->GetModelRender()->PlayAnimation(m_boss->enAnimationClip_Dead);
-    m_boss->SetDead(true);
 }
 
 void BossDeadState::Update()
 {
     if (!m_boss->GetModelRender()->IsPlayingAnimation())
     {
-        // 攻撃音再生
+        // 死んだときのSE再生
         SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
-
-        DeleteGO(m_boss);
+        m_boss->SetDead(true);
+        
     }
 }
 
