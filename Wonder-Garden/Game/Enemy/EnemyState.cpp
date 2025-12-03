@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "AttackCollision.h"
 #include "Enemy.h"
 #include "EnemyState.h"
 #include "Player/Player.h"
@@ -7,6 +8,8 @@
 namespace
 {
     const float GRAVITY = 0.98f;
+
+    const Vector3 ATK_POSITION = Vector3(50.0f, 30.0f, 0.0f);
 }
 
 void EnemyIdleState::Enter()
@@ -97,9 +100,13 @@ bool EnemyMoveState::RequestState(uint32_t& request)
 void EnemyAttackState::Enter()
 {
     m_enemy->GetModel()->PlayAnimation(m_enemy->enAnimationClip_Attack);
+    MakeAttackCollision();
 }
 
-void EnemyAttackState::Update() {}
+void EnemyAttackState::Update()
+{
+    
+}
 
 void EnemyAttackState::Exit() {}
 
@@ -123,6 +130,15 @@ bool EnemyAttackState::RequestState(uint32_t& request)
         return true;
     }
     return false;
+}
+
+void EnemyAttackState::MakeAttackCollision()
+{
+    // 攻撃用の当たり判定を作成
+    m_enemy->SetCollision(NewGO<AttackCollision>(0, "AttackCollision"));
+    m_enemy->GetAttackCollision()->InitTransform(ATK_POSITION, m_enemy->GetToPlayer(), *m_enemy->GetTransform());
+    m_enemy->GetAttackCollision()->CreateCollision();
+    m_enemy->GetAttackCollision()->Update();
 }
 
 void EnemyJumpDeadState::Enter()
