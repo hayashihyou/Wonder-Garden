@@ -127,6 +127,8 @@ public:
     /// <returns></returns>
     Vector3 GetMoveDir() { return m_moveDirection; }
 
+    Vector3 GetForward() { return m_forward; }
+
     /// <summary>
     /// プレイヤーの位置を取得
     /// </summary>
@@ -294,6 +296,7 @@ private:
     float m_moveSpeed;                     // 移動速度
     float m_jumpPower;                     // ジャンプ力
     Vector3 m_moveDirection;                 // 移動方向
+    Vector3 m_forward;                       // 前方向
     Vector3 m_position;                    // 位置
     Vector3 m_addForce;                    // 外部から加えられる力
     Vector3 m_gravity{0.0f, 150.0f, 0.0f}; // 重力

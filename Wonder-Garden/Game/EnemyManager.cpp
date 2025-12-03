@@ -10,10 +10,10 @@ EnemyManager::EnemyManager() {}
 
 EnemyManager::~EnemyManager()
 {
-    for (int i = 0; i < m_enemy.size(); i++)
+    /*for (int i = 0; i < m_enemy.size(); i++)
     {
         DeleteGO(m_enemy.at(i));
-    }
+    }*/
 
     for (int a = 0; a < m_enemyType2.size(); a++)
     {
