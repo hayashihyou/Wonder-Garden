@@ -58,6 +58,9 @@ class BossAttackState : public IBossState
     appState(BossAttackState);
 
 private:
+    void MakeAttackCollision();
+
+private:
     enum EnAttackPattern
     {
         enNormalAttack,

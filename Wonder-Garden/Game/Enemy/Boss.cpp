@@ -35,6 +35,13 @@ bool Boss::Start()
 
     m_bossModel.Init("Assets/modelData/boss/boss.tkm", m_animationClips, enAnimationClip_Num);
 
+    m_bossModel.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName)
+    {
+        OnAnimationEvent(clipName, eventName);
+    });
+
+    auto a = m_animationClips[enAnimationClip_JumpAttack].GetNumAnimationEvent();
+
     m_scale = {1, 1, 1};
 
     m_colPosition = m_position + COLPOS_Y;
@@ -96,6 +103,9 @@ void Boss::Update()
 
     m_colPosition = m_position + COLPOS_Y;
 
+    m_transform.m_localPosition = m_position;
+    m_transform.m_localRotation = m_rotation;
+
     UpdateChangeState();
 
     m_bossModel.SetPosition(m_position);
@@ -110,6 +120,19 @@ void Boss::HP()
     if (hp <= 0)
     {
         hp = 0;
+    }
+}
+
+void Boss::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+    if (wcscmp(eventName, L"attack_start") == 0)
+    {
+        m_isAttackFlag = true;
+    }
+
+    else if (wcscmp(eventName, L"attack_end") == 0)
+    {
+        m_isAttackFlag = false;
     }
 }
 

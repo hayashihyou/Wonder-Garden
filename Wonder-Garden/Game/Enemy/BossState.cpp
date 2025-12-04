@@ -2,10 +2,17 @@
 
 #include <time.h>
 
+#include "AttackCollision.h"
 #include "Boss.h"
 #include "BossState.h"
 #include "Player/Player.h"
 #include "SoundManager.h"
+
+namespace
+{
+    const Vector3 BOSS_ATK_POSITION = {0, 30, 100};
+}
+
 
 void BossIdleState::Enter()
 {
@@ -84,7 +91,6 @@ bool BossMoveState::RequestState(uint32_t& request)
 void BossAttackState::Enter()
 {
     srand(time(nullptr));
-    m_boss->SetAttack(true);
     int attack = rand() % 3;
 
     if (attack == enNormalAttack)
@@ -106,7 +112,13 @@ void BossAttackState::Enter()
     SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyAttackSE);
 }
 
-void BossAttackState::Update() {}
+void BossAttackState::Update()
+{
+    if (m_boss->IsAttack())
+    {
+        MakeAttackCollision();
+    }
+}
 
 void BossAttackState::Exit() {}
 
@@ -125,6 +137,17 @@ bool BossAttackState::RequestState(uint32_t& request)
     }
 
     return false;
+}
+
+void BossAttackState::MakeAttackCollision()
+{
+    if (m_boss->GetAttackCollision() == nullptr)
+    {
+        m_boss->SetCollision(NewGO<AttackCollision>(0));
+        m_boss->GetAttackCollision()->InitTransform(BOSS_ATK_POSITION, m_boss->GetToPlayer(), *m_boss->GetTransform());
+        m_boss->GetAttackCollision()->CreateCollision();
+        m_boss->GetAttackCollision()->Update();
+    }
 }
 
 void BossDeadState::Enter()

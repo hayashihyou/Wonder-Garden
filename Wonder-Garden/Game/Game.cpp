@@ -60,6 +60,8 @@ Game::~Game()
     DeleteGO(m_skyCube);
     DeleteGO(m_starCounter);
     DeleteGO(m_gameCamera);
+    DeleteGO(m_coinCount);
+    DeleteGO(m_coinUI);
     DeleteGO(m_hpUI);
     DeleteGO(m_warp);
     DeleteGO(m_cannon);
@@ -112,7 +114,7 @@ bool Game::Start()
     });
 
     // コメントアウトする。
-    //PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+    PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
     //エネミーの複数対のモデルを生成
     EnemyManager::GetInstance()->Setup();
