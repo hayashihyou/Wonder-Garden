@@ -1,14 +1,42 @@
 #pragma once
-class GameClear :public IGameObject
+
+/// <summary>
+/// ゲームクリア
+/// </summary>
+class GameClear : public IGameObject
 {
 public:
-	GameClear() {};
-private:
-	~GameClear() {};
-	bool Start();
-	void Update();
-	void Render(RenderContext& rc);
-private:
-	SpriteRender m_gameClear;
-};
+    /// <summary>
+    /// コンストラクタ
+    /// </summary>
+    GameClear() {};
 
+private:
+    /// <summary>
+    /// デストラクタ
+    /// </summary>
+    ~GameClear() {};
+
+    /// <summary>
+    /// 開始
+    /// </summary>
+    bool Start();
+
+    /// <summary>
+    /// 更新
+    /// </summary>
+    void Update();
+
+    /// <summary>
+    /// 描画
+    /// </summary>
+    void Render(RenderContext& rc);
+
+    /// <summary>
+    /// 初期化
+    /// </summary>
+    void Init();
+
+private:
+    SpriteRender m_gameClearSprite; // ゲームクリア画像
+};
