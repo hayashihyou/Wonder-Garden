@@ -9,7 +9,7 @@ class Boss : public CharacterBase
 {
 public:
     /// <summary>
-    /// ボスの死亡理由
+    /// 死亡理由
     /// </summary>
     enum EnDeadReason
     {
@@ -240,7 +240,7 @@ private:
 
     float disToPlayer;                                      //プレイヤーまでの距離
     float m_attackCoolTime = 5.0f;                          //攻撃後のクールタイム
-    int hp = 2;                                          //ボスの体力
+    int hp = 2;                                             //ボスの体力
     bool m_isAttackFlag = false;                            //攻撃状態か確認するフラグ
     bool m_isDeadFlag = false;                              //死亡状態か確認するフラグ
 };

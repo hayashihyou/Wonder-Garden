@@ -7,8 +7,8 @@
 
 namespace
 {
-    const Vector3 ATK_POSITION = Vector3(40.0f, 30.0f, 0.0f);
-} 
+    const Vector3 ATK_POSITION = Vector3(30.0f, 30.0f, 0.0f);
+}
 
 void EnemyType2IdleState::Enter()
 {
@@ -19,7 +19,6 @@ void EnemyType2IdleState::Update()
 {
     Vector3 toPlayerDir = m_enemyType2->GetToPlayer();
     toPlayerDir.Normalize();
-    Vector3 position = m_enemyType2->GetPosition() * 0.0f + toPlayerDir ;
     Quaternion rotation = m_enemyType2->GetRotation();
     rotation.SetRotationYFromDirectionXZ(toPlayerDir);
     m_enemyType2->SetRotation(rotation);
@@ -29,7 +28,7 @@ void EnemyType2IdleState::Exit() {}
 
 bool EnemyType2IdleState::RequestState(uint32_t& request)
 {
-    if (m_enemyType2->GetDisToPlayer() < 100.0f)
+    if (m_enemyType2->GetDisToPlayer() < 100.0f && m_enemyType2->IsAttack() == false)
     {
         request = EnemyType2AttackState::ID();
         return true;
@@ -57,18 +56,11 @@ void EnemyType2AttackState::Enter()
 
     // 攻撃音再生
     SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyAttackSE);
+    m_enemyType2->SetAttack(true);
     MakeAttackCollision();
 }
 
-void EnemyType2AttackState::Update()
-{
-    Vector3 toPlayerDir = m_enemyType2->GetToPlayer();
-    toPlayerDir.Normalize();
-    Vector3 position = m_enemyType2->GetPosition() * 0.0f + toPlayerDir;
-    Quaternion rotation = m_enemyType2->GetRotation();
-    rotation.SetRotationYFromDirectionXZ(toPlayerDir);
-    m_enemyType2->SetRotation(rotation);
-}
+void EnemyType2AttackState::Update() {}
 
 void EnemyType2AttackState::Exit() {}
 
@@ -93,14 +85,15 @@ bool EnemyType2AttackState::RequestState(uint32_t& request)
         }
         return true;
     }
-    
+
     return false;
 }
 
 void EnemyType2AttackState::MakeAttackCollision()
 {
-    m_enemyType2->SetCollision(NewGO<AttackCollision>(0, "AttackCollision"));
-    m_enemyType2->GetAttackCollision()->InitTransform(ATK_POSITION, m_enemyType2->GetToPlayer(),*m_enemyType2->GetTransform());
+    m_enemyType2->SetAttackCollision(NewGO<AttackCollision>(0, "AttackCollision"));
+    m_enemyType2->GetAttackCollision()->InitTransform(ATK_POSITION, m_enemyType2->GetToPlayer(),
+                                                      *m_enemyType2->GetTransform());
     m_enemyType2->GetAttackCollision()->CreateCollision();
     m_enemyType2->GetAttackCollision()->Update();
 }

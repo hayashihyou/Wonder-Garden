@@ -9,7 +9,7 @@ namespace
 {
     const float GRAVITY = 0.98f;
 
-    const Vector3 ATK_POSITION = Vector3(50.0f, 30.0f, 0.0f);
+    const Vector3 ATK_POSITION = Vector3(40.0f, 30.0f, 0.0f);
 }
 
 void EnemyIdleState::Enter()
@@ -29,7 +29,7 @@ bool EnemyIdleState::RequestState(uint32_t& request)
         return true;
     }
 
-    if (m_enemy->GetDisToPlayer() < 100.0f)
+    if (m_enemy->GetDisToPlayer() < 100.0f && m_enemy->IsAttack() == false)
     {
         request = EnemyAttackState::ID();
         return true;
@@ -76,7 +76,7 @@ bool EnemyMoveState::RequestState(uint32_t& request)
         return true;
     }
 
-    if (m_enemy->GetDisToPlayer() < 100.0f)
+    if (m_enemy->GetDisToPlayer() < 100.0f && m_enemy->IsAttack() == false)
     {
         request = EnemyAttackState::ID();
         return true;
@@ -100,6 +100,7 @@ bool EnemyMoveState::RequestState(uint32_t& request)
 void EnemyAttackState::Enter()
 {
     m_enemy->GetModel()->PlayAnimation(m_enemy->enAnimationClip_Attack);
+    m_enemy->SetAttack(true);
     MakeAttackCollision();
 }
 

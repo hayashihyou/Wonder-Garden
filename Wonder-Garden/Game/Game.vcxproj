@@ -255,7 +255,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="system\system.cpp" />
-    <ClCompile Include="testIState.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Transform.cpp" />
     <ClCompile Include="UI\CoinUI.cpp" />
@@ -289,7 +288,6 @@
     <ClInclude Include="StarCounter.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />
-    <ClInclude Include="testIState.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="UI\CoinUI.h" />
