@@ -68,6 +68,9 @@ public:
     void Render(RenderContext& rc);
 
 
+    void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+
+
     /// <summary>
     /// ボスの状態の遷移
     /// </summary>
@@ -121,6 +124,13 @@ public:
 
 
     /// <summary>
+    /// 攻撃判定の保持
+    /// </summary>
+    /// <param name="collision"></param>
+    void SetCollision(AttackCollision* collision) { m_attackCollision = collision; }
+
+
+    /// <summary>
     /// 攻撃後のクールタイムの保持
     /// </summary>
     /// <param name="time"></param>
@@ -168,6 +178,16 @@ public:
     /// </summary>
     /// <returns></returns>
     CollisionObject* GetHeadCollision() { return m_bossHeadCollision; }
+
+
+    /// <summary>
+    /// 攻撃判定の取得
+    /// </summary>
+    /// <returns></returns>
+    AttackCollision* GetAttackCollision() { return m_attackCollision; }
+
+
+    Transform* GetTransform() { return &m_transform; }
 
 
     /// <summary>

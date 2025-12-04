@@ -26,15 +26,12 @@ void AttackCollision::CreateCollision()
 
 void AttackCollision::InitTransform(Vector3 position,Vector3 forward, Transform& parentTransform)
 {
+    parentTransform.SetParent(&m_transform);
     Vector3 toTargetPos = {0, 0, 0};
     toTargetPos.Set(position);
-    m_transform.m_localRotation.Apply(forward);
-    float rot = atan2(forward.x, forward.z);
-    rot -= 3.141592 / 2;
-    Quaternion q;
-    q.SetRotationY(rot);
-    q.Apply(toTargetPos);
-    toTargetPos = m_transform.m_localPosition = toTargetPos + parentTransform.m_localPosition;
+    parentTransform.m_localRotation.Apply(toTargetPos);
+    m_transform.m_localPosition = toTargetPos + parentTransform.m_localPosition;
+    m_transform.m_localPosition += forward * 0.2f;
     m_transform.UpdateTransform();
 }
 

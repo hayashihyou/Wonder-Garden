@@ -9,7 +9,7 @@ namespace
 {
     const float GRAVITY = 0.98f;
 
-    const Vector3 ATK_POSITION = Vector3(40.0f, 30.0f, 0.0f);
+    const Vector3 ATK_POSITION = Vector3(0.0f, 10.0f, 30.0f);
 }
 
 void EnemyIdleState::Enter()
@@ -26,12 +26,6 @@ bool EnemyIdleState::RequestState(uint32_t& request)
     if (m_enemy->GetDisToPlayer() < 200.0f)
     {
         request = EnemyMoveState ::ID();
-        return true;
-    }
-
-    if (m_enemy->GetDisToPlayer() < 100.0f && m_enemy->IsAttack() == false)
-    {
-        request = EnemyAttackState::ID();
         return true;
     }
 

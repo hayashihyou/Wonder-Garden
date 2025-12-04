@@ -7,7 +7,7 @@
 
 namespace
 {
-    const Vector3 ATK_POSITION = Vector3(30.0f, 30.0f, 0.0f);
+    const Vector3 ATK_POSITION = Vector3(0.0f, 30.0f, 20.0f);
 }
 
 void EnemyType2IdleState::Enter()
