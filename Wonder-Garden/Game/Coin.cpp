@@ -35,6 +35,11 @@ void Coin::CoinGet()
         m_coinCount = FindGO<CoinCount>("CoinCount");
         m_coinCount->AddCoinCount();
         int hp = m_player->GetHP() + 1;
+        if (hp >= 8)
+        {
+            //体力の上限突破をしないように調整
+            hp = 8;
+        }
         m_player->SetHP(hp);
         DeleteGO(this);
     }
