@@ -7,6 +7,25 @@ class AttackCollision;
 class Enemy : public CharacterBase
 {
 public:
+    enum EnDeadReason
+    {
+        enDeadReason_None,
+        enDeadReason_Jump,
+        enDeadReason_Punch,
+    };
+
+    enum EnAnimationClip
+    {
+        enAnimationClip_Idle,
+        enAnimationClip_Move,
+        enAnimationClip_Attack,
+        enAnimationClip_JumpDead,
+        enAnimationClip_AttackDead,
+        enAnimationClip_Num,
+    };
+
+
+public:
     /// <summary>
     /// コンストラクタ
     /// </summary>
@@ -40,31 +59,26 @@ public:
 
 
     /// <summary>
-    /// 敵の状態の更新
+    /// プレイヤーのパンチ攻撃を受けたときのダメージ処理
     /// </summary>
-    void UpdateChangeState();
+    /// <param name="damageAmount"></param>
+    void DamagePunch(int damageAmount);
 
 
-public:
-    enum EnDeadReason
-    {
-        enDeadReason_None,
-        enDeadReason_Jump,
-        enDeadReason_Punch,
-    };
+    /// <summary>
+    /// プレイヤーのジャンプ攻撃を受けたときのダメージ処理
+    /// </summary>
+    /// <param name="damageAmount"></param>
+    void DamageReceiveHead(int damageAmount);
 
 
-    enum EnAnimationClip
-    {
-        enAnimationClip_Idle,
-        enAnimationClip_Move,
-        enAnimationClip_Attack,
-        enAnimationClip_JumpDead,
-        enAnimationClip_AttackDead,
-        enAnimationClip_Num,
-    };
+    /// <summary>
+    /// 被ダメージ処理
+    /// </summary>
+    /// <param name="damageAmount"></param>
+    /// <param name="reason"></param>
+    void Damge(int damageAmount, int reason);
 
-   
 
 public:
     /// <summary>
@@ -85,9 +99,13 @@ public:
     /// 攻撃状態の保持
     /// </summary>
     /// <param name="attack"></param>
-    void SetAttackFlag(bool attack) { isAttack = attack; }
+    void SetAttack(bool attack) { m_isAttackFlag = attack; }
 
 
+    /// <summary>
+    /// 攻撃判定の保持
+    /// </summary>
+    /// <param name="collision"></param>
     void SetCollision(AttackCollision* collision) { m_attackCollision = collision; }
 
 
@@ -95,7 +113,7 @@ public:
     /// 死んでる状態の保持
     /// </summary>
     /// <param name="dead"></param>
-    void SetDeadFlag(bool dead) { isDead = dead; }
+    void SetDeadFlag(bool dead) { m_isDeadFlag = dead; }
 
 
 public:
@@ -112,6 +130,10 @@ public:
     Vector3 GetToPlayer() { return m_toPlayer; }
 
 
+    /// <summary>
+    /// 敵の正面の向きを取得
+    /// </summary>
+    /// <returns></returns>
     Vector3 GetForward() { return m_forward; }
 
 
@@ -129,6 +151,10 @@ public:
     float GetDisToPlayer() { return m_disToPlayer; }
 
 
+    /// <summary>
+    /// 攻撃判定の取得
+    /// </summary>
+    /// <returns></returns>
     AttackCollision* GetAttackCollision() { return m_attackCollision; }
 
 
@@ -153,6 +179,10 @@ public:
     ModelRender* GetModel() { return &m_enemyModel; }
 
 
+    /// <summary>
+    /// トランスフォームの取得
+    /// </summary>
+    /// <returns></returns>
     Transform* GetTransform() { return &m_transform; }
 
 
@@ -164,10 +194,17 @@ public:
 
 
     /// <summary>
+    /// 攻撃しているか確認するためのフラグの取得
+    /// </summary>
+    /// <returns></returns>
+    bool IsAttack() { return m_isAttackFlag; }
+
+
+    /// <summary>
     /// 死亡しているか確認するためのフラグの取得
     /// </summary>
     /// <returns></returns>
-    bool IsDead() { return isDead; }
+    bool IsDead() { return m_isDeadFlag; }
 
 
 public:
@@ -175,20 +212,26 @@ public:
     ModelRender m_enemyModel;
 
 
-    bool isStopMove = false;
-
-
 private:
-    void Rotation();
+    /// <summary>
+    /// 攻撃後のクールタイムの更新
+    /// </summary>
+    void AttackCoolTimeUpdate();
+
+
+    /// <summary>
+    /// 敵の状態の更新
+    /// </summary>
+    void UpdateChangeState();
+
+
     void HP() override;
     void Attack() override{}; 
     void Move() override{};
 
 
 public:
-    void DamagePunch(int damageAmount);
-    void DamageReceiveHead(int damageAmount);
-    void Damge(int damageAmount, int reason);
+    
 
 
 private:
@@ -217,6 +260,6 @@ private:
     float m_attackCoolTimer = 1.0f;
 
 
-    bool isAttack = false;
-    bool isDead = false;
+    bool m_isAttackFlag = false;
+    bool m_isDeadFlag = false;
 };

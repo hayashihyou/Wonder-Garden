@@ -10,8 +10,8 @@ namespace
     const Vector3 POS_Y = {0, 35, 0};
     const Vector3 JUMPPOS = {0, 45, 0};
 
-    const float ATTACK_COOL_TIME = 1.0f;
-} // namespace
+    const float ATTACK_COOL_TIME = 5.0f;
+}
 
 EnemyType2::~EnemyType2()
 {
@@ -21,6 +21,8 @@ EnemyType2::~EnemyType2()
 
 bool EnemyType2::Start()
 {
+    m_player = FindGO<Player>("Player");
+
     m_animationClips[enAnimationClip_Idle].Load("Assets/animData/enemy/stone/StoneMonstorIdle.tka");
     m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
     m_animationClips[enAnimationClip_Attack].Load("Assets/animData/enemy/stone/StoneMonstorAttack.tka");
@@ -31,8 +33,8 @@ bool EnemyType2::Start()
     m_animationClips[enAnimationClip_AttackDead].SetLoopFlag(false);
 
     m_enemyType2Model.Init("Assets/modelData/enemy/stone/StoneMonster.tkm", m_animationClips, enAnimationClip_Num);
-    m_colPos = m_position + POS_Y;
 
+    m_colPos = m_position + POS_Y;
     m_colJumpPos = m_position + JUMPPOS;
 
     m_enemyType2Model.SetPosition(m_position);
@@ -44,16 +46,17 @@ bool EnemyType2::Start()
     m_stateList.emplace(EnemyType2AttackState::ID(), new EnemyType2AttackState(this));
     m_stateList.emplace(EnemyType2AttackDeadState::ID(), new EnemyType2AttackDeadState(this));
     m_stateList.emplace(EnemyType2JumpDeadState::ID(), new EnemyType2JumpDeadState(this));
+
     // 初期状態設定
     m_enemyType2State = EnemyType2IdleState::ID();
+
     auto it = m_stateList.find(m_enemyType2State);
     if (it != m_stateList.end())
     {
         it->second->Enter();
     }
 
-
-     enemyType2Collision = NewGO<CollisionObject>(0);
+    enemyType2Collision = NewGO<CollisionObject>(0);
     enemyType2Collision->CreateSphere(m_colPos, m_rotation, 25.0f);
     enemyType2Collision->SetIsEnableAutoDelete(false);
 
@@ -61,17 +64,11 @@ bool EnemyType2::Start()
     enemyType2JumpCollision->CreateSphere(m_colJumpPos, m_rotation, 20.0f);
     enemyType2JumpCollision->SetIsEnableAutoDelete(false);
 
-
     return true;
 }
 
 void EnemyType2::Update()
 {
-    if (m_player == nullptr)
-    {
-        m_player = FindGO<Player>("Player");
-    }
-
     toPlayer = m_player->GetPosition() - m_position;
     disToPlayer = toPlayer.Length();
 
@@ -81,6 +78,7 @@ void EnemyType2::Update()
     m_transform.m_localPosition = m_position;
     m_transform.m_localRotation = m_rotation;
 
+    AttackCoolTimeUpdate();
     UpdateChangeState();
 
     enemyType2Collision->SetPosition(m_colPos);
@@ -96,6 +94,20 @@ void EnemyType2::HP()
     {
         hp = 0;
         m_isDeadFlag = true;
+    }
+}
+
+void EnemyType2::AttackCoolTimeUpdate()
+{
+    if (m_isAttackFlag)
+    {
+        m_attackCoolTime-=g_gameTime->GetFrameDeltaTime();
+    }
+
+    if (m_attackCoolTime <= 0.0f)
+    {
+        m_isAttackFlag = false;
+        m_attackCoolTime = ATTACK_COOL_TIME;
     }
 }
 

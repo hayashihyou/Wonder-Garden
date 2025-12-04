@@ -10,7 +10,7 @@ namespace
     const Vector3 COLPOS_Y = Vector3{0, 20, 0};
     const Vector3 COLJUMPPOS_Y = Vector3{0, 35, 0};
 
-    const float ATTACK_COOLTIME = 1.0f;
+    const float ATTACK_COOLTIME = 3.0f;
 }
 
 Enemy::~Enemy()
@@ -21,6 +21,9 @@ Enemy::~Enemy()
 
 bool Enemy::Start()
 {
+    m_player = FindGO<Player>("Player");
+
+
     m_animationClips[enAnimationClip_Idle].Load("Assets/animData/enemy/slime/slime_Idle.tka");
     m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
     m_animationClips[enAnimationClip_Move].Load("Assets/animData/enemy/slime/slime_Move.tka");
@@ -67,11 +70,6 @@ bool Enemy::Start()
 
 void Enemy::Update()
 {
-    if (m_player == nullptr)
-    {
-        m_player = FindGO<Player>("Player");
-    }
-
     m_toPlayer = m_player->GetPosition() - m_position;
     m_disToPlayer = m_toPlayer.Length();
 
@@ -81,6 +79,7 @@ void Enemy::Update()
     m_transform.m_localPosition = m_position;
     m_transform.m_localRotation = m_rotation;
 
+    AttackCoolTimeUpdate();
     UpdateChangeState();
 
     enemyCollisionObject->SetPosition(m_colPos);
@@ -97,7 +96,7 @@ void Enemy::HP()
     if (hp <= 0)
     {
         hp = 0;
-        isDead = true;
+        m_isDeadFlag = true;
     }
 }
 
@@ -106,6 +105,19 @@ void Enemy::Render(RenderContext& rc)
     m_enemyModel.Draw(rc);
 }
 
+void Enemy::AttackCoolTimeUpdate()
+{
+    if (m_isAttackFlag)
+    {
+        m_attackCoolTimer -= g_gameTime->GetFrameDeltaTime();
+    }
+
+    if (m_attackCoolTimer <= 0.0f)
+    {
+        m_isAttackFlag = false;
+        m_attackCoolTimer = ATTACK_COOLTIME;
+    }
+}
 
 void Enemy::UpdateChangeState()
 {
