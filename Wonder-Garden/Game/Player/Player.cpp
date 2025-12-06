@@ -35,6 +35,11 @@ bool Player::Start()
 
     m_playerModel.Init("Assets/modelData/player/player.tkm", m_animationClips, enAnimationClip_Num);
 
+    m_playerModel.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName)
+    {
+        OnAnimationEvent(clipName, eventName);
+    });
+
     // m_position = {-1952.0f, 103.0f, 2418.0f};
     m_position = Vector3::Zero;
     m_moveDirection = Vector3::Zero;
@@ -93,6 +98,18 @@ void Player::Update()
     m_playerModel.Update();
 }
 
+void Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+    if (wcscmp(eventName, L"attack_start") == 0)
+    {
+        m_isAttack = true;
+    }
+    else if (wcscmp(eventName, L"attack_end") == 0)
+    {
+        m_isAttack = false;
+    }
+}
+
 void Player::HP()
 {
     if (m_hp > 0)
@@ -112,8 +129,6 @@ void Player::Attack()
     m_isAttack = g_pad[0]->IsTrigger(enButtonB);
 }
 
-
-
 void Player::Move() {}
 
 void Player::Rotation() {}
@@ -125,6 +140,15 @@ void Player::Damage(int damageAmount)
         m_hp -= damageAmount;
         HP();
         m_isInvincible = true;
+    }
+}
+
+void Player::DeleteAttackCollision()
+{
+    if (m_punchCollision != nullptr)
+    {
+        DeleteGO(m_punchCollision);
+        m_punchCollision = nullptr;
     }
 }
 
@@ -162,3 +186,5 @@ void Player::Render(RenderContext& rc)
         }
     }
 }
+
+

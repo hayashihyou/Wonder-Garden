@@ -29,6 +29,7 @@ namespace
     }
 
     const float GRAVITY = 0.98f;
+    const float ATK_COL_SIZE = 30.0f;
     const Vector3 ATK_POSITION = {0.0f, 30.0f, 50.0f};
 } // namespace
 
@@ -304,14 +305,28 @@ bool PlayerJumpState::RequestState(uint32_t& request)
 void PlayerAttackState::Enter()
 {
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Attack);
-    m_player->SetAttack(true);
-    MakeAttackCollision();
 
     // パンチ音再生
     SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::PlayerPunchSE);
 }
 
-void PlayerAttackState::Update() {}
+void PlayerAttackState::Update()
+{
+    if (m_player->IsAttack())
+    {
+        if (m_player->GetCollision() != nullptr)
+        {
+            return;
+        }
+
+        MakeAttackCollision();
+    }
+
+    else 
+    {
+        m_player->DeleteAttackCollision();
+    }
+}
 
 void PlayerAttackState::Exit() {}
 
@@ -343,7 +358,7 @@ void PlayerAttackState::MakeAttackCollision()
     // 攻撃用の当たり判定を作成
     m_player->SetCollision(NewGO<AttackCollision>(0, "AttackCollision"));
     m_player->GetCollision()->InitTransform(ATK_POSITION, GetStickL(m_player->GetForward()), *m_player->GetTransform());
-    m_player->GetCollision()->CreateCollision();
+    m_player->GetCollision()->CreateCollision(ATK_COL_SIZE);
     m_player->GetCollision()->Update();
 }
 
@@ -356,7 +371,13 @@ void PlayerDamageState::Enter()
     SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::PlayerDamageSE);
 }
 
-void PlayerDamageState::Update() {}
+void PlayerDamageState::Update()
+{
+    if (!m_player->GetModel()->IsPlayingAnimation())
+    {
+        m_player->DeleteAttackCollision();
+    }
+}
 
 void PlayerDamageState::Exit() {}
 
@@ -380,6 +401,7 @@ void PlayerDeadState::Update()
 {
     if (!m_player->GetModel()->IsPlayingAnimation())
     {
+        m_player->DeleteAttackCollision();
         m_player->SetGameOverFlag(true);
     }
 }
