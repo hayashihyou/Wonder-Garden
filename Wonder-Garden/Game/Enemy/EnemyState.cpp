@@ -8,7 +8,7 @@
 namespace
 {
     const float GRAVITY = 0.98f;
-
+    const float ATK_COL_SIZE = 15.0f;
     const Vector3 ATK_POSITION = Vector3(0.0f, 10.0f, 30.0f);
 }
 
@@ -94,13 +94,27 @@ bool EnemyMoveState::RequestState(uint32_t& request)
 void EnemyAttackState::Enter()
 {
     m_enemy->GetModel()->PlayAnimation(m_enemy->enAnimationClip_Attack);
-    m_enemy->SetAttack(true);
-    MakeAttackCollision();
 }
 
 void EnemyAttackState::Update()
 {
-    
+    if (m_enemy->IsAttack())
+    {
+        if (m_enemy->GetAttackCollision() != nullptr)
+        {
+            return;
+        }
+
+        MakeAttackCollision();
+    }
+
+    else
+    {
+        if (m_enemy->GetAttackCollision() != nullptr)
+        {
+            m_enemy->DeleteAttackCollision();
+        }
+    }
 }
 
 void EnemyAttackState::Exit() {}
@@ -132,7 +146,7 @@ void EnemyAttackState::MakeAttackCollision()
     // 攻撃用の当たり判定を作成
     m_enemy->SetCollision(NewGO<AttackCollision>(0, "AttackCollision"));
     m_enemy->GetAttackCollision()->InitTransform(ATK_POSITION, m_enemy->GetToPlayer(), *m_enemy->GetTransform());
-    m_enemy->GetAttackCollision()->CreateCollision();
+    m_enemy->GetAttackCollision()->CreateCollision(ATK_COL_SIZE);
     m_enemy->GetAttackCollision()->Update();
 }
 
@@ -145,6 +159,7 @@ void EnemyJumpDeadState::Update()
 {
     if (!m_enemy->m_enemyModel.IsPlayingAnimation())
     {
+        m_enemy->DeleteAttackCollision();
         DeleteGO(m_enemy);
     }
 }
@@ -165,6 +180,7 @@ void EnemyAttackDeadState::Update()
 {
     if (!m_enemy->m_enemyModel.IsPlayingAnimation())
     {
+        m_enemy->DeleteAttackCollision();
         DeleteGO(m_enemy);
     }
 }

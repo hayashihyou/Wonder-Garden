@@ -65,6 +65,9 @@ public:
     void Render(RenderContext& rc) override;
 
 
+    void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+
+
     void HP() override;
 
 
@@ -93,6 +96,13 @@ public:
     /// <param name="damageAmount"></param>
     /// <param name="reason"></param>
     void Damage(int damageAmount, int reason);
+
+
+    /// <summary>
+    /// 攻撃判定の削除
+    /// </summary>
+    void DeleteAttackCollision();
+
 
 
 public:

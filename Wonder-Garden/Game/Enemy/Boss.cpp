@@ -82,22 +82,6 @@ void Boss::Update()
         m_player = FindGO<Player>("Player");
     }
 
-    if (m_isAttackFlag == true)
-    {
-        if (m_attackCoolTime > 0.0f)
-        {
-            m_attackCoolTime -= g_gameTime->GetFrameDeltaTime();
-        }
-    }
-
-    if (m_attackCoolTime <= 0.0f)
-    {
-        m_isAttackFlag = false;
-        m_attackCoolTime = 5.0f;
-    }
-
-    m_attackCollision = FindGO<AttackCollision>("AttackCollision");
-
     toPlayer = m_player->GetPosition() - m_position;
     disToPlayer = toPlayer.Length();
 
@@ -182,4 +166,13 @@ void Boss::Damage(int damageAmount, int reason)
     HP();
 
     m_deadReason = (EnDeadReason) reason;
+}
+
+void Boss::DeleteAttackCollision()
+{
+    if (m_attackCollision != nullptr)
+    {
+        DeleteGO(m_attackCollision);
+        m_attackCollision = nullptr;
+    }
 }

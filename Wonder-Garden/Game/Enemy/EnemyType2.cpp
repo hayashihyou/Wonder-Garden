@@ -34,6 +34,11 @@ bool EnemyType2::Start()
 
     m_enemyType2Model.Init("Assets/modelData/enemy/stone/StoneMonster.tkm", m_animationClips, enAnimationClip_Num);
 
+    m_enemyType2Model.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName)
+    {
+        OnAnimationEvent(clipName, eventName);
+    });
+
     m_colPos = m_position + POS_Y;
     m_colJumpPos = m_position + JUMPPOS;
 
@@ -88,6 +93,18 @@ void EnemyType2::Update()
     m_enemyType2Model.Update();
 }
 
+
+void EnemyType2::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+    if (wcscmp(eventName, L"attack_start") == 0)
+    {
+        m_isAttackFlag = true;
+    }
+    else if (wcscmp(eventName, L"attack_end") == 0)
+    {
+        m_isAttackFlag = false;
+    }
+}
 void EnemyType2::HP()
 {
     if (hp <= 0)
@@ -157,4 +174,13 @@ void EnemyType2::Damage(int damageAmount, int reason)
     HP();
 
     m_deadReason = (EnDeadReason) reason;
+}
+
+void EnemyType2::DeleteAttackCollision()
+{
+    if (m_attackCollision != nullptr)
+    {
+        DeleteGO(m_attackCollision);
+        m_attackCollision = nullptr;
+    }
 }

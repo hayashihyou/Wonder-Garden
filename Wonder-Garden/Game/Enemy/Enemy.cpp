@@ -38,6 +38,11 @@ bool Enemy::Start()
 
     m_enemyModel.Init("Assets/modelData/enemy/slime/slime.tkm", m_animationClips, enAnimationClip_Num);
 
+    m_enemyModel.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName)
+    {
+        OnAnimationEvent(clipName, eventName);
+    });
+
     m_colPos = m_position + COLPOS_Y;
     m_colJumpPos = m_position + COLJUMPPOS_Y;
     m_enemyModel.SetPosition(m_position);
@@ -105,6 +110,18 @@ void Enemy::Render(RenderContext& rc)
     m_enemyModel.Draw(rc);
 }
 
+void Enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+    if (wcscmp(eventName, L"attack_start") == 0)
+    {
+        m_isAttackFlag = true;
+    }
+    else if (wcscmp(eventName, L"attack_end") == 0)
+    {
+        m_isAttackFlag = false;
+    }
+}
+
 void Enemy::AttackCoolTimeUpdate()
 {
     if (m_isAttackFlag)
@@ -161,4 +178,13 @@ void Enemy::Damge(int damageAmount, int reason)
     HP();
 
     m_deadReason = (EnDeadReason)reason;
+}
+
+void Enemy::DeleteAttackCollision()
+{
+    if (m_attackCollision != nullptr)
+    {
+        DeleteGO(m_attackCollision);
+        m_attackCollision = nullptr;
+    }
 }

@@ -10,9 +10,9 @@
 
 namespace
 {
-    const Vector3 BOSS_ATK_POSITION = {0, 30, 100};
-}
-
+    const float ATK_COL_SIZE = 60.0f;
+    const Vector3 BOSS_ATK_POSITION = {0, 30, 200};
+} // namespace
 
 void BossIdleState::Enter()
 {
@@ -116,7 +116,18 @@ void BossAttackState::Update()
 {
     if (m_boss->IsAttack())
     {
+        if (m_boss->GetAttackCollision() != nullptr)
+        {
+            return;
+        }
+
+        // 攻撃判定生成
         MakeAttackCollision();
+    }
+    else
+    {
+        // 当たり判定破棄
+        m_boss->DeleteAttackCollision();
     }
 }
 
@@ -141,13 +152,10 @@ bool BossAttackState::RequestState(uint32_t& request)
 
 void BossAttackState::MakeAttackCollision()
 {
-    if (m_boss->GetAttackCollision() == nullptr)
-    {
-        m_boss->SetCollision(NewGO<AttackCollision>(0));
-        m_boss->GetAttackCollision()->InitTransform(BOSS_ATK_POSITION, m_boss->GetToPlayer(), *m_boss->GetTransform());
-        m_boss->GetAttackCollision()->CreateCollision();
-        m_boss->GetAttackCollision()->Update();
-    }
+    m_boss->SetCollision(NewGO<AttackCollision>(0));
+    m_boss->GetAttackCollision()->InitTransform(BOSS_ATK_POSITION, m_boss->GetToPlayer(), *m_boss->GetTransform());
+    m_boss->GetAttackCollision()->CreateCollision(ATK_COL_SIZE);
+    m_boss->GetAttackCollision()->Update();
 }
 
 void BossDeadState::Enter()
@@ -162,7 +170,7 @@ void BossDeadState::Update()
         // 死んだときのSE再生
         SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
         m_boss->SetDead(true);
-        
+        m_boss->DeleteAttackCollision();
     }
 }
 

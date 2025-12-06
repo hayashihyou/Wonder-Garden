@@ -58,9 +58,6 @@ class BossAttackState : public IBossState
     appState(BossAttackState);
 
 private:
-    void MakeAttackCollision();
-
-private:
     enum EnAttackPattern
     {
         enNormalAttack,
@@ -78,6 +75,7 @@ public:
     void Update();
     void Exit();
     bool RequestState(uint32_t& request);
+    void MakeAttackCollision();
 };
 
 class BossDeadState : public IBossState
