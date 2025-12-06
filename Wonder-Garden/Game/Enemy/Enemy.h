@@ -57,6 +57,7 @@ public:
     /// <param name="rc"></param>
     void Render(RenderContext& rc);
 
+    void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 
     /// <summary>
     /// プレイヤーのパンチ攻撃を受けたときのダメージ処理
@@ -78,6 +79,12 @@ public:
     /// <param name="damageAmount"></param>
     /// <param name="reason"></param>
     void Damge(int damageAmount, int reason);
+
+
+    /// <summary>
+    /// 攻撃判定の削除
+    /// </summary>
+    void DeleteAttackCollision();
 
 
 public:

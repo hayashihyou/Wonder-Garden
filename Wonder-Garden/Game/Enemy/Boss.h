@@ -238,6 +238,11 @@ public:
     /// <returns></returns>
     bool IsAttack() { return m_isAttackFlag; }
 
+    /// <summary>
+    /// 攻撃判定の削除
+    /// </summary>
+    void DeleteAttackCollision();
+
 
 private:
     Player* m_player = nullptr;                             //プレイヤー

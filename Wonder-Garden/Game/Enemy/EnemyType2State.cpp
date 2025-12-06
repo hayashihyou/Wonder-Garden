@@ -8,6 +8,7 @@
 namespace
 {
     const Vector3 ATK_POSITION = Vector3(0.0f, 30.0f, 20.0f);
+    const float ATK_COL_SIZE = 15.0f;
 }
 
 void EnemyType2IdleState::Enter()
@@ -56,11 +57,28 @@ void EnemyType2AttackState::Enter()
 
     // 攻撃音再生
     SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyAttackSE);
-    m_enemyType2->SetAttack(true);
-    MakeAttackCollision();
 }
 
-void EnemyType2AttackState::Update() {}
+void EnemyType2AttackState::Update()
+{
+    if (m_enemyType2->IsAttack())
+    {
+        if (m_enemyType2->GetAttackCollision() != nullptr)
+        {
+            return;    
+        }
+
+        MakeAttackCollision();
+    }
+
+    else
+    {
+        if (m_enemyType2->GetAttackCollision() != nullptr)
+        {
+            m_enemyType2->DeleteAttackCollision();
+        }
+    }
+}
 
 void EnemyType2AttackState::Exit() {}
 
@@ -92,9 +110,8 @@ bool EnemyType2AttackState::RequestState(uint32_t& request)
 void EnemyType2AttackState::MakeAttackCollision()
 {
     m_enemyType2->SetAttackCollision(NewGO<AttackCollision>(0, "AttackCollision"));
-    m_enemyType2->GetAttackCollision()->InitTransform(ATK_POSITION, m_enemyType2->GetToPlayer(),
-                                                      *m_enemyType2->GetTransform());
-    m_enemyType2->GetAttackCollision()->CreateCollision();
+    m_enemyType2->GetAttackCollision()->InitTransform(ATK_POSITION, m_enemyType2->GetToPlayer(),*m_enemyType2->GetTransform());
+    m_enemyType2->GetAttackCollision()->CreateCollision(ATK_COL_SIZE);
     m_enemyType2->GetAttackCollision()->Update();
 }
 
@@ -110,6 +127,7 @@ void EnemyType2AttackDeadState::Update()
 {
     if (!m_enemyType2->GetModelRender()->IsPlayingAnimation())
     {
+        m_enemyType2->DeleteAttackCollision();
         DeleteGO(m_enemyType2);
     }
 }
@@ -133,6 +151,7 @@ void EnemyType2JumpDeadState::Update()
 {
     if (!m_enemyType2->GetModelRender()->IsPlayingAnimation())
     {
+        m_enemyType2->DeleteAttackCollision();
         DeleteGO(m_enemyType2);
     }
 }
