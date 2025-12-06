@@ -35,11 +35,18 @@ public:
     /// <param name="rc"></param>
     void Render(RenderContext& rc);
 
+    void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+
     /// <summary>
     /// 被ダメージ計算
     /// </summary>
     /// <param name="damageAmount"></param>
     void Damage(int damageAmount);
+
+     /// <summary>
+    /// 攻撃判定の削除
+    /// </summary>
+    void DeleteAttackCollision();
 
 public:
     /// <summary>
