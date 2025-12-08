@@ -1,30 +1,49 @@
 #include "stdafx.h"
-#include "CoinUI.h"
+
 #include "CoinCount.h"
+#include "CoinUI.h"
 
 bool CoinUI::Start()
 {
-    m_coinCount = FindGO<CoinCount>("CoinCount");
+    m_countCointer = FindGO<CountCointer>("CoinCounter");
 
-    m_spriteRender.Init("Assets/texture/coin.DDS", 100.0f, 100.0f);
-    m_spriteRender.SetPosition(Vector3(200.0f, 475.0f, 0.0f));
-    m_spriteRender.Update();
+    // フォント初期化
+    InitFont();
+
+    // スプライト初期化
+    InitSprite();
 
     return true;
 }
 
 void CoinUI::Update()
 {
-    wchar_t coinText[256];
-    swprintf_s(coinText, 256, L"%d", m_coinCount->GetCoinCount());
-    m_fontRender.SetText(coinText);                          // 表示
-    m_fontRender.SetPosition(Vector3(250.0f, 510.0f, 0.0f)); // 場所
-    m_fontRender.SetScale(1.5f);                             // 大きさ
-    m_fontRender.SetColor({0.0f, 0.0f, 0.0f, 1.0f});         // 色
+    UpdateCoinText();
 }
 
 void CoinUI::Render(RenderContext& rc)
 {
-    m_spriteRender.Draw(rc);
-    m_fontRender.Draw(rc);
+    m_sprite.Draw(rc);
+    m_font.Draw(rc);
+}
+
+void CoinUI::InitFont()
+{
+    m_font.SetPosition(Vector3(250.0f, 510.0f, 0.0f)); // 位置
+    m_font.SetScale(1.5f);                             // 大きさ
+    m_font.SetColor(Vector4::Black);         // 色
+}
+
+void CoinUI::InitSprite()
+{
+    m_sprite.Init("Assets/texture/coin.DDS", 100.0f, 100.0f);
+    m_sprite.SetPosition(Vector3(200.0f, 475.0f, 0.0f));
+    m_sprite.Update();
+}
+
+void CoinUI::UpdateCoinText()
+{
+    wchar_t coinCountText[256];
+    swprintf_s(coinCountText, 256, L"%d", m_countCointer->GetCount());
+    m_font.SetText(coinCountText);
 }
