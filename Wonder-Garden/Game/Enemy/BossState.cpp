@@ -124,6 +124,7 @@ void BossAttackState::Update()
         // 攻撃判定生成
         MakeAttackCollision();
     }
+
     else
     {
         // 当たり判定破棄
@@ -144,6 +145,7 @@ bool BossAttackState::RequestState(uint32_t& request)
     if (m_boss->GetBossHP() == 0)
     {
         request = BossDeadState::ID();
+        m_boss->DeleteAttackCollision();
         return true;
     }
 
@@ -170,7 +172,6 @@ void BossDeadState::Update()
         // 死んだときのSE再生
         SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
         m_boss->SetDead(true);
-        m_boss->DeleteAttackCollision();
     }
 }
 

@@ -22,11 +22,11 @@ CollisionManager::~CollisionManager()
 
 void CollisionManager::CreateEffect(Vector3 position)
 {
-   /* m_effect->Init(EnEffcetType::Hit);
-    m_effect->SetPosition(position);
-    m_effect->SetRotation(Quaternion::Identity);
-    m_effect->SetScale({3.0f, 3.0f, 3.0f});
-    m_effect->Play();*/
+    /* m_effect->Init(EnEffcetType::Hit);
+     m_effect->SetPosition(position);
+     m_effect->SetRotation(Quaternion::Identity);
+     m_effect->SetScale({3.0f, 3.0f, 3.0f});
+     m_effect->Play();*/
 }
 
 void CollisionManager::Update()
@@ -121,7 +121,7 @@ void CollisionManager::Update()
     }
 
     // プレイヤーの攻撃がボスに当たったか
-    // TODO:ボスクラスの方でコリジョンがnullptrにンっているため原因を探す
+    // TODO:ボスクラスの方でコリジョンがnullptrになっているため原因を探す
 
     {
         if (boss)
@@ -157,6 +157,7 @@ void CollisionManager::Update()
     {
         if (player)
         {
+
             for (Enemy* enemy : enemys)
             {
                 if (enemy->GetAttackCollision())
@@ -175,6 +176,17 @@ void CollisionManager::Update()
                     if (enemyType2->GetAttackCollision()->m_punchCollision->IsHit(*player->GetCharCon()))
                     {
                         player->Damage(1);
+                    }
+                }
+            }
+
+            if (boss != nullptr)
+            {
+                if (boss->GetAttackCollision())
+                {
+                    if (boss->GetAttackCollision()->m_punchCollision->IsHit(*player->GetCharCon()))
+                    {
+                        player->Damage(2);
                     }
                 }
             }

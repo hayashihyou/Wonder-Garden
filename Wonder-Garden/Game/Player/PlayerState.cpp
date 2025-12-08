@@ -29,7 +29,7 @@ namespace
     }
 
     const float GRAVITY = 0.98f;
-    const float ATK_COL_SIZE = 30.0f;
+    const float ATK_COL_SIZE = 20.0f;
     const Vector3 ATK_POSITION = {0.0f, 30.0f, 50.0f};
 } // namespace
 
