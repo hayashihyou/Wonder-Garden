@@ -1,12 +1,13 @@
 #include "stdafx.h"
+
 #include "CoinCount.h"
 
-bool CoinCount::Start()
+bool CountCointer::Start()
 {
     return true;
 }
 
-void CoinCount::AddCoinCount()
+void CountCointer::Count()
 {
-    coinCount++;
+    m_count++;
 }

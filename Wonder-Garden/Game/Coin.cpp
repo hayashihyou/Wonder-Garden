@@ -5,55 +5,122 @@
 #include "Player/Player.h"
 #include "UI/CoinUI.h"
 
+namespace
+{
+    const float HIT_DISTANCE = 40.0f;                                    // プレイヤーとの当たり判定距離
+    const float ROTATION_SPEED_NORMAL = 5.0f;                            // 回転速度(通常時)
+    const float ROTATION_SPEED_SPEED_UP = ROTATION_SPEED_NORMAL * 15.0f; // 回転速度(スピードアップ時)
+    const float GET_ANIMATION_TIME = 0.25f;                              // アニメーション時間(秒)
+    const float BOUNCE_SPEED = 4.0f;                                     // 跳ね上げ速度
+
+} // namespace
+
 bool Coin::Start()
 {
-    m_modelRender.Init("Assets/item/coin/coin.tkm");
-
+    m_countCointer = FindGO<CountCointer>("CoinCounter");
     m_player = FindGO<Player>("Player");
 
-    m_modelRender.SetPosition(m_position);
-    m_modelRender.SetRotation(m_rotation);
-    m_modelRender.Update();
+    // 初期回転速度設定
+    m_rotationSpeed = ROTATION_SPEED_NORMAL;
+
+    // モデル初期化
+    m_model.Init("Assets/item/coin/coin.tkm");
+    UpdateModel();
 
     return true;
 }
 
 void Coin::Update()
 {
-    CoinGet();
-    Rotation();
-
-    m_modelRender.Update();
-}
-
-void Coin::CoinGet()
-{
-    Vector3 toPlayer = m_player->GetPosition() - m_position;
-    float disToPlayer = toPlayer.Length();
-    if (disToPlayer < 40.0f)
+    switch (m_currentState)
     {
-        m_coinCount = FindGO<CoinCount>("CoinCount");
-        m_coinCount->AddCoinCount();
-        int hp = m_player->GetHP() + 1;
-        if (hp >= 8)
-        {
-            //体力の上限突破をしないように調整
-            hp = 8;
-        }
-        m_player->SetHP(hp);
-        DeleteGO(this);
+    // 待機状態
+    case Coin::State::IDLE:
+        UpdateIdleState();
+        break;
+    // 取得アニメーション中
+    case Coin::State::PLAYING_GET_ANIMATION:
+        UpdatePlayingGetAnimationState();
+        break;
+    // コイン取得
+    case Coin::State::GET_COIN:
+        UpdateGetCoinState();
+        break;
     }
 
-    m_modelRender.SetPosition(m_position);
-}
+    // 回転
+    Rotation();
 
-void Coin::Rotation()
-{
-    m_rotation.AddRotationDegY(5.0f);
-    m_modelRender.SetRotation(m_rotation);
+    // モデル更新
+    UpdateModel();
 }
 
 void Coin::Render(RenderContext& rc)
 {
-    m_modelRender.Draw(rc);
+    m_model.Draw(rc);
+}
+
+void Coin::UpdateModel()
+{
+    m_model.SetPosition(m_position);
+    m_model.SetRotation(m_rotation);
+    m_model.Update();
+}
+
+void Coin::UpdateIdleState()
+{
+    // プレイヤーとの距離を計算
+    auto toPlayer = m_player->GetPosition() - m_position;
+
+    // コイン取得判定
+    if (toPlayer.Length() < HIT_DISTANCE)
+    {
+        // 取得アニメーションを再生させる
+        m_currentState = State::PLAYING_GET_ANIMATION;
+    }
+}
+
+void Coin::UpdatePlayingGetAnimationState()
+{
+    // Y軸回転のスピードアップ
+    m_rotationSpeed = ROTATION_SPEED_SPEED_UP;
+
+    // 位置を毎フレームY軸方向に跳ね上げる
+    m_getAnimationTimer++;
+    m_position.y += BOUNCE_SPEED;
+
+    // アニメーション時間経過でコイン取得状態へ
+    // TODO: 60FPS固定前提になっているため、修正が必要
+    if (m_getAnimationTimer >= GET_ANIMATION_TIME * 60.0f)
+    {
+        m_currentState = State::GET_COIN;
+    }
+}
+
+void Coin::UpdateGetCoinState()
+{
+    // コインカウント
+    m_countCointer->Count();
+
+    // 体力回復
+    HealHp();
+
+    DeleteGO(this);
+}
+
+void Coin::Rotation()
+{
+    m_rotation.AddRotationDegY(m_rotationSpeed);
+}
+
+void Coin::HealHp()
+{
+    // プレイヤーの体力を1回復
+    // TODO: プレイヤーのMAX体力値は別クラスで管理
+    auto newHp = m_player->GetHP() + 1;
+    if (newHp >= 8)
+    {
+        return;
+    }
+    m_player->SetHP(newHp);
 }
