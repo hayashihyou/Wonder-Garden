@@ -247,7 +247,7 @@ private:
     CollisionObject* enemyType2Collision = nullptr;         //当たり判定
     CollisionObject* enemyType2JumpCollision = nullptr;     //ジャンプ攻撃用当たり判定
     Player* m_player;                                       //プレイヤー
-    AttackCollision* m_attackCollision;                     //攻撃判定
+    AttackCollision* m_attackCollision = nullptr;           //攻撃判定
 
 
     uint32_t m_enemyType2State;                             //現在の状態ID

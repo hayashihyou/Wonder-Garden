@@ -1,7 +1,9 @@
 #include "stdafx.h"
+
 #include "Coin.h"
 #include "CoinCount.h"
-#include "UI/CoinUI.h"
+#include "Collision/CollisionManager.h"
+#include "EffectManager.h"
 #include "Enemy/Boss.h"
 #include "Enemy/Enemy.h"
 #include "Enemy/EnemyType2.h"
@@ -10,18 +12,17 @@
 #include "GameCamera.h"
 #include "GameClear.h"
 #include "GameOver.h"
+#include "Gimmic/Cannon.h"
+#include "Gimmic/Warp.h"
 #include "Player/Player.h"
 #include "Player/PlayerState.h"
+#include "SoundManager.h"
 #include "Stage.h"
 #include "Star.h"
 #include "StarCounter.h"
 #include "Title.h"
-#include "Collision/CollisionManager.h"
+#include "UI/CoinUI.h"
 #include "UI/HPUI.h"
-#include "Gimmic/Warp.h"
-#include "Gimmic/Cannon.h"
-#include "EffectManager.h"
-#include "SoundManager.h"
 
 Game::Game(){
 
@@ -35,19 +36,16 @@ Game::~Game()
         DeleteGO(m_coin);
     }
 
-
     const auto& enemys = FindGOs<Enemy>("Enemy");
     for (auto m_enemy : enemys)
     {
         DeleteGO(m_enemy);
     }
 
-
     if (m_boss != nullptr)
     {
         DeleteGO(m_boss);
     }
-
 
     if (m_star != nullptr)
     {
@@ -60,7 +58,7 @@ Game::~Game()
     DeleteGO(m_skyCube);
     DeleteGO(m_starCounter);
     DeleteGO(m_gameCamera);
-    DeleteGO(m_coinCount);
+    DeleteGO(m_countCointer);
     DeleteGO(m_coinUI);
     DeleteGO(m_hpUI);
     DeleteGO(m_warp);
@@ -85,7 +83,7 @@ bool Game::Start()
     m_warp = NewGO<Warp>(0, "Warp");
     m_cannon = NewGO<Cannon>(0, "Cannon");
     m_effectManager = NewGO<EffectManager>(0, "EffectManager");
-    m_coinCount = NewGO<CoinCount>(0, "CoinCount");
+    m_countCointer = NewGO<CountCointer>(0, "CoinCounter");
     m_coinUI = NewGO<CoinUI>(0, "CoinUI");
 
     m_levelRender.Init("Assets/stage/stage.tkl",[&](LevelObjectData& objData)
@@ -110,16 +108,16 @@ bool Game::Start()
             m_boss->SetPosition(objData.position);
             return true;
         }
-        return true;
+             return true;
     });
 
     // コメントアウトする。
     PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
-    //エネミーの複数対のモデルを生成
+    // エネミーの複数対のモデルを生成
     EnemyManager::GetInstance()->Setup();
 
-    //コリジョンマネージャのインスタンスの取得
+    // コリジョンマネージャのインスタンスの取得
     CollisionManager::Create();
 
     return true;
@@ -130,6 +128,8 @@ void Game::Update()
     CreateStar();
 
     EnemyManager::GetInstance()->Update();
+
+    CollisionManager::Get()->Update();
 
     // UIに情報を渡す
     {
@@ -148,8 +148,6 @@ void Game::Update()
         NewGO<GameClear>(0, "GameClear");
         DeleteGO(this);
     }
-
-    CollisionManager::Get()->Update();
 }
 
 void Game::CreateStar()
@@ -164,6 +162,4 @@ void Game::CreateStar()
     }
 }
 
-void Game::Render(RenderContext& rc)
-{
-}
+void Game::Render(RenderContext& rc) {}
