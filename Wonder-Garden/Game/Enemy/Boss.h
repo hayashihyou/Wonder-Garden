@@ -222,7 +222,14 @@ public:
     /// ボスのHPの取得
     /// </summary>
     /// <returns></returns>
-    int GetBossHP() { return hp; }
+    int GetHP() { return hp; }
+
+
+    /// <summary>
+    /// ボスの最大HPの取得
+    /// </summary>
+    /// <returns></returns>
+    int GetMaxHP() { return maxHp; }
 
 
     /// <summary>
@@ -242,6 +249,16 @@ public:
     /// 攻撃判定の削除
     /// </summary>
     void DeleteAttackCollision();
+
+    /// <summary>
+    /// ダメージをうけたか取得
+    /// </summary>
+    bool GetDamaged() const { return m_damaged; }
+
+    /// <summary>
+    /// ダメージをうけたか設定
+    /// </summary>
+    void SetDamaged(bool damaged) { m_damaged = damaged; }
 
 
 private:
@@ -265,7 +282,9 @@ private:
 
     float disToPlayer;                                      //プレイヤーまでの距離
     float m_attackCoolTime = 5.0f;                          //攻撃後のクールタイム
-    int hp = 2;                                             //ボスの体力
+    int maxHp = 10;                                          //ボスの最大体力
+    int hp = 10;                                             //ボスの体力
     bool m_isAttackFlag = false;                            //攻撃状態か確認するフラグ
     bool m_isDeadFlag = false;                              //死亡状態か確認するフラグ
+    bool m_damaged;                                         // ダメージをうけた
 };
