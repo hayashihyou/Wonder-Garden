@@ -37,7 +37,7 @@ bool BossIdleState::RequestState(uint32_t& request)
         return true;
     }
 
-    if (m_boss->GetBossHP() == 0)
+    if (m_boss->GetHP() == 0)
     {
         request = BossDeadState::ID();
         return true;
@@ -79,7 +79,7 @@ bool BossMoveState::RequestState(uint32_t& request)
         return true;
     }
 
-    if (m_boss->GetBossHP() == 0)
+    if (m_boss->GetHP() == 0)
     {
         request = BossDeadState::ID();
         return true;
@@ -142,7 +142,7 @@ bool BossAttackState::RequestState(uint32_t& request)
         return true;
     }
 
-    if (m_boss->GetBossHP() == 0)
+    if (m_boss->GetHP() == 0)
     {
         request = BossDeadState::ID();
         m_boss->DeleteAttackCollision();

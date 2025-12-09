@@ -29,7 +29,7 @@ void CoinUI::Render(RenderContext& rc)
 
 void CoinUI::InitFont()
 {
-    m_font.SetPosition(Vector3(250.0f, 510.0f, 0.0f)); // 位置
+    m_font.SetPosition(Vector3(-800.0f, 505.0f, 0.0f)); // 位置
     m_font.SetScale(1.5f);                             // 大きさ
     m_font.SetColor(Vector4::Black);         // 色
 }
@@ -37,7 +37,7 @@ void CoinUI::InitFont()
 void CoinUI::InitSprite()
 {
     m_sprite.Init("Assets/texture/coin.DDS", 100.0f, 100.0f);
-    m_sprite.SetPosition(Vector3(200.0f, 475.0f, 0.0f));
+    m_sprite.SetPosition(Vector3(-850.0f, 475.0f, 0.0f));
     m_sprite.Update();
 }
 

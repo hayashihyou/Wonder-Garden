@@ -112,7 +112,7 @@ bool Game::Start()
     });
 
     // コメントアウトする。
-    PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+    //PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
     // エネミーの複数対のモデルを生成
     EnemyManager::GetInstance()->Setup();

@@ -162,6 +162,8 @@ void Boss::DamageReceiveHead(int damageAmount)
 
 void Boss::Damage(int damageAmount, int reason)
 {
+    m_damaged = true;
+
     hp -= damageAmount;
     HP();
 

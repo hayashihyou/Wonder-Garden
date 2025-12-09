@@ -1,4 +1,6 @@
 #include "stdafx.h"
+
+#include "Enemy/Boss.h"
 #include "HPUI.h"
 
 namespace
@@ -24,22 +26,16 @@ namespace
         //
         HPIconInfo(const std::string& s, const float r) : path(s), ratio(r) {}
     };
-    static const HPIconInfo HP_ICON_INFO_LIST[] =
-    {
-        HPIconInfo("Assets/texture/HP.DDS", 1.0f),
-        HPIconInfo("Assets/texture/HP_1.DDS", 0.875f),
-        HPIconInfo("Assets/texture/HP_2.DDS", 0.75f),
-        HPIconInfo("Assets/texture/HP_3.DDS", 0.625f),
-        HPIconInfo("Assets/texture/HP_4.DDS", 0.5f),
-        HPIconInfo("Assets/texture/HP_5.DDS", 0.375f),
-        HPIconInfo("Assets/texture/HP_6.DDS", 0.25f),
-        HPIconInfo("Assets/texture/HP_7.DDS", 0.125f),
-        HPIconInfo("Assets/texture/HP_8.DDS", 0.0f)
-    };
+    static const HPIconInfo HP_ICON_INFO_LIST[] = {
+        HPIconInfo("Assets/texture/HP.DDS", 1.0f),    HPIconInfo("Assets/texture/HP_1.DDS", 0.875f),
+        HPIconInfo("Assets/texture/HP_2.DDS", 0.75f), HPIconInfo("Assets/texture/HP_3.DDS", 0.625f),
+        HPIconInfo("Assets/texture/HP_4.DDS", 0.5f),  HPIconInfo("Assets/texture/HP_5.DDS", 0.375f),
+        HPIconInfo("Assets/texture/HP_6.DDS", 0.25f), HPIconInfo("Assets/texture/HP_7.DDS", 0.125f),
+        HPIconInfo("Assets/texture/HP_8.DDS", 0.0f)};
 
     int GetHPIconType(const float hpRatio)
     {
-        for (int i=0;i< Maximum;i++)
+        for (int i = 0; i < Maximum; i++)
         {
             auto& info = HP_ICON_INFO_LIST[i];
             if (info.ratio <= hpRatio)
@@ -49,23 +45,18 @@ namespace
         }
         return HP0;
     }
-}
+} // namespace
 
+HPUI::HPUI() {}
 
-HPUI::HPUI()
-{
-
-}
-
-
-HPUI::~HPUI()
-{
-
-}
-
+HPUI::~HPUI() {}
 
 bool HPUI::Start()
 {
+    m_boss = FindGO<Boss>("Boss");
+
+    InitHPBar();
+
     for (int i = 0; i < Maximum; i++)
     {
         std::unique_ptr<SpriteRender> render = std::make_unique<SpriteRender>();
@@ -77,16 +68,71 @@ bool HPUI::Start()
     return true;
 }
 
-
 void HPUI::Update()
 {
     int index = GetHPIconType(m_hpRatio);
     m_hpList[index]->Update();
-}
 
+    UpdateHPBar();
+}
 
 void HPUI::Render(RenderContext& rc)
 {
     int index = GetHPIconType(m_hpRatio);
     m_hpList[index]->Draw(rc);
+
+    m_HPBarBack.Draw(rc);
+    m_HPBar.Draw(rc);
+    m_HPBarFrame.Draw(rc);
+}
+
+void HPUI::InitHPBar()
+{
+    m_HPBarBack.Init("Assets/texture/Boss_HPBar_Back.DDS", 550.0f, 80.0f);
+    m_HPBar.Init("Assets/texture/Boss_HPBar.DDS", 550.0f, 80.0f);
+    m_HPBarFrame.Init("Assets/texture/Boss_HPBarFrame_Trans.DDS", 650.0f, 130.0f);
+
+
+    m_HPBarBack.SetMulColor(Vector4::Red);
+    m_HPBarBack.SetPosition(Vector3(335.0f, 450.0f, 0.0f));
+    m_HPBarBack.SetPivot(Vector2(0.0f, 0.5f));
+
+
+    m_HPBar.SetMulColor(Vector4::Green);
+    m_HPBar.SetPosition(Vector3(335.0f, 450.0f, 0.0f));
+    m_HPBar.SetPivot(Vector2(0.0f, 0.5f));
+
+
+    m_HPBarFrame.SetPosition(Vector3(285.0f, 450.0f, 0.0f));
+    m_HPBarFrame.SetPivot(Vector2(0.0f, 0.5f));
+
+
+    m_HPBarBack.Update();
+    m_HPBar.Update();
+    m_HPBarFrame.Update();
+}
+
+void HPUI::UpdateHPBar()
+{
+    if (m_boss->GetDamaged())
+    {
+        int currentHP = m_boss->GetHP();
+        int maxHP = m_boss->GetMaxHP();
+        float wari = (float) currentHP / (float) maxHP;
+        scal.x -= 0.01f;
+
+        if (scal.x <= 0.0f)
+        {
+            scal.x = 0.0f;
+        }
+
+        m_HPBar.SetScale(scal);
+        m_HPBar.Update();
+
+        // 現在のHPまでバーを縮めたらダメージフラグをfalseにする
+        if (scal.x <= wari)
+        {
+            m_boss->SetDamaged(false);
+        }
+    }
 }
