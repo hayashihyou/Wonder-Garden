@@ -99,6 +99,7 @@ bool Game::Start()
         {
             m_enemy = NewGO<Enemy>(0, "Enemy");
             m_enemy->SetPosition(objData.position);
+            m_enemy->SetRotation(objData.rotation);
             return true;
         }
 
@@ -106,6 +107,7 @@ bool Game::Start()
         {
             m_coin = NewGO<Coin>(0, "Coin");
             m_coin->SetPosition(objData.position);
+            m_coin->SetRotation(objData.rotation);
             return true;
         }
 
@@ -113,6 +115,7 @@ bool Game::Start()
         {
             m_boss = NewGO<Boss>(0, "Boss");
             m_boss->SetPosition(objData.position);
+            m_boss->SetRotation(objData.rotation);
             return true;
         }
              return true;
@@ -179,6 +182,7 @@ void Game::BossBattle()
        if (m_boss->GetBattleFlag() == false)
        {
            m_boss->SetBattleFlag(true);
+           m_gameCamera->SetBossCamera(true);
            m_boss->SetAppear(true);
            m_boss->InitHPBar();
        }

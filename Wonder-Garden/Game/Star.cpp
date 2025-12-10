@@ -8,7 +8,7 @@ namespace
 {
     const float ROTATION_SPEED = 3.0f;                        // 回転速度
     const float GET_STAR_DISTANCE = 120.0f;                   // 星取得距離
-    const Vector3 STAR_POSITION = {2300.0f, 300.0f, 2730.0f}; // 星の座標
+    const Vector3 STAR_POSITION = {2300.0f, 300.0f, 3400.0f}; // 星の座標
 } // namespace
 
 bool Star::Start()
