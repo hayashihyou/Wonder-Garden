@@ -4,6 +4,7 @@
 #include "Enemy/Boss.h"
 #include "Enemy/BossState.h"
 #include "Player/Player.h"
+#include "UI/HPUI.h"
 
 namespace
 {
@@ -82,6 +83,13 @@ void Boss::Update()
         m_player = FindGO<Player>("Player");
     }
 
+
+    if (m_hpUI == nullptr)
+    {
+        m_hpUI = FindGO<HPUI>("HPUI");
+    }
+
+
     toPlayer = m_player->GetPosition() - m_position;
     disToPlayer = toPlayer.Length();
 
@@ -90,6 +98,8 @@ void Boss::Update()
     m_transform.m_localPosition = m_position;
     m_transform.m_localRotation = m_rotation;
 
+    m_hpUI->ChangeState();
+    m_hpUI->UpdateHPBar();
     UpdateChangeState();
 
     m_bossModel.SetPosition(m_position);
@@ -144,6 +154,16 @@ void Boss::UpdateChangeState()
     }
     currentState->Update();
 }
+
+
+void Boss::InitHPBar()
+{
+    if (m_appearFlag == true)
+    {
+        m_hpUI->InitHPBar();
+    }
+}
+
 
 void Boss::Render(RenderContext& rc)
 {

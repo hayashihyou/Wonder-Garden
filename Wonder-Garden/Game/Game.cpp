@@ -24,6 +24,13 @@
 #include "UI/CoinUI.h"
 #include "UI/HPUI.h"
 
+
+namespace
+{
+    const Vector3 BOSS_BATTLE_POS = {2100.0f, 68.0f, 3000.0f};
+}
+
+
 Game::Game(){
 
 };
@@ -127,6 +134,8 @@ void Game::Update()
 {
     CreateStar();
 
+    BossBattle();
+
     EnemyManager::GetInstance()->Update();
 
     CollisionManager::Get()->Update();
@@ -160,6 +169,20 @@ void Game::CreateStar()
             m_star = NewGO<Star>(0, "Star");
         }
     }
+}
+
+void Game::BossBattle()
+{
+   Vector3 playerPos = m_player->GetPosition();
+   if (playerPos.x >= BOSS_BATTLE_POS.x && playerPos.z >= BOSS_BATTLE_POS.z)
+   {
+       if (m_boss->GetBattleFlag() == false)
+       {
+           m_boss->SetBattleFlag(true);
+           m_boss->SetAppear(true);
+           m_boss->InitHPBar();
+       }
+   }
 }
 
 void Game::Render(RenderContext& rc) {}

@@ -55,8 +55,6 @@ bool HPUI::Start()
 {
     m_boss = FindGO<Boss>("Boss");
 
-    InitHPBar();
-
     for (int i = 0; i < Maximum; i++)
     {
         std::unique_ptr<SpriteRender> render = std::make_unique<SpriteRender>();
@@ -72,8 +70,6 @@ void HPUI::Update()
 {
     int index = GetHPIconType(m_hpRatio);
     m_hpList[index]->Update();
-
-    UpdateHPBar();
 }
 
 void HPUI::Render(RenderContext& rc)
@@ -81,58 +77,118 @@ void HPUI::Render(RenderContext& rc)
     int index = GetHPIconType(m_hpRatio);
     m_hpList[index]->Draw(rc);
 
-    m_HPBarBack.Draw(rc);
-    m_HPBar.Draw(rc);
-    m_HPBarFrame.Draw(rc);
+    if (m_boss->GetBattleFlag() == true)
+    {
+        m_HPBarBack.Draw(rc);
+        m_HPBarDamage.Draw(rc);
+        m_HPBar.Draw(rc);
+        m_HPBarFrame.Draw(rc);
+    }
 }
 
 void HPUI::InitHPBar()
 {
     m_HPBarBack.Init("Assets/texture/Boss_HPBar_Back.DDS", 550.0f, 80.0f);
+    m_HPBarDamage.Init("Assets/texture/Boss_HPBar_Damage.DDS", 550.0f, 80.0f);
     m_HPBar.Init("Assets/texture/Boss_HPBar.DDS", 550.0f, 80.0f);
     m_HPBarFrame.Init("Assets/texture/Boss_HPBarFrame_Trans.DDS", 650.0f, 130.0f);
 
+    m_HPBarBack.SetScale(Vector3(1.0f, 1.0f, 1.0f));
+    m_HPBarDamage.SetScale(Vector3(1.0f, 1.0f, 1.0f));
+    m_HPBar.SetScale(Vector3(0.0f, 1.0f, 1.0f));
+    m_HPBarFrame.SetScale(Vector3(1.0f, 1.0f, 1.0f));
 
-    m_HPBarBack.SetMulColor(Vector4::Red);
+    m_HPBarBack.SetMulColor(Vector4::Black);
     m_HPBarBack.SetPosition(Vector3(335.0f, 450.0f, 0.0f));
     m_HPBarBack.SetPivot(Vector2(0.0f, 0.5f));
 
+    m_HPBarDamage.SetMulColor(Vector4::Red);
+    m_HPBarDamage.SetPosition(Vector3(335.0f, 450.0f, 0.0f));
+    m_HPBarDamage.SetPivot(Vector2(0.0f, 0.5f));
 
     m_HPBar.SetMulColor(Vector4::Green);
     m_HPBar.SetPosition(Vector3(335.0f, 450.0f, 0.0f));
     m_HPBar.SetPivot(Vector2(0.0f, 0.5f));
 
-
     m_HPBarFrame.SetPosition(Vector3(285.0f, 450.0f, 0.0f));
     m_HPBarFrame.SetPivot(Vector2(0.0f, 0.5f));
 
-
     m_HPBarBack.Update();
+    m_HPBarDamage.Update();
     m_HPBar.Update();
     m_HPBarFrame.Update();
 }
 
+void HPUI::ChangeState()
+{
+    if (m_boss->GetAppear())
+    {
+        m_hpBarState = enAPPEAR;
+    }
+
+    else
+    {
+        m_hpBarState = enNormal;
+    }
+}
+
 void HPUI::UpdateHPBar()
 {
-    if (m_boss->GetDamaged())
+    switch (m_hpBarState)
     {
-        int currentHP = m_boss->GetHP();
-        int maxHP = m_boss->GetMaxHP();
-        float wari = (float) currentHP / (float) maxHP;
-        scal.x -= 0.01f;
+    case enAPPEAR:
+    {
+        scal = m_HPBar.GetScale();
+        scal.x += 0.01f;
 
-        if (scal.x <= 0.0f)
+        if (scal.x >= 1.0f)
         {
-            scal.x = 0.0f;
+            scal.x = 1.0f;
+            m_boss->SetAppear(false);
+            m_hpBarState = enNormal;
         }
 
         m_HPBar.SetScale(scal);
         m_HPBar.Update();
+    }
+    break;
 
-        // 現在のHPまでバーを縮めたらダメージフラグをfalseにする
-        if (scal.x <= wari)
+    case enNormal:
+    {
+        if (m_boss->GetDamaged())
         {
-            m_boss->SetDamaged(false);
+            int currentHP = m_boss->GetHP();
+            int maxHP = m_boss->GetMaxHP();
+            float wari = (float) currentHP / (float) maxHP;
+            scal = m_HPBar.GetScale();
+            Vector3 hpBarScal = m_HPBarDamage.GetScale();
+
+            scal.x = wari;
+
+            if (scal.x <= 0.0f)
+            {
+                scal.x = 0.0f;
+            }
+
+            if (hpBarScal.x >= scal.x)
+            {
+                hpBarScal.x -= 0.01f;
+            }
+
+            m_HPBar.SetScale(scal);
+            m_HPBarDamage.SetScale(hpBarScal);
+            m_HPBar.Update();
+            m_HPBarDamage.Update();
+
+            // 現在のHPまでバーを縮めたらダメージフラグをfalseにする
+            if (hpBarScal.x == scal.x)
+            {
+                m_boss->SetDamaged(false);
+            }
         }
+        break;
+    }
+    default:
+        break;
     }
 }
