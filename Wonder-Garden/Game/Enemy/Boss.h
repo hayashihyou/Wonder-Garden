@@ -4,6 +4,7 @@
 class Player;
 class IBossState;
 class AttackCollision;
+class HPUI;
 
 class Boss : public CharacterBase
 {
@@ -108,6 +109,12 @@ public:
     void Damage(int damageAmount, int reason);
 
 
+    /// <summary>
+    /// HPバーの呼び出し
+    /// </summary>
+    void InitHPBar();
+
+
 public:
     /// <summary>
     /// 位置を保持
@@ -149,6 +156,26 @@ public:
     /// </summary>
     /// <param name="dead"></param>
     void SetDead(bool dead) { m_isDeadFlag = dead; }
+
+
+    /// <summary>
+    /// ダメージをうけたか設定
+    /// </summary>
+    void SetDamaged(bool damaged) { m_damaged = damaged; }
+
+
+    /// <summary>
+    /// ボスの登場フラグの保持
+    /// </summary>
+    /// <param name="appear"></param>
+    void SetAppear(bool appear) { m_appearFlag = appear; }
+
+
+    /// <summary>
+    /// ボスの戦闘開始フラグの保持
+    /// </summary>
+    /// <param name="battle"></param>
+    void SetBattleFlag(bool battle) { m_battleFlag = battle; }
 
 
 public:
@@ -255,10 +282,19 @@ public:
     /// </summary>
     bool GetDamaged() const { return m_damaged; }
 
+
     /// <summary>
-    /// ダメージをうけたか設定
+    /// ボスの登場フラグの取得
     /// </summary>
-    void SetDamaged(bool damaged) { m_damaged = damaged; }
+    /// <returns></returns>
+    bool GetAppear() const { return m_appearFlag; }
+
+
+    /// <summary>
+    /// ボスの戦闘開始フラグの取得
+    /// </summary>
+    /// <returns></returns>
+    bool GetBattleFlag() const { return m_battleFlag; }
 
 
 private:
@@ -269,6 +305,7 @@ private:
     CollisionObject* m_bossCollision = nullptr;             //当たり判定
     CollisionObject* m_bossHeadCollision = nullptr;         //頭部当たり判定
     AttackCollision* m_attackCollision = nullptr;           //攻撃判定
+    HPUI* m_hpUI = nullptr;                                 //HPUI
     uint32_t m_currentStateId;                              //現在の状態ID
     std::map<uint32_t, IBossState*> m_stateMap;             //状態マップ
 
@@ -287,4 +324,6 @@ private:
     bool m_isAttackFlag = false;                            //攻撃状態か確認するフラグ
     bool m_isDeadFlag = false;                              //死亡状態か確認するフラグ
     bool m_damaged;                                         // ダメージをうけた
+    bool m_appearFlag = false;                              // 出現フラグ
+    bool m_battleFlag = false;                             // 戦闘開始フラグ
 };

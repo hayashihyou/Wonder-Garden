@@ -49,15 +49,23 @@ public:
     void Update();
 
     /// <summary>
-    /// 星の生成
-    /// </summary>
-    void CreateStar();
-
-    /// <summary>
     /// 描画処理
     /// </summary>
     /// <param name="rc"></param>
     void Render(RenderContext& rc);
+
+
+private:
+    /// <summary>
+    /// 星の生成
+    /// </summary>
+    void CreateStar();
+
+
+    /// <summary>
+    /// ボス戦が始まる時の処理
+    /// </summary>
+    void BossBattle();
 
 private:
     Coin* m_coin = nullptr;
