@@ -3,6 +3,7 @@
 #include "GameCamera.h"
 #include "Player/Player.h"
 #include "Enemy/Boss.h"
+#include "Star.h"
 
 namespace
 {
@@ -35,6 +36,11 @@ void GameCamera::Update()
     if (m_isBossCamera == true)
     {
         BossCamera();
+    }
+
+    else if (m_isStarCamera == true)
+    {
+        StarCamera();
     }
 
     // そうでなければ通常のカメラ処理
@@ -154,7 +160,17 @@ void GameCamera::BossCamera()
         }
     }
 
-     g_camera3D->SetTarget(m_bossTargetPos);
+    g_camera3D->SetTarget(m_bossTargetPos);
     g_camera3D->SetPosition(m_bossCameraPos);
     g_camera3D->Update();
+}
+
+void GameCamera::StarCamera()
+{
+    if (m_changeCamera == false)
+    {
+        m_changeCamera = true;
+
+
+    }
 }
