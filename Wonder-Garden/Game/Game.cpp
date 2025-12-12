@@ -135,9 +135,9 @@ bool Game::Start()
 
 void Game::Update()
 {
-    CreateStar();
+    BossBattle(); 
 
-    BossBattle();
+    CreateStar();
 
     EnemyManager::GetInstance()->Update();
 
@@ -168,8 +168,8 @@ void Game::CreateStar()
     {
         if (m_star == nullptr)
         {
-            DeleteGO(m_boss);
             m_star = NewGO<Star>(0, "Star");
+            m_gameCamera->SetStarCamera(true);
         }
     }
 }

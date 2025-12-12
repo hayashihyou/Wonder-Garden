@@ -2,6 +2,7 @@
 
 class Player;
 class Boss;
+class Star;
 
 /// <summary>
 /// ゲームカメラ
@@ -64,13 +65,21 @@ public:
     void BossCamera();
 
 
+    /// <summary>
+    /// スター生成時のカメラ処理
+    /// </summary>
+    void StarCamera();
+
+
 public:
     void SetBossCamera(bool bossFlag) { m_isBossCamera = bossFlag; }
+    void SetStarCamera(bool starFlag) { m_isStarCamera = starFlag; }
 
 
 private:
     Player* m_player = nullptr; // プレイヤー
     Boss* m_boss = nullptr;     // ボス
+    Star* m_star = nullptr;     // スター
     Vector3 m_toCameraPos;      // 注視点からカメラ位置までのベクトル
     Transform m_transform;      // トランスフォーム
 
@@ -78,6 +87,7 @@ private:
     Vector3 m_bossCameraPos; // ボスのカメラ位置
 
 
-    bool m_isBossCamera = false; // ボス戦前のムービー部分のカメラフラグ
+    bool m_isBossCamera = false;    // ボス戦前のムービー部分のカメラフラグ
     bool m_changeCamera = false;   // カメラ切り替えフラグ
+    bool m_isStarCamera = false;   // スター取得時のカメラフラグ
 };
