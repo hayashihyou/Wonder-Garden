@@ -11,7 +11,9 @@ namespace
     const float CAMERA_UPPER_LIMIT = 0.9f;                      // カメラ上方向の制限値
     const float CAMERA_LOWER_LIMIT = -0.2f;                     // カメラ下方向の制限値
     const Vector3 INITIAL_TO_CAMERA_POS(0.0f, 130.0f, -250.0f); // 初期注視点からカメラ位置までのベクトル
-    const Vector3 BOSS_CAMERA_POS(0.0f, 20.0f, 0.0f);        // ボスカメラ位置
+    const Vector3 BOSS_CAMERA_POS(0.0f, 20.0f, 0.0f);           // ボスカメラ位置
+    const Vector3 STAR_CAMERA_POS(0.0f, 0.0f, 300.0f);          // スターカメラ位置
+    const Vector3 PLAYER_CAMERA_POS(0.0f, 50.0f, -300.0f);        // プレイヤースタート位置
     const float CAMERA_NEAR_CLIP = 1.0f;                        // カメラのニアクリップ距離
     const float CAMERA_FAR_CLIP = 22000.0f;                     // カメラのファークリップ距離
     const float CAMERA_ROTATION_SPEED = 1.3f;                   // カメラ回転速度
@@ -40,6 +42,11 @@ void GameCamera::Update()
 
     else if (m_isStarCamera == true)
     {
+        if (m_star == nullptr)
+        {
+            m_star = FindGO<Star>("Star");
+        }
+
         StarCamera();
     }
 
@@ -157,6 +164,7 @@ void GameCamera::BossCamera()
         {
             m_bossCameraPos.y = 300.0f;
             m_isBossCamera = false;
+            m_changeCamera = false;
         }
     }
 
@@ -171,6 +179,79 @@ void GameCamera::StarCamera()
     {
         m_changeCamera = true;
 
-
+        m_starTargetPos = m_boss->GetPosition();
+        m_starCameraPos = m_player->GetPosition() + PLAYER_CAMERA_POS;
+        g_camera3D->SetTarget(m_starTargetPos);
+        g_camera3D->SetPosition(m_starCameraPos);
     }
+
+
+    if (m_starCameraPos.x <= m_star->GetStarPosition().x)
+    {
+        m_starCameraPos.x += 15.0f;
+        if (m_starCameraPos.x >= m_star->GetStarPosition().x)
+        {
+            m_starCameraPos.x = m_star->GetStarPosition().x;
+            m_starCameraPos.y += 1.0f;
+            if (m_starCameraPos.y >= m_star->GetStarPosition().y)
+            {
+                m_starCameraPos.y = m_star->GetStarPosition().y;
+                m_isStarCamera = false;
+                m_changeCamera = false;
+            }
+        }
+    }
+
+    if (m_starCameraPos.z <= m_star->GetStarPosition().z - STAR_CAMERA_POS.z)
+    {
+        m_starCameraPos.z += 15.0f;
+        if (m_starCameraPos.z >= m_star->GetStarPosition().z - STAR_CAMERA_POS.z)
+        {
+            m_starCameraPos.z = m_star->GetStarPosition().z - STAR_CAMERA_POS.z;
+            m_starCameraPos.y += 1.0f;
+            if (m_starCameraPos.y >= m_star->GetStarPosition().y)
+            {
+                m_starCameraPos.y = m_star->GetStarPosition().y;
+                m_isStarCamera = false;
+                m_changeCamera = false;
+            }
+        }
+    }
+
+    if (m_starCameraPos.x>= m_star->GetStarPosition().x)
+        {
+        m_starCameraPos.x -= 15.0f;
+        if (m_starCameraPos.x <= m_star->GetStarPosition().x)
+        {
+            m_starCameraPos.x = m_star->GetStarPosition().x;
+            m_starCameraPos.y += 1.0f;
+            if (m_starCameraPos.y >= m_star->GetStarPosition().y)
+            {
+                m_starCameraPos.y = m_star->GetStarPosition().y;
+                m_isStarCamera = false;
+                m_changeCamera = false;
+            }
+        }
+    }
+
+    if (m_starCameraPos.z >= m_star->GetStarPosition().z + STAR_CAMERA_POS.z)
+    {
+        m_starCameraPos.z -= 15.0f;
+        if (m_starCameraPos.z <= m_star->GetStarPosition().z + STAR_CAMERA_POS.z)
+        {
+            m_starCameraPos.z = m_star->GetStarPosition().z + STAR_CAMERA_POS.z;
+            m_starCameraPos.y += 1.0f;
+            if (m_starCameraPos.y >= m_star->GetStarPosition().y)
+            {
+                m_starCameraPos.y = m_star->GetStarPosition().y;
+                m_isStarCamera = false;
+                m_changeCamera = false;
+            }
+        }
+    
+    }
+
+    g_camera3D->SetTarget(m_starTargetPos);
+    g_camera3D->SetPosition(m_starCameraPos);
+    g_camera3D->Update();
 }
