@@ -55,7 +55,7 @@ void Star::Init()
     m_model.SetPosition(m_position);
     m_model.Update();
 
-     DeleteGO(m_boss); 
+    DeleteGO(m_boss);
 }
 
 void Star::Rotation()

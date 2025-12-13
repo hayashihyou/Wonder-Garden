@@ -85,6 +85,8 @@ private:
 
     Vector3 m_bossTargetPos; // ボスの注視点位置
     Vector3 m_bossCameraPos; // ボスのカメラ位置
+    Vector3 m_starTargetPos; // スターの注視点位置
+    Vector3 m_starCameraPos; // スターのカメラ位置
 
 
     bool m_isBossCamera = false;    // ボス戦前のムービー部分のカメラフラグ

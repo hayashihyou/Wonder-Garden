@@ -162,18 +162,6 @@ void Game::Update()
     }
 }
 
-void Game::CreateStar()
-{
-    if (m_boss->IsDead() == true)
-    {
-        if (m_star == nullptr)
-        {
-            m_star = NewGO<Star>(0, "Star");
-            m_gameCamera->SetStarCamera(true);
-        }
-    }
-}
-
 void Game::BossBattle()
 {
    Vector3 playerPos = m_player->GetPosition();
@@ -188,5 +176,18 @@ void Game::BossBattle()
        }
    }
 }
+
+void Game::CreateStar()
+{
+    if (m_boss->IsDead() == true)
+    {
+        if (m_star == nullptr)
+        {
+            m_star = NewGO<Star>(0, "Star");
+            m_gameCamera->SetStarCamera(true);
+        }
+    }
+}
+
 
 void Game::Render(RenderContext& rc) {}
