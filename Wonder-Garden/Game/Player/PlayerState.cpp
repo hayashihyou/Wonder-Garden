@@ -4,6 +4,8 @@
 #include "Player.h"
 #include "PlayerState.h"
 #include "SoundManager.h"
+#include "GameCamera.h"
+
 
 namespace
 {
@@ -55,6 +57,7 @@ void PlayerStatePattern::Update()
 
 void PlayerIdleState::Enter()
 {
+    m_gameCamera = FindGO<GameCamera>("GameCamera");
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Idle);
 }
 
@@ -106,11 +109,24 @@ bool PlayerIdleState::RequestState(uint32_t& request)
         return true;
     }
 
+    if (m_gameCamera->GetBossCamera() == true)
+    {
+        request = PlayerBattleState::ID();
+        return true;
+    }
+
+    if( m_gameCamera->GetStarCamera() == true)
+    {
+        request = PlayerStarState::ID();
+        return true;
+    }
+
     return false;
 }
 
 void PlayerWalkState::Enter()
 {
+    m_gameCamera = FindGO<GameCamera>("GameCamera");
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Walk);
 }
 
@@ -173,11 +189,24 @@ bool PlayerWalkState::RequestState(uint32_t& request)
         return true;
     }
 
+    if (m_gameCamera->GetBossCamera() == true)
+    {
+        request = PlayerBattleState::ID();
+        return true;
+    }
+
+    if (m_gameCamera->GetStarCamera() == true)
+    {
+        request = PlayerStarState::ID();
+        return true;
+    }
+
     return false;
 }
 
 void PlayerRunState::Enter()
 {
+    m_gameCamera = FindGO<GameCamera>("GameCamera");
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Run);
 }
 
@@ -238,11 +267,24 @@ bool PlayerRunState::RequestState(uint32_t& request)
         return true;
     }
 
+    if (m_gameCamera->GetBossCamera() == true)
+    {
+        request = PlayerBattleState::ID();
+        return true;
+    }
+
+    if (m_gameCamera->GetStarCamera() == true)
+    {
+        request = PlayerStarState::ID();
+        return true;
+    }
+
     return false;
 }
 
 void PlayerJumpState::Enter()
 {
+    m_gameCamera = FindGO<GameCamera>("GameCamera");
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Jump);
     m_jump = m_player->GetJumpPower();
 
@@ -299,11 +341,24 @@ bool PlayerJumpState::RequestState(uint32_t& request)
         }
     }
 
+    if (m_gameCamera->GetBossCamera() == true)
+    {
+        request = PlayerBattleState::ID();
+        return true;
+    }
+
+    if (m_gameCamera->GetStarCamera() == true)
+    {
+        request = PlayerStarState::ID();
+        return true;
+    }
+
     return false;
 }
 
 void PlayerAttackState::Enter()
 {
+    m_gameCamera = FindGO<GameCamera>("GameCamera");
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Attack);
 
     // パンチ音再生
@@ -347,6 +402,12 @@ bool PlayerAttackState::RequestState(uint32_t& request)
     if (m_player->IsDead())
     {
         request = PlayerDeadState::ID();
+        return true;
+    }
+
+    if (m_gameCamera->GetBossCamera() == true || m_gameCamera->GetStarCamera() == true)
+    {
+        request = PlayerBattleState::ID();
         return true;
     }
 
@@ -415,6 +476,7 @@ bool PlayerDeadState::RequestState(uint32_t& request)
 
 void PlayerCannonState::Enter()
 {
+    m_gameCamera = FindGO<GameCamera>("GameCamera");
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Idle);
 }
 
@@ -429,6 +491,7 @@ bool PlayerCannonState::RequestState(uint32_t& request)
         request = PlayerFireState::ID();
         return true;
     }
+
     return false;
 }
 
@@ -479,5 +542,47 @@ bool PlayerFireState::RequestState(uint32_t& request)
         request = PlayerIdleState::ID();
         return true;
     }
+    return false;
+}
+
+void PlayerBattleState::Enter()
+{
+    m_gameCamera = FindGO<GameCamera>("GameCamera"); 
+    m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Idle);
+}
+
+void PlayerBattleState::Update() {}
+
+void PlayerBattleState::Exit() {}
+
+bool PlayerBattleState::RequestState(uint32_t& request)
+{
+    if (m_gameCamera->GetBossCamera() == false)
+    {
+        request = PlayerIdleState::ID();
+        return true;
+    }
+
+    return false;
+}
+
+void PlayerStarState::Enter()
+{
+    m_gameCamera = FindGO<GameCamera>("GameCamera");
+    m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Idle);
+}
+
+void PlayerStarState::Update() {}
+
+void PlayerStarState::Exit() {}
+
+bool PlayerStarState::RequestState(uint32_t& request)
+{
+    if (m_gameCamera->GetStarCamera() == false)
+    {
+        request = PlayerIdleState::ID();
+        return true;
+    }
+
     return false;
 }
