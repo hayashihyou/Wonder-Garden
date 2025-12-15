@@ -61,6 +61,7 @@ Game::~Game()
 
     EnemyManager::DeleteInstance();
     DeleteGO(m_player);
+    DeleteGO(m_boss);
     DeleteGO(m_stage);
     DeleteGO(m_skyCube);
     DeleteGO(m_starCounter);
@@ -135,8 +136,10 @@ bool Game::Start()
 
 void Game::Update()
 {
+    // ボス戦開始判定
     BossBattle(); 
 
+    // 星生成判定
     CreateStar();
 
     EnemyManager::GetInstance()->Update();
@@ -170,7 +173,11 @@ void Game::BossBattle()
        if (m_boss->GetBattleFlag() == false)
        {
            m_boss->SetBattleFlag(true);
+
+           //ボスの登場時のカメラのフラグをtrueにする
            m_gameCamera->SetBossCamera(true);
+
+           //HPバーを出現するフラグをtrueにする
            m_boss->SetAppear(true);
            m_boss->InitHPBar();
        }
@@ -185,6 +192,7 @@ void Game::CreateStar()
         {
             m_star = NewGO<Star>(0, "Star");
             m_gameCamera->SetStarCamera(true);
+
         }
     }
 }

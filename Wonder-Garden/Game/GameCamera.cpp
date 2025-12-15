@@ -4,6 +4,7 @@
 #include "Player/Player.h"
 #include "Enemy/Boss.h"
 #include "Star.h"
+#include "UI/BossBarsUI.h"
 
 namespace
 {
@@ -11,9 +12,9 @@ namespace
     const float CAMERA_UPPER_LIMIT = 0.9f;                      // カメラ上方向の制限値
     const float CAMERA_LOWER_LIMIT = -0.2f;                     // カメラ下方向の制限値
     const Vector3 INITIAL_TO_CAMERA_POS(0.0f, 130.0f, -250.0f); // 初期注視点からカメラ位置までのベクトル
-    const Vector3 BOSS_CAMERA_POS(0.0f, 20.0f, 0.0f);           // ボスカメラ位置
-    const Vector3 STAR_CAMERA_POS(0.0f, 0.0f, 300.0f);          // スターカメラ位置
-    const Vector3 PLAYER_CAMERA_POS(0.0f, 50.0f, -300.0f);        // プレイヤースタート位置
+    const Vector3 BOSS_CAMERA_POS(0.0f, 20.0f, -300.0f);           // ボスカメラ位置
+    const Vector3 STAR_CAMERA_POS(2300.0f, 350.0f, 3400.0f);    // スターカメラ位置
+    const Vector3 PLAYER_CAMERA_POS(-300.0f, 100.0f, -300.0f); // プレイヤーカメラ位置
     const float CAMERA_NEAR_CLIP = 1.0f;                        // カメラのニアクリップ距離
     const float CAMERA_FAR_CLIP = 22000.0f;                     // カメラのファークリップ距離
     const float CAMERA_ROTATION_SPEED = 1.3f;                   // カメラ回転速度
@@ -51,7 +52,7 @@ void GameCamera::Update()
     }
 
     // そうでなければ通常のカメラ処理
-    else
+    else 
     {
         // 入力取得
         auto inputX = g_pad[0]->GetRStickXF();
@@ -147,16 +148,21 @@ void GameCamera::BossCamera()
     {
         m_changeCamera = true;
 
+        m_bossBarsUI = NewGO<BossBarsUI>(0, "BossBarsUI");
+
+        // カメラの注視点を設定
         m_bossTargetPos = m_boss->GetPosition();
+
+        //カメラの視点を設定
         m_bossCameraPos = m_player->GetPosition() + BOSS_CAMERA_POS;
         g_camera3D->SetTarget(m_bossTargetPos);
         g_camera3D->SetPosition(m_bossCameraPos);
     }
 
     m_bossCameraPos.z += 15.0f;
-    if (m_bossCameraPos.z >= 4000.0f)
+    if (m_bossCameraPos.z >= 3700.0f)
     {
-        m_bossCameraPos.z = 4000.0f;
+        m_bossCameraPos.z = 3700.0f;
         m_bossCameraPos.y += 1.0f;
 
 
@@ -179,79 +185,23 @@ void GameCamera::StarCamera()
     {
         m_changeCamera = true;
 
-        m_starTargetPos = m_boss->GetPosition();
-        m_starCameraPos = m_player->GetPosition() + PLAYER_CAMERA_POS;
-        g_camera3D->SetTarget(m_starTargetPos);
-        g_camera3D->SetPosition(m_starCameraPos);
+         // カメラの注視点を設定
+        m_starTargetPos = STAR_CAMERA_POS;
+
+        //カメラの視点を設定
+        m_starCameraPos = g_camera3D->GetPosition();
     }
 
-
-    if (m_starCameraPos.x <= m_star->GetStarPosition().x)
+    else
     {
-        m_starCameraPos.x += 15.0f;
-        if (m_starCameraPos.x >= m_star->GetStarPosition().x)
-        {
-            m_starCameraPos.x = m_star->GetStarPosition().x;
-            m_starCameraPos.y += 1.0f;
-            if (m_starCameraPos.y >= m_star->GetStarPosition().y)
-            {
-                m_starCameraPos.y = m_star->GetStarPosition().y;
-                m_isStarCamera = false;
-                m_changeCamera = false;
-            }
-        }
-    }
+        m_starTargetPos = m_star->GetPosition();
 
-    if (m_starCameraPos.z <= m_star->GetStarPosition().z - STAR_CAMERA_POS.z)
-    {
-        m_starCameraPos.z += 15.0f;
-        if (m_starCameraPos.z >= m_star->GetStarPosition().z - STAR_CAMERA_POS.z)
+        if (m_starTargetPos.y >= STAR_CAMERA_POS.y)
         {
-            m_starCameraPos.z = m_star->GetStarPosition().z - STAR_CAMERA_POS.z;
-            m_starCameraPos.y += 1.0f;
-            if (m_starCameraPos.y >= m_star->GetStarPosition().y)
-            {
-                m_starCameraPos.y = m_star->GetStarPosition().y;
-                m_isStarCamera = false;
-                m_changeCamera = false;
-            }
+            m_isStarCamera = false;
         }
-    }
-
-    if (m_starCameraPos.x>= m_star->GetStarPosition().x)
-        {
-        m_starCameraPos.x -= 15.0f;
-        if (m_starCameraPos.x <= m_star->GetStarPosition().x)
-        {
-            m_starCameraPos.x = m_star->GetStarPosition().x;
-            m_starCameraPos.y += 1.0f;
-            if (m_starCameraPos.y >= m_star->GetStarPosition().y)
-            {
-                m_starCameraPos.y = m_star->GetStarPosition().y;
-                m_isStarCamera = false;
-                m_changeCamera = false;
-            }
-        }
-    }
-
-    if (m_starCameraPos.z >= m_star->GetStarPosition().z + STAR_CAMERA_POS.z)
-    {
-        m_starCameraPos.z -= 15.0f;
-        if (m_starCameraPos.z <= m_star->GetStarPosition().z + STAR_CAMERA_POS.z)
-        {
-            m_starCameraPos.z = m_star->GetStarPosition().z + STAR_CAMERA_POS.z;
-            m_starCameraPos.y += 1.0f;
-            if (m_starCameraPos.y >= m_star->GetStarPosition().y)
-            {
-                m_starCameraPos.y = m_star->GetStarPosition().y;
-                m_isStarCamera = false;
-                m_changeCamera = false;
-            }
-        }
-    
     }
 
     g_camera3D->SetTarget(m_starTargetPos);
     g_camera3D->SetPosition(m_starCameraPos);
-    g_camera3D->Update();
 }
