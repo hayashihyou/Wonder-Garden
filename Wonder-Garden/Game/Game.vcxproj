@@ -257,6 +257,7 @@
     <ClCompile Include="system\system.cpp" />
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="UI\BossBarsUI.cpp" />
     <ClCompile Include="UI\CoinUI.cpp" />
     <ClCompile Include="UI\HPUI.cpp" />
     <ClCompile Include="Gimmic\Warp.cpp" />
@@ -290,6 +291,7 @@
     <ClInclude Include="system\system.h" />
     <ClInclude Include="Title.h" />
     <ClInclude Include="Transform.h" />
+    <ClInclude Include="UI\BossBarsUI.h" />
     <ClInclude Include="UI\CoinUI.h" />
     <ClInclude Include="UI\HPUI.h" />
     <ClInclude Include="Gimmic\Warp.h" />

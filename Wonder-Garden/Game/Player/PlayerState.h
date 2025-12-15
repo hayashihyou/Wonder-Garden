@@ -9,11 +9,13 @@ public:                                                                         
     }
 
 class Player;
+class GameCamera;
 
 class IPlayerState : public IGameObject
 {
 protected:
     Player* m_player;
+    GameCamera* m_gameCamera;
 
 public:
     IPlayerState(Player* player) : m_player(player){};
@@ -214,6 +216,33 @@ class PlayerFireState : public IPlayerState
 public:
     PlayerFireState(Player* player) : IPlayerState(player){};
     virtual ~PlayerFireState(){};
+    void Enter() override;
+    void Update() override;
+    void Exit() override;
+
+    virtual bool RequestState(uint32_t& request) override;
+};
+
+class PlayerBattleState : public IPlayerState
+{
+    appState(PlayerBattleState);
+    public:
+        PlayerBattleState(Player* player) : IPlayerState(player){};
+        virtual ~PlayerBattleState(){};
+        void Enter() override;
+        void Update() override;
+        void Exit() override;
+
+        virtual bool RequestState(uint32_t& request) override;
+};
+
+class PlayerStarState : public IPlayerState
+{
+    appState(PlayerStarState);
+
+public:
+    PlayerStarState(Player* player) : IPlayerState(player){};
+    virtual ~PlayerStarState(){};
     void Enter() override;
     void Update() override;
     void Exit() override;

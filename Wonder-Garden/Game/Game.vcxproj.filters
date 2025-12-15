@@ -81,6 +81,9 @@
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="UI\BossBarsUI.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -142,5 +145,8 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="UI\BossBarsUI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
