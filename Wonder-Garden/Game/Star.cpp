@@ -42,6 +42,8 @@ void Star::Update()
     // 回転
     Rotation();
 
+    m_model.SetPosition(m_position);
+    m_model.SetRotation(m_rot);
     // モデル更新
     m_model.Update();
 }
@@ -54,8 +56,6 @@ void Star::Init()
     m_starPosition = STAR_POSITION;
     m_model.SetPosition(m_position);
     m_model.Update();
-
-    DeleteGO(m_boss);
 }
 
 void Star::Rotation()

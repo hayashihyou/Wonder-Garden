@@ -3,6 +3,7 @@
 class Player;
 class Boss;
 class Star;
+class BossBarsUI;
 
 /// <summary>
 /// ゲームカメラ
@@ -75,11 +76,15 @@ public:
     void SetBossCamera(bool bossFlag) { m_isBossCamera = bossFlag; }
     void SetStarCamera(bool starFlag) { m_isStarCamera = starFlag; }
 
+    bool GetBossCamera() const { return m_isBossCamera; }
+    bool GetStarCamera() const { return m_isStarCamera; }
+
 
 private:
     Player* m_player = nullptr; // プレイヤー
     Boss* m_boss = nullptr;     // ボス
     Star* m_star = nullptr;     // スター
+    BossBarsUI* m_bossBarsUI = nullptr; // ボスの体力ゲージUI
     Vector3 m_toCameraPos;      // 注視点からカメラ位置までのベクトル
     Transform m_transform;      // トランスフォーム
 
