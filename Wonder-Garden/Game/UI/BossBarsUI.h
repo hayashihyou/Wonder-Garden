@@ -13,7 +13,9 @@ public:
 
 
 private:
-    SpriteRender m_bossBarSprite;
+    SpriteRender m_bossBar;
+    SpriteRender m_bossAlert;
+    SpriteRender m_bossAlertFrame;
     GameCamera* m_gameCamera = nullptr;
 
     Vector3 m_position;

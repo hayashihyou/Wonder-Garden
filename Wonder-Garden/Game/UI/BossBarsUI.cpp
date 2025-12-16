@@ -2,15 +2,26 @@
 #include "BossBarsUI.h"
 #include "GameCamera.h"
 
+namespace
+{
+    const Vector3 BOSS_ALERT_POSITION = Vector3(0.0f, -350.0f, 0.0f);
+}
+
 bool BossBarsUI::Start()
 {
     m_gameCamera = FindGO<GameCamera>("GameCamera");
 
-    m_bossBarSprite.Init("Assets/texture/Boss_Bar.DDS",1920.0f,1080.0f);
+    m_bossBar.Init("Assets/texture/Boss_Bar.DDS",1920.0f,1080.0f);
+    m_bossAlert.Init("Assets/texture/Boss_Caution.DDS",960.0f,540.0f);
+    m_bossAlertFrame.Init("Assets/texture/Boss_Frame.DDS",1920.0f,1080.0f);
     m_position = Vector3(0.0f,0.0f,0.0f);
-    m_bossBarSprite.SetPosition(m_position);
-    m_bossBarSprite.SetMulColor(Vector4(1.0f,1.0f,1.0f,0.5f));
-    m_bossBarSprite.Update();
+    m_bossBar.SetPosition(m_position);
+    m_bossAlert.SetPosition(BOSS_ALERT_POSITION);
+    m_bossAlertFrame.SetPosition(BOSS_ALERT_POSITION);
+    m_bossBar.SetMulColor(Vector4(1.0f,1.0f,1.0f,0.5f));
+    m_bossAlert.SetMulColor(Vector4(1.0f,1.0f,1.0f,0.5f));
+    m_bossAlertFrame.SetMulColor(Vector4(1.0f,1.0f,1.0f,0.5f));
+    m_bossBar.Update();
 
     return true;
 }
@@ -40,13 +51,22 @@ void BossBarsUI::Update()
         m_isAdd = !m_isAdd;
     }
     
-    m_bossBarSprite.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, alpha));
+    m_bossBar.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, alpha));
+    m_bossAlert.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, alpha));
+    m_bossAlertFrame.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, alpha));
 
-    m_bossBarSprite.SetPosition(m_position);
-    m_bossBarSprite.Update();
+    m_bossBar.SetPosition(m_position);
+    m_bossAlert.SetPosition(BOSS_ALERT_POSITION);
+    m_bossAlertFrame.SetPosition(BOSS_ALERT_POSITION);
+
+    m_bossBar.Update();
+    m_bossAlert.Update();
+    m_bossAlertFrame.Update();
 }
 
 void BossBarsUI::Render(RenderContext& rc)
 {
-    m_bossBarSprite.Draw(rc);
+    m_bossBar.Draw(rc);
+    m_bossAlertFrame.Draw(rc);
+    m_bossAlert.Draw(rc);
 }
