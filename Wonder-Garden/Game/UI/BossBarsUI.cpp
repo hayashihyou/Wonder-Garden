@@ -12,16 +12,22 @@ bool BossBarsUI::Start()
     m_gameCamera = FindGO<GameCamera>("GameCamera");
 
     m_bossBar.Init("Assets/texture/Boss_Bar.DDS",1920.0f,1080.0f);
-    m_bossAlert.Init("Assets/texture/Boss_Caution.DDS",960.0f,540.0f);
     m_bossAlertFrame.Init("Assets/texture/Boss_Frame.DDS",1920.0f,1080.0f);
+    m_bossAlert.Init("Assets/texture/Boss_Caution.DDS", 960.0f, 540.0f);
+
     m_position = Vector3(0.0f,0.0f,0.0f);
+
     m_bossBar.SetPosition(m_position);
-    m_bossAlert.SetPosition(BOSS_ALERT_POSITION);
     m_bossAlertFrame.SetPosition(BOSS_ALERT_POSITION);
+    m_bossAlert.SetPosition(BOSS_ALERT_POSITION);
+
     m_bossBar.SetMulColor(Vector4(1.0f,1.0f,1.0f,0.5f));
-    m_bossAlert.SetMulColor(Vector4(1.0f,1.0f,1.0f,0.5f));
     m_bossAlertFrame.SetMulColor(Vector4(1.0f,1.0f,1.0f,0.5f));
+    m_bossAlert.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, 0.5f));
+
     m_bossBar.Update();
+    m_bossAlertFrame.Update();
+    m_bossAlert.Update();
 
     return true;
 }
@@ -41,10 +47,12 @@ void BossBarsUI::Update()
     {
         alpha = Math::Lerp(percent, 0.5f, 1.0f);
     }
+
     else
     {
         alpha = Math::Lerp(percent, 1.0f, 0.5f);
     }
+
     if (percent >= 1.0f)
     {
         m_elapsedTime = 0.0f;
@@ -52,16 +60,16 @@ void BossBarsUI::Update()
     }
     
     m_bossBar.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, alpha));
-    m_bossAlert.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, alpha));
     m_bossAlertFrame.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, alpha));
+    m_bossAlert.SetMulColor(Vector4(1.0f, 1.0f, 1.0f, alpha));
 
     m_bossBar.SetPosition(m_position);
-    m_bossAlert.SetPosition(BOSS_ALERT_POSITION);
     m_bossAlertFrame.SetPosition(BOSS_ALERT_POSITION);
+    m_bossAlert.SetPosition(BOSS_ALERT_POSITION);
 
     m_bossBar.Update();
-    m_bossAlert.Update();
     m_bossAlertFrame.Update();
+    m_bossAlert.Update();
 }
 
 void BossBarsUI::Render(RenderContext& rc)

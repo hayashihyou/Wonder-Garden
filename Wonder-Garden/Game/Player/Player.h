@@ -258,6 +258,7 @@ public:
         enAnimationClip_Attack,
         enAnimationClip_Damage,
         enAnimationClip_Dead,
+        enAnimationClip_Title,
         enAnimationClip_Num,
     };
 
