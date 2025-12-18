@@ -12,6 +12,7 @@ namespace
     const float CAMERA_UPPER_LIMIT = 0.9f;                      // カメラ上方向の制限値
     const float CAMERA_LOWER_LIMIT = -0.2f;                     // カメラ下方向の制限値
     const Vector3 INITIAL_TO_CAMERA_POS(0.0f, 130.0f, -250.0f); // 初期注視点からカメラ位置までのベクトル
+    const Vector3 TITLE_CAMERA_TARGET_POS(0.0f, 50.0f, 0.0f); // タイトルカメラ注視点位置
     const Vector3 BOSS_CAMERA_POS(0.0f, 20.0f, -300.0f);           // ボスカメラ位置
     const Vector3 STAR_CAMERA_POS(2300.0f, 350.0f, 3400.0f);    // スターカメラ位置
     const Vector3 PLAYER_CAMERA_POS(-300.0f, 100.0f, -300.0f); // プレイヤーカメラ位置
@@ -205,3 +206,22 @@ void GameCamera::StarCamera()
     g_camera3D->SetTarget(m_starTargetPos);
     g_camera3D->SetPosition(m_starCameraPos);
 }
+
+bool TitleGameCamera::Start()
+{
+    // 注視点から視点までのベクトルを設定
+    m_toCameraPos.Set(INITIAL_TO_CAMERA_POS);
+
+    // カメラのニアクリップとファークリップを設定
+    g_camera3D->SetNear(CAMERA_NEAR_CLIP);
+    g_camera3D->SetFar(CAMERA_FAR_CLIP);
+
+    g_camera3D->SetPosition(m_toCameraPos);
+    g_camera3D->SetTarget(TITLE_CAMERA_TARGET_POS);
+    g_camera3D->Update();
+    return true;
+}
+
+void TitleGameCamera::Update() {}
+
+

@@ -98,3 +98,17 @@ private:
     bool m_changeCamera = false;   // カメラ切り替えフラグ
     bool m_isStarCamera = false;   // スター取得時のカメラフラグ
 };
+
+
+class TitleGameCamera : public GameCamera
+{
+public:
+    TitleGameCamera(){};
+    ~TitleGameCamera(){};
+    bool Start();
+    void Update();
+
+
+private:
+    Vector3 m_toCameraPos;
+};

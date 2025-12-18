@@ -32,8 +32,6 @@ bool Player::Start()
     m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
     m_animationClips[enAnimationClip_Dead].Load("Assets/animData/player/playerDead.tka");
     m_animationClips[enAnimationClip_Dead].SetLoopFlag(false);
-    m_animationClips[enAnimationClip_Title].Load("Assets/animData/player/playerTitle.tka");
-    m_animationClips[enAnimationClip_Title].SetLoopFlag(true);
 
     m_playerModel.Init("Assets/modelData/player/player.tkm", m_animationClips, enAnimationClip_Num);
 
@@ -42,8 +40,8 @@ bool Player::Start()
         OnAnimationEvent(clipName, eventName);
     });
 
-    m_position = {-1952.0f, 103.0f, 2418.0f};
-    //m_position = Vector3::Zero;
+    //m_position = {-1952.0f, 103.0f, 2418.0f};
+    m_position = Vector3::Zero;
     m_moveDirection = Vector3::Zero;
     m_moveSpeed = MOVESPEED;
     m_jumpPower = JUMPPOWER;
@@ -190,5 +188,32 @@ void Player::Render(RenderContext& rc)
         }
     }
 }
+
+
+    // タイトル画面用のプレイヤークラス
+    bool PlayerTitle::Start()
+    {
+        m_animationClips[enAnimationTitleClip_Title].Load("Assets/animData/player/playerTitle.tka");
+        m_animationClips[enAnimationTitleClip_Title].SetLoopFlag(true);
+        m_titleModel.Init("Assets/modelData/player/player.tkm", m_animationClips, enAnimationTitleClip_Num);
+        m_titleModel.PlayAnimation(enAnimationTitleClip_Title);
+        m_position = {0.0f, 0.0f, -50.0f};
+        m_titleModel.SetPosition(m_position);
+        m_titleModel.Update();
+
+        
+        return true;
+    }
+
+    void PlayerTitle::Update()
+    {
+        m_titleModel.SetPosition(m_position);
+        m_titleModel.Update();
+    }
+
+    void PlayerTitle::Render(RenderContext& rc)
+    {
+        m_titleModel.Draw(rc);
+    }
 
 
