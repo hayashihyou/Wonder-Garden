@@ -47,3 +47,27 @@ void Warp::CheckWarp()
     }
 }
 
+
+bool TitlePipe::Start()
+{
+    m_modelRender.Init("Assets/stage/pipe.tkm");
+    m_pipePos = {-100.0f, 5.0f, -50.0f};
+    m_pipeScale = {0.7f, 0.7f, 0.7f};
+    m_modelRender.SetPosition(m_pipePos);
+    m_modelRender.SetScale(m_pipeScale);
+    m_modelRender.Update();
+
+
+    return true;
+}
+
+
+void TitlePipe::Update()
+{
+    m_modelRender.Update();
+}
+
+void TitlePipe::Render(RenderContext& rc)
+{
+    m_modelRender.Draw(rc);
+}

@@ -29,3 +29,22 @@ private:
     Vector3 m_pipe2Pos;
     Quaternion m_pipeRot;
 };
+
+
+class TitlePipe : public Warp
+{
+public:
+    TitlePipe() {};
+    ~TitlePipe() {};
+
+    bool Start();
+    void Update();
+    void Render(RenderContext& rc);
+
+
+private:
+    ModelRender m_modelRender;
+
+    Vector3 m_pipePos;
+    Vector3 m_pipeScale;
+};

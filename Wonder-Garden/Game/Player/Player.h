@@ -258,7 +258,6 @@ public:
         enAnimationClip_Attack,
         enAnimationClip_Damage,
         enAnimationClip_Dead,
-        enAnimationClip_Title,
         enAnimationClip_Num,
     };
 
@@ -328,4 +327,43 @@ private:
     bool m_isJump = false;
     bool m_isRun = false;
     bool m_isCannonReady = false;
+};
+
+
+class PlayerTitle : public IGameObject
+{
+    enum EnAnimationTitleClip
+    {
+        enAnimationTitleClip_Title,
+        enAnimationTitleClip_Num,
+    };
+
+
+public:
+    /// <summary>
+    /// スタート処理
+    /// </summary>
+    /// <returns></returns>
+    bool Start() override;
+
+
+    /// <summary>
+    /// 更新処理
+    /// </summary>
+    void Update() override;
+
+
+    /// <summary>
+    /// 描画処理
+    /// </summary>
+    /// <param name="rc"></param>
+    void Render(RenderContext& rc) override;
+
+
+private:
+    AnimationClip m_animationClips[enAnimationTitleClip_Num];
+    ModelRender m_titleModel;
+
+
+    Vector3 m_position;
 };

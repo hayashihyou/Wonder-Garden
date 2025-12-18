@@ -6,7 +6,9 @@
 #include "Game.h"
 #include "SoundManager.h"
 #include "Title.h"
+#include "GameCamera.h"
 #include "system/system.h"
+#include "nature/SkyCube.h"
 
 void ReportLiveObjects()
 {
@@ -38,7 +40,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 
     // サウンドマネージャー
     NewGO<SoundManager>(0);
-
+    
+    SkyCube* m_skyCube = NewGO<SkyCube>(0, "SkyCube");
+    m_skyCube->SetType(EnSkyCubeType::enSkyCubeType_Day);
+    m_skyCube->SetScale(700.0f);
     //////////////////////////////////////
     // 初期化を行うコードを書くのはここまで！！！
     //////////////////////////////////////

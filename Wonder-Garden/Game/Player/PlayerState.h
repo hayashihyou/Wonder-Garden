@@ -249,3 +249,20 @@ public:
 
     virtual bool RequestState(uint32_t& request) override;
 };
+
+//class PlayerTitleState : public IPlayerState
+//{
+//    appState(PlayerTitleState);
+//
+//
+//public:
+//    PlayerTitleState(Player* player) : IPlayerState(player){};
+//    virtual ~PlayerTitleState(){};
+//    void Enter() override;
+//    void Update() override;
+//    void Exit() override;
+//
+//    virtual bool RequestState(uint32_t& request) override;
+//
+//}
+

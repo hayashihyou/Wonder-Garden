@@ -84,7 +84,7 @@ bool Game::Start()
     m_player = NewGO<Player>(0, "Player");
     EnemyManager::CreateInstance();
     m_stage = NewGO<Stage>(0, "Stage");
-    m_skyCube = NewGO<SkyCube>(0, "SkyCube");
+    //m_skyCube = NewGO<SkyCube>(0, "SkyCube");
     m_starCounter = NewGO<StarCounter>(0, "StarCounter");
     m_gameCamera = NewGO<GameCamera>(0, "GameCamera");
     m_hpUI = NewGO<HPUI>(0, "HPUI");
