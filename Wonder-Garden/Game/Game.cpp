@@ -81,12 +81,12 @@ bool Game::Start()
     // サウンドマネージャーのインスタンスを取得し、BGMを再生
     SoundManager::GetInstance().PlayBGM(SoundManager::SoundNumber::InGameBGM);
 
-    m_player = NewGO<Player>(0, "Player");
+    m_player = NewGO<Player>(0,"Player");
     EnemyManager::CreateInstance();
     m_stage = NewGO<Stage>(0, "Stage");
     //m_skyCube = NewGO<SkyCube>(0, "SkyCube");
     m_starCounter = NewGO<StarCounter>(0, "StarCounter");
-    m_gameCamera = NewGO<GameCamera>(0, "GameCamera");
+    m_gameCamera = NewGO<GameCamera>(0,"GameCamera");
     m_hpUI = NewGO<HPUI>(0, "HPUI");
     m_warp = NewGO<Warp>(0, "Warp");
     m_cannon = NewGO<Cannon>(0, "Cannon");
@@ -123,7 +123,7 @@ bool Game::Start()
     });
 
     // コメントアウトする。
-    //PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+    PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
     // エネミーの複数対のモデルを生成
     EnemyManager::GetInstance()->Setup();

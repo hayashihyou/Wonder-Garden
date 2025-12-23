@@ -242,6 +242,7 @@
     <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="GameOver.cpp" />
     <ClCompile Include="Gimmic\Cannon.cpp" />
+    <ClCompile Include="Magic.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player\Player.cpp" />
     <ClCompile Include="Player\PlayerState.cpp" />
@@ -281,6 +282,7 @@
     <ClInclude Include="GameClear.h" />
     <ClInclude Include="GameOver.h" />
     <ClInclude Include="Gimmic\Cannon.h" />
+    <ClInclude Include="Magic.h" />
     <ClInclude Include="Player\Player.h" />
     <ClInclude Include="Player\PlayerState.h" />
     <ClInclude Include="SoundManager.h" />

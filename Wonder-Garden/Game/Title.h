@@ -2,8 +2,8 @@
 
 #include "nature/SkyCube.h"
 
-class PlayerTitle;
-class TitleGameCamera;
+class Player;
+class GameCamera;
 class TitlePipe;
 
 /// <summary>
@@ -52,12 +52,15 @@ private:
 private:
     SpriteRender m_titleSprite; // タイトル画面スプライト
     ModelRender m_titleModel;   // タイトル画面用モデル
+    PhysicsStaticObject m_physicsStaticObject;
     SkyCube* m_skyCube = nullptr;        // スカイキューブ
-    PlayerTitle* m_playerTitle = nullptr; // タイトル画面用プレイヤー
-    TitleGameCamera* m_titleGameCamera = nullptr; // タイトル画面用カメラ
+    Player* m_player = nullptr;                   // タイトル画面用プレイヤー
+    GameCamera* m_gameCamera = nullptr; // タイトル画面用カメラ
     TitlePipe* m_titlePipe = nullptr;     // タイトル画面用土管
 
     Vector3 m_spritePos;
     Vector3 m_modelPos;
+    Vector3 m_modelScale;
+    Vector3 m_playerPos;
     Quaternion m_modelRot;
 };

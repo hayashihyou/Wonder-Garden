@@ -15,14 +15,18 @@ namespace
 
 Title::~Title()
 {
-    DeleteGO(m_playerTitle);
+    DeleteGO(m_player);
+    DeleteGO(m_gameCamera); 
     DeleteGO(m_titlePipe);
-    DeleteGO(m_titleGameCamera);
 }
 
 
 bool Title::Start()
 {
+    m_player = NewGO<Player>(0, "Player");
+    m_gameCamera = NewGO<GameCamera>(0, "GameCamera");
+    m_titlePipe = NewGO<TitlePipe>(0, "TitlePipe");
+
     InitModel();
     InitSprite();
 
@@ -33,25 +37,8 @@ bool Title::Start()
 
 void Title::Update()
 {
-    if (m_playerTitle == nullptr)
-    {
-        m_playerTitle = NewGO<PlayerTitle>(0, "TitlePlayer");
-    }
-
-    if (m_titlePipe == nullptr)
-    {
-        m_titlePipe = NewGO<TitlePipe>(0, "TitlePipe");
-    }
-
-    if (m_titleGameCamera == nullptr)
-    {
-        m_titleGameCamera = NewGO<TitleGameCamera>(0, "TitleGameCamera");
-    }
-
-    m_modelRot.AddRotationY(STAGE_ROT);
-
     // Bボタンが押されたらゲームシーンへ移行
-    if (g_pad[0]->IsTrigger(enButtonB))
+    if (m_titlePipe->GetPipeCollision().IsHit(*m_player->GetCharCon()))
     {
         // 決定SE再生
         SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::SystemDecisionSE, 0.7f, false);
@@ -60,8 +47,14 @@ void Title::Update()
         DeleteGO(this);
     }
 
-    m_titleModel.SetRotation(m_modelRot);
-    m_titleModel.Update();
+    if (m_player->GetPosition().y <= -400.0f)
+    {
+        m_player->SetPosition({0.0f, 50.0f, 0.0f});
+        m_player->GetModel()->SetPosition(m_player->GetPosition());
+        m_player->GetModel()->Update();
+        m_player->GetCharCon()->SetPosition(m_player->GetPosition());
+    }
+        
 }
 
 void Title::Render(RenderContext& rc)
@@ -83,7 +76,10 @@ void Title::InitModel()
     m_titleModel.Init("Assets/stage/TitleStage.tkm");
     m_modelPos = {0.0f, 0.0f, 0.0f};
     m_modelRot = Quaternion::Identity;
+    m_modelScale = {2.0f, 2.0f, 2.0f};
     m_titleModel.SetPosition(m_modelPos);
     m_titleModel.SetRotation(m_modelRot);
+    m_titleModel.SetScale(m_modelScale);
     m_titleModel.Update();
+    m_physicsStaticObject.CreateFromModel(m_titleModel.GetModel(), m_titleModel.GetModel().GetWorldMatrix());
 }

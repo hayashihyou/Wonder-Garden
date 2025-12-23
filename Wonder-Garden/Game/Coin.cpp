@@ -118,7 +118,7 @@ void Coin::HealHp()
     // プレイヤーの体力を1回復
     // TODO: プレイヤーのMAX体力値は別クラスで管理
     auto newHp = m_player->GetHP() + 1;
-    if (newHp >= 8)
+    if (newHp > 8)
     {
         return;
     }
