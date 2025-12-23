@@ -84,6 +84,7 @@
     <ClCompile Include="UI\BossBarsUI.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Magic.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -148,5 +149,6 @@
     <ClInclude Include="UI\BossBarsUI.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="Magic.h" />
   </ItemGroup>
 </Project>

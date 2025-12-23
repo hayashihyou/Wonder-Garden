@@ -41,9 +41,13 @@ public:
     void Update();
     void Render(RenderContext& rc);
 
+    CollisionObject& GetPipeCollision() { return m_pipeCollision; }
 
 private:
     ModelRender m_modelRender;
+    CollisionObject m_pipeCollision;
+    Quaternion m_pipeRot;
+    PhysicsStaticObject m_physicsStaticObject; // 物理静的オブジェクト
 
     Vector3 m_pipePos;
     Vector3 m_pipeScale;

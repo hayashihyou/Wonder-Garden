@@ -50,12 +50,16 @@ void Warp::CheckWarp()
 
 bool TitlePipe::Start()
 {
-    m_modelRender.Init("Assets/stage/pipe.tkm");
-    m_pipePos = {-100.0f, 5.0f, -50.0f};
-    m_pipeScale = {0.7f, 0.7f, 0.7f};
+    m_modelRender.Init("Assets/stage/pipe_title.tkm");
+    m_pipePos = {-200.0f, -10.0f, -50.0f};
+    m_pipeScale = {1.0f, 1.0f, 1.0f};
     m_modelRender.SetPosition(m_pipePos);
     m_modelRender.SetScale(m_pipeScale);
     m_modelRender.Update();
+    m_pipeCollision.CreateSphere(m_pipePos,m_pipeRot, 15.0f);
+    m_pipeCollision.Update();
+
+    m_physicsStaticObject.CreateFromModel(m_modelRender.GetModel(), m_modelRender.GetModel().GetWorldMatrix());
 
 
     return true;
@@ -65,6 +69,7 @@ bool TitlePipe::Start()
 void TitlePipe::Update()
 {
     m_modelRender.Update();
+    m_pipeCollision.Update();
 }
 
 void TitlePipe::Render(RenderContext& rc)
