@@ -7,7 +7,6 @@
 #include "Enemy/Boss.h"
 #include "Enemy/Enemy.h"
 #include "Enemy/EnemyType2.h"
-#include "EnemyManager.h"
 #include "Game.h"
 #include "GameCamera.h"
 #include "GameClear.h"
@@ -49,6 +48,12 @@ Game::~Game()
         DeleteGO(m_enemy);
     }
 
+    const auto& enemysType2 = FindGOs<EnemyType2>("EnemyType2");
+    for (auto m_enemyType2 : enemysType2)
+    {
+        DeleteGO(m_enemyType2);
+    }
+
     if (m_boss != nullptr)
     {
         DeleteGO(m_boss);
@@ -59,7 +64,6 @@ Game::~Game()
         DeleteGO(m_star);
     }
 
-    EnemyManager::DeleteInstance();
     DeleteGO(m_player);
     DeleteGO(m_boss);
     DeleteGO(m_stage);
@@ -82,7 +86,6 @@ bool Game::Start()
     SoundManager::GetInstance().PlayBGM(SoundManager::SoundNumber::InGameBGM);
 
     m_player = NewGO<Player>(0,"Player");
-    EnemyManager::CreateInstance();
     m_stage = NewGO<Stage>(0, "Stage");
     //m_skyCube = NewGO<SkyCube>(0, "SkyCube");
     m_starCounter = NewGO<StarCounter>(0, "StarCounter");
@@ -119,14 +122,19 @@ bool Game::Start()
             m_boss->SetRotation(objData.rotation);
             return true;
         }
+
+        if (objData.EqualObjectName(L"StoneMonster") == true)
+        {
+            m_enemyType2 = NewGO<EnemyType2>(0, "EnemyType2");
+            m_enemyType2->SetPosition(objData.position);
+            m_enemyType2->SetRotation(objData.rotation);
+            return true;
+        }
              return true;
     });
 
     // コメントアウトする。
-    PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
-
-    // エネミーの複数対のモデルを生成
-    EnemyManager::GetInstance()->Setup();
+    //PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 
     // コリジョンマネージャのインスタンスの取得
     CollisionManager::Create();
@@ -142,7 +150,6 @@ void Game::Update()
     // 星生成判定
     CreateStar();
 
-    EnemyManager::GetInstance()->Update();
 
     CollisionManager::Get()->Update();
 
