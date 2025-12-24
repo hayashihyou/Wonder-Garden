@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "AttackCollision.h"
+#include "Magic.h"
 #include "EnemyType2.h"
 #include "EnemyType2State.h"
 #include "Player/Player.h"

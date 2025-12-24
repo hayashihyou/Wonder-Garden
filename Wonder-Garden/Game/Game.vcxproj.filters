@@ -37,7 +37,6 @@
     <ClCompile Include="StarCounter.cpp" />
     <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="GameOver.cpp" />
-    <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="Collision\CollisionManager.cpp">
       <Filter>Collision</Filter>
     </ClCompile>
@@ -102,7 +101,6 @@
     <ClInclude Include="StarCounter.h" />
     <ClInclude Include="GameClear.h" />
     <ClInclude Include="GameOver.h" />
-    <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="Collision\CollisionManager.h">
       <Filter>Collision</Filter>
     </ClInclude>

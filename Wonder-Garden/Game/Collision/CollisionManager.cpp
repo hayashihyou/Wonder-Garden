@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "AttackCollision.h"
+#include "Magic.h"
 #include "CollisionManager.h"
 #include "EffectManager.h"
 #include "Enemy/Boss.h"
@@ -173,7 +174,7 @@ void CollisionManager::Update()
             {
                 if (enemyType2->GetAttackCollision())
                 {
-                    if (enemyType2->GetAttackCollision()->m_punchCollision->IsHit(*player->GetCharCon()))
+                    if (enemyType2->GetAttackCollision()->m_magicCollision->IsHit(*player->GetCharCon()))
                     {
                         player->Damage(1);
                     }

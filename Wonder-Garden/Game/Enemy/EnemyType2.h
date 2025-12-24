@@ -2,7 +2,7 @@
 #include "CharacterBase.h"
 
 class Player;
-class AttackCollision;
+class Magic;
 class IEnemyType2State;
 
 class EnemyType2 : public CharacterBase
@@ -138,7 +138,7 @@ public:
     /// 攻撃判定クラスの保持
     /// </summary>
     /// <param name="collision"></param>
-    void SetAttackCollision(AttackCollision* collision) { m_attackCollision = collision; }
+    void SetAttackCollision(Magic* collision) { m_attackCollision = collision; }
 
 
 public:
@@ -195,7 +195,7 @@ public:
     /// 攻撃判定の取得
     /// </summary>
     /// <returns></returns>
-    AttackCollision* GetAttackCollision() { return m_attackCollision; }
+    Magic* GetAttackCollision() { return m_attackCollision; }
 
 
     /// <summary>
@@ -243,11 +243,11 @@ private:
     ModelRender m_enemyType2Model;                          //モデル
     AnimationClip m_animationClips[enAnimationClip_Num];    //アニメーションクリップ
     EnDeadReason m_deadReason = enDeadReason_None;          //死亡理由
-    AttackCollision* m_enemyType2Attack = nullptr;          //攻撃判定 
+    Magic* m_enemyType2Attack = nullptr;          //攻撃判定 
     CollisionObject* enemyType2Collision = nullptr;         //当たり判定
     CollisionObject* enemyType2JumpCollision = nullptr;     //ジャンプ攻撃用当たり判定
     Player* m_player;                                       //プレイヤー
-    AttackCollision* m_attackCollision = nullptr;           //攻撃判定
+    Magic* m_attackCollision = nullptr;           //攻撃判定
 
 
     uint32_t m_enemyType2State;                             //現在の状態ID

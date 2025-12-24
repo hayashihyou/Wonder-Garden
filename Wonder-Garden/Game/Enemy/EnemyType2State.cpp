@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "AttackCollision.h"
+#include "Magic.h"
 #include "EnemyType2.h"
 #include "EnemyType2State.h"
 #include "SoundManager.h"
@@ -109,8 +109,7 @@ bool EnemyType2AttackState::RequestState(uint32_t& request)
 
 void EnemyType2AttackState::MakeAttackCollision()
 {
-    m_enemyType2->SetAttackCollision(NewGO<AttackCollision>(0, "AttackCollision"));
-    m_enemyType2->GetAttackCollision()->InitTransform(ATK_POSITION, m_enemyType2->GetToPlayer(),*m_enemyType2->GetTransform());
+    m_enemyType2->SetAttackCollision(NewGO<Magic>(0, "Magic"));
     m_enemyType2->GetAttackCollision()->CreateCollision(ATK_COL_SIZE);
     m_enemyType2->GetAttackCollision()->Update();
 }

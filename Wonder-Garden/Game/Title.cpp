@@ -31,7 +31,7 @@ bool Title::Start()
     InitSprite();
 
     SoundManager::GetInstance().PlayBGM(SoundManager::SoundNumber::TitleBGM);
-
+    
     return true;
 }
 

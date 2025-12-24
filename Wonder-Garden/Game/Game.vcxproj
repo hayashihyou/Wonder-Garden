@@ -230,7 +230,6 @@
     <ClCompile Include="CoinCount.cpp" />
     <ClCompile Include="Collision\CollisionManager.cpp" />
     <ClCompile Include="EffectManager.cpp" />
-    <ClCompile Include="EnemyManager.cpp" />
     <ClCompile Include="Enemy\Boss.cpp" />
     <ClCompile Include="Enemy\BossState.cpp" />
     <ClCompile Include="Enemy\Enemy.cpp" />
@@ -270,7 +269,6 @@
     <ClInclude Include="CoinCount.h" />
     <ClInclude Include="Collision\CollisionManager.h" />
     <ClInclude Include="EffectManager.h" />
-    <ClInclude Include="EnemyManager.h" />
     <ClInclude Include="Enemy\Boss.h" />
     <ClInclude Include="Enemy\BossState.h" />
     <ClInclude Include="Enemy\Enemy.h" />
