@@ -33,6 +33,11 @@ public:
     /// <returns></returns>
     void Render(RenderContext& rc);
 
+
+    void SetPosition(Vector3 pos) { position = pos; }
+
+    void SetRotation(Quaternion rot) { rotation = rot; }
+
 private:
     /// <summary>
     /// 大砲にプレイヤーが近づいたか

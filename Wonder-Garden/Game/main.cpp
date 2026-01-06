@@ -35,8 +35,14 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
     // ここから初期化を行うコードを記述する。
     //////////////////////////////////////
 
+    g_renderingEngine->DisableRaytracing();
+    g_renderingEngine->DisableTonemap();
+
+    g_sceneLight->SetAmbinet(Vector3(0.5f, 0.5f, 0.5f));
+
     // タイトル
     NewGO<Title>(0, "Title");
+    //NewGO<Game>(0, "Game");
 
     // サウンドマネージャー
     NewGO<SoundManager>(0);
