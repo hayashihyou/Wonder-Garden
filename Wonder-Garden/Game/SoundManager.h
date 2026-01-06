@@ -46,7 +46,19 @@ public:
     /// SE再生
     /// </summary>
     void PlaySE(SoundNumber soundNumber, float volume = 0.7f, bool isLoop = false);
-    
+
+
+    /// <summary>
+    /// 再生中のBGMを停止
+    /// </summary>
+    void DeleteCurrentBGM();
+
+
+    /// <summary>
+    /// 再生中のSEを停止
+    /// </summary>
+    void DeleteCurrentSE();
+
 
 private:
     void Init();

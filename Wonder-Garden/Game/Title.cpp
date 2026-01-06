@@ -42,6 +42,8 @@ void Title::Update()
     {
         // 決定SE再生
         SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::SystemDecisionSE, 0.7f, false);
+        // 現在のBGMを停止
+        SoundManager::GetInstance().DeleteCurrentBGM();
 
         NewGO<Game>(0, "Game");
         DeleteGO(this);

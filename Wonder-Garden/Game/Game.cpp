@@ -92,7 +92,6 @@ bool Game::Start()
     m_gameCamera = NewGO<GameCamera>(0,"GameCamera");
     m_hpUI = NewGO<HPUI>(0, "HPUI");
     m_warp = NewGO<Warp>(0, "Warp");
-    m_cannon = NewGO<Cannon>(0, "Cannon");
     m_effectManager = NewGO<EffectManager>(0, "EffectManager");
     m_countCointer = NewGO<CountCointer>(0, "CoinCounter");
     m_coinUI = NewGO<CoinUI>(0, "CoinUI");
@@ -130,11 +129,22 @@ bool Game::Start()
             m_enemyType2->SetRotation(objData.rotation);
             return true;
         }
+
+        if (objData.EqualObjectName(L"Cannon") == true)
+        {
+            m_cannon = NewGO<Cannon>(0, "Cannon");
+            m_cannon->SetPosition(objData.position);
+            m_cannon->SetRotation(objData.rotation);
+            return true;
+        }
              return true;
     });
 
     // コメントアウトする。
     //PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
+
+    g_sceneLight->SetDirectionLight(0, Vector3(0.0f, -1.0f, 0.5f), Vector3(4.2f,4.2f,4.8f));
+    g_sceneLight->SetAmbinet(Vector3(0.8f, 0.8f, 0.8f));
 
     // コリジョンマネージャのインスタンスの取得
     CollisionManager::Create();
@@ -162,12 +172,14 @@ void Game::Update()
     if (m_player->GetPosition().y <= -400.0f || m_player->IsGameOver() == true)
     {
         NewGO<GameOver>(0, "GameOver");
+        SoundManager::GetInstance().DeleteCurrentBGM();
         DeleteGO(this);
     }
 
     if (m_starCounter->GetStarCount() == 1)
     {
         NewGO<GameClear>(0, "GameClear");
+        SoundManager::GetInstance().DeleteCurrentBGM();
         DeleteGO(this);
     }
 }

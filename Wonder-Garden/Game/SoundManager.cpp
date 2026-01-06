@@ -80,8 +80,8 @@ SoundManager::SoundManager()
 
 SoundManager::~SoundManager()
 {
-    g_soundEngine->Release();
 }
+
 
 void SoundManager::Init()
 {
@@ -109,4 +109,13 @@ void SoundManager::PlaySE(SoundNumber soundNumber, float volume, bool isLoop)
     soundSorce->Init(soundNumber, false);
     soundSorce->SetVolume(volume);
     soundSorce->Play(isLoop);
+}
+
+void SoundManager::DeleteCurrentBGM()
+{
+    if (m_currentBGM != nullptr)
+    {
+        m_currentBGM->Release();
+        m_currentBGM = nullptr;
+    }
 }
