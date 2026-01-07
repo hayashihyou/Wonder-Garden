@@ -90,3 +90,16 @@ public:
     void Exit();
     bool RequestState(uint32_t& request);
 };
+
+class BossDownState : public IBossState
+{
+    appState(BossDownState);
+
+public:
+    BossDownState(Boss* owner) : IBossState(owner){};
+    virtual ~BossDownState(){};
+    void Enter();
+    void Update();
+    void Exit();
+    bool RequestState(uint32_t& request);
+};
