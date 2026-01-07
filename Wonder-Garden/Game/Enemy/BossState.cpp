@@ -169,8 +169,6 @@ void BossDeadState::Update()
 {
     if (!m_boss->GetModelRender()->IsPlayingAnimation())
     {
-        // 死んだときのSE再生
-        SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
         m_boss->SetDead(true);
     }
 }
@@ -178,6 +176,26 @@ void BossDeadState::Update()
 void BossDeadState::Exit() {}
 
 bool BossDeadState::RequestState(uint32_t& request)
+{
+    if (m_boss->IsDead() == true)
+    {
+        m_boss->SetDead(false);
+        request = BossDownState::ID();
+        return true;
+    }
+    return false;
+}
+
+void BossDownState::Enter()
+{
+    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
+}
+
+void BossDownState::Update() {}
+
+void BossDownState::Exit() {}
+
+bool BossDownState::RequestState(uint32_t& request)
 {
     return false;
 }

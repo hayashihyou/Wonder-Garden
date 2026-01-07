@@ -64,6 +64,7 @@ bool Boss::Start()
     m_stateMap.emplace(BossMoveState::ID(), new BossMoveState(this));
     m_stateMap.emplace(BossAttackState::ID(), new BossAttackState(this));
     m_stateMap.emplace(BossDeadState::ID(), new BossDeadState(this));
+    m_stateMap.emplace(BossDownState::ID(), new BossDownState(this));
 
     // 初期状態設定
     m_currentStateId = BossIdleState::ID();
