@@ -5,6 +5,7 @@
 #include "Star.h"
 #include "StarCounter.h"
 #include "cmath"
+#include <SoundManager.h>
 
 namespace
 {
@@ -34,6 +35,7 @@ void Star::Update()
     // 星取得判定
     if (m_distanceToPlayer <= GET_STAR_DISTANCE)
     {
+        SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::GetStarSE, 0.7f, false);
         m_starCounter = FindGO<StarCounter>("StarCounter");
         m_starCounter->AddStarCount();
         DeleteGO(this);

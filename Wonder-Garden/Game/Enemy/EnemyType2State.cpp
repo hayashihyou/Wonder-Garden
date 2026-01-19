@@ -116,9 +116,6 @@ void EnemyType2AttackState::MakeAttackCollision()
 
 void EnemyType2AttackDeadState::Enter()
 {
-    // 攻撃音再生
-    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
-
     m_enemyType2->GetModelRender()->PlayAnimation(m_enemyType2->enAnimationClip_AttackDead);
 }
 
@@ -126,6 +123,7 @@ void EnemyType2AttackDeadState::Update()
 {
     if (!m_enemyType2->GetModelRender()->IsPlayingAnimation())
     {
+        SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE);
         m_enemyType2->DeleteAttackCollision();
         DeleteGO(m_enemyType2);
     }

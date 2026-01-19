@@ -4,6 +4,7 @@
 #include "Enemy.h"
 #include "EnemyState.h"
 #include "Player/Player.h"
+#include <SoundManager.h>
 
 namespace
 {
@@ -94,6 +95,7 @@ bool EnemyMoveState::RequestState(uint32_t& request)
 void EnemyAttackState::Enter()
 {
     m_enemy->GetModel()->PlayAnimation(m_enemy->enAnimationClip_Attack);
+    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyAttackSE, 0.7f, false);
 }
 
 void EnemyAttackState::Update()
@@ -180,6 +182,7 @@ void EnemyAttackDeadState::Update()
 {
     if (!m_enemy->m_enemyModel.IsPlayingAnimation())
     {
+        SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::EnemyDeathSE, 0.7f, false);
         m_enemy->DeleteAttackCollision();
         DeleteGO(m_enemy);
     }
