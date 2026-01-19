@@ -137,7 +137,6 @@ bool Game::Start()
             m_cannon->SetRotation(objData.rotation);
             return true;
         }
-             return true;
     });
 
     // コメントアウトする。

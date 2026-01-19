@@ -57,9 +57,10 @@ private:
 
 private:
     Vector3 position;
-    Vector3 modelPos;
+    Vector3 m_collisionPositon;
     Vector3 scale;
-    Quaternion modelRot;
+    Vector3 fireDirection = Vector3::Front;
+    Quaternion m_collisionRotation;
     Quaternion rotation;
 
     bool changeFlag = false;        // 位置の変更をしたか確認するフラグ　されたらtrue。

@@ -189,6 +189,12 @@ bool PlayerWalkState::RequestState(uint32_t& request)
         return true;
     }
 
+    if (m_player->IsCannon() == true)
+    {
+        request = PlayerCannonState::ID();
+        return true;
+    }
+
     if (m_gameCamera->GetBossCamera() == true)
     {
         request = PlayerBattleState::ID();
@@ -267,6 +273,12 @@ bool PlayerRunState::RequestState(uint32_t& request)
         return true;
     }
 
+    if (m_player->IsCannon() == true)
+    {
+        request = PlayerCannonState::ID();
+        return true;
+    }
+
     if (m_gameCamera->GetBossCamera() == true)
     {
         request = PlayerBattleState::ID();
@@ -339,6 +351,12 @@ bool PlayerJumpState::RequestState(uint32_t& request)
             request = PlayerDeadState::ID();
             return true;
         }
+    }
+
+    if (m_player->IsCannon() == true)
+    {
+        request = PlayerCannonState::ID();
+        return true;
     }
 
     if (m_gameCamera->GetBossCamera() == true)
@@ -488,6 +506,7 @@ bool PlayerCannonState::RequestState(uint32_t& request)
 {
     if (m_player->IsFire() == true)
     {
+        m_player->SetCannonFlag(false);
         request = PlayerFireState::ID();
         return true;
     }
@@ -497,7 +516,7 @@ bool PlayerCannonState::RequestState(uint32_t& request)
 
 void PlayerFireState::Enter()
 {
-    m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Jump);
+    m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Fire);
 
     // 発射音再生
     SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::CanonFireSE);
@@ -505,6 +524,10 @@ void PlayerFireState::Enter()
 
 void PlayerFireState::Update()
 {
+
+    Quaternion rotation = m_player->GetRotation();
+
+
     // 外部からの力を適用
     if (m_player->GetForce().Length() > 0.0f)
     {
@@ -527,6 +550,9 @@ void PlayerFireState::Update()
     {
         m_player->SetFireFlag(false);
     }
+
+   /* rotation.AddRotationDegX(5.0f);
+    m_player->SetRotation(rotation);*/
 }
 
 void PlayerFireState::Exit()
@@ -538,6 +564,7 @@ bool PlayerFireState::RequestState(uint32_t& request)
 {
     if (m_player->GetCharCon()->IsOnGround() == true)
     {
+        m_player->SetRotation(Quaternion::Identity);
         m_player->SetCannonFlag(false);
         request = PlayerIdleState::ID();
         return true;

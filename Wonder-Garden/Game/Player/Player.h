@@ -56,6 +56,12 @@ public:
     void SetPosition(const Vector3& position) { m_position = position; }
 
     /// <summary>
+    /// プレイヤーの向きを保持
+    /// </summary>
+    /// <param name="rotation"></param>
+    void SetRotation(const Quaternion& rotation) { m_rotation = rotation; }
+
+    /// <summary>
     /// プレイヤーの攻撃状態を保持
     /// </summary>
     /// <param name="attackFlag"></param>
@@ -258,6 +264,7 @@ public:
         enAnimationClip_Attack,
         enAnimationClip_Damage,
         enAnimationClip_Dead,
+        enAnimationClip_Fire,
         enAnimationClip_Num,
     };
 

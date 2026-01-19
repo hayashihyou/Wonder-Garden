@@ -4,6 +4,7 @@
 #include "CoinCount.h"
 #include "Player/Player.h"
 #include "UI/CoinUI.h"
+#include "SoundManager.h"
 
 namespace
 {
@@ -94,6 +95,7 @@ void Coin::UpdatePlayingGetAnimationState()
     if (m_getAnimationTimer >= GET_ANIMATION_TIME * 60.0f)
     {
         m_currentState = State::GET_COIN;
+        SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::GetCoinSE, 0.5f, false);
     }
 }
 

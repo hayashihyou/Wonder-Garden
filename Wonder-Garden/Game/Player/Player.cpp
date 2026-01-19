@@ -32,6 +32,8 @@ bool Player::Start()
     m_animationClips[enAnimationClip_Damage].SetLoopFlag(false);
     m_animationClips[enAnimationClip_Dead].Load("Assets/animData/player/playerDead.tka");
     m_animationClips[enAnimationClip_Dead].SetLoopFlag(false);
+    m_animationClips[enAnimationClip_Fire].Load("Assets/animData/player/playerFly.tka");
+    m_animationClips[enAnimationClip_Fire].SetLoopFlag(false);
 
     m_playerModel.Init("Assets/modelData/player/player.tkm", m_animationClips, enAnimationClip_Num);
 

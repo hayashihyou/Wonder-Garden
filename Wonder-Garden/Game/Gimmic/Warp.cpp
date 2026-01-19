@@ -8,6 +8,9 @@ namespace
 {
     const Vector3 PIPE_POS = {300, 5, 1300};
     const Vector3 PIPE2_POS = {-2200, 5, 660};
+    const Vector3 TITLE_PIPE_POS = {-200.0f, -10.0f, -50.0f};
+    const Vector3 TITLE_PIPE_SCALE = {1.0f, 1.0f, 1.0f};
+
 }
 
 bool Warp::Start()
@@ -51,8 +54,8 @@ void Warp::CheckWarp()
 bool TitlePipe::Start()
 {
     m_modelRender.Init("Assets/stage/pipe_title.tkm");
-    m_pipePos = {-200.0f, -10.0f, -50.0f};
-    m_pipeScale = {1.0f, 1.0f, 1.0f};
+    m_pipePos = TITLE_PIPE_POS;
+    m_pipeScale = TITLE_PIPE_SCALE;
     m_modelRender.SetPosition(m_pipePos);
     m_modelRender.SetScale(m_pipeScale);
     m_modelRender.Update();
