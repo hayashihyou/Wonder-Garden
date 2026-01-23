@@ -12,10 +12,12 @@ namespace
     const float CAMERA_UPPER_LIMIT = 0.9f;                      // カメラ上方向の制限値
     const float CAMERA_LOWER_LIMIT = -0.2f;                     // カメラ下方向の制限値
     const Vector3 INITIAL_TO_CAMERA_POS(0.0f, 130.0f, -250.0f); // 初期注視点からカメラ位置までのベクトル
-    const Vector3 TITLE_CAMERA_TARGET_POS(0.0f, 50.0f, 0.0f); // タイトルカメラ注視点位置
-    const Vector3 BOSS_CAMERA_POS(0.0f, 20.0f, -300.0f);           // ボスカメラ位置
+    const Vector3 TITLE_CAMERA_TARGET_POS(0.0f, 50.0f, 0.0f);   // タイトルカメラ注視点位置
+    const Vector3 BOSS_CAMERA_POS(0.0f, 20.0f, -300.0f);        // ボスカメラ位置
     const Vector3 STAR_CAMERA_POS(2300.0f, 350.0f, 3400.0f);    // スターカメラ位置
-    const Vector3 PLAYER_CAMERA_POS(-300.0f, 100.0f, -300.0f); // プレイヤーカメラ位置
+    const Vector3 WARP_CAMERA_POS(300.0f, 200.0f, 1300.0f);      // ワープカメラ位置
+    const Vector3 PLAYER_CAMERA_POS(-300.0f, 100.0f, -300.0f);  // プレイヤーカメラ位置
+    const Vector3 PIPE_POS = {-2200.0f, 90.0f, 660.0f};         // 土管位置
     const float CAMERA_NEAR_CLIP = 1.0f;                        // カメラのニアクリップ距離
     const float CAMERA_FAR_CLIP = 22000.0f;                     // カメラのファークリップ距離
     const float CAMERA_ROTATION_SPEED = 1.3f;                   // カメラ回転速度
@@ -52,27 +54,35 @@ void GameCamera::Update()
         StarCamera();
     }
 
+    else if (m_isWarpCamera == true)
+    {
+        WarpCamera();
+    }
+
     // そうでなければ通常のカメラ処理
     else 
     {
         // 入力取得
-        auto inputX = g_pad[0]->GetRStickXF();
-        auto inputY = g_pad[0]->GetRStickYF();
+        float inputX = g_pad[0]->GetRStickXF();
+        float inputY = g_pad[0]->GetRStickYF();
+
+        // 古いカメラ位置を保存
+        Vector3 toCameraPosOld = m_toCameraPos;
 
         // カメラの回転
         Rotation(inputX, inputY);
 
         // カメラの角度抑制
-        SuppressCameraAngle();
+        SuppressCameraAngle(toCameraPosOld);
 
         // 注視点計算
-        auto targetPosition = CalcTarget();
+        m_targetPosition = CalcTarget();
 
         // 視点計算
-        auto cameraPosition = targetPosition + m_toCameraPos;
+        Vector3 cameraPosition = m_targetPosition + m_toCameraPos;
 
         // メインカメラに注視点と視点を設定
-        g_camera3D->SetTarget(targetPosition);
+        g_camera3D->SetTarget(m_targetPosition);
         g_camera3D->SetPosition(cameraPosition);
     }
 
@@ -118,10 +128,8 @@ Vector3 GameCamera::CalcTarget()
 }
 
 
-void GameCamera::SuppressCameraAngle()
+void GameCamera::SuppressCameraAngle(Vector3 oldPos)
 {
-    auto toCameraPosOld = m_toCameraPos;
-
     // 注視点から視点までのベクトル
     Vector3 toCameraPositionDirection = m_toCameraPos;
 
@@ -133,12 +141,12 @@ void GameCamera::SuppressCameraAngle()
     // カメラが上向きすぎ
     if (toCameraPositionDirection.y < CAMERA_LOWER_LIMIT)
     {
-        m_toCameraPos = toCameraPosOld;
+        m_toCameraPos = oldPos;
     }
     // カメラが下向きすぎ
     else if (toCameraPositionDirection.y > CAMERA_UPPER_LIMIT)
     {
-        m_toCameraPos = toCameraPosOld;
+        m_toCameraPos = oldPos;
     }
 }
 
@@ -207,21 +215,38 @@ void GameCamera::StarCamera()
     g_camera3D->SetPosition(m_starCameraPos);
 }
 
-bool TitleGameCamera::Start()
+
+void GameCamera::WarpCamera()
 {
-    // 注視点から視点までのベクトルを設定
-    m_toCameraPos.Set(INITIAL_TO_CAMERA_POS);
+    if (m_changeCamera == false)
+    {
+        return;
+    }
 
-    // カメラのニアクリップとファークリップを設定
-    g_camera3D->SetNear(CAMERA_NEAR_CLIP);
-    g_camera3D->SetFar(CAMERA_FAR_CLIP);
+    Vector3 position;
+    position.Lerp(time, m_warpTargetPos, PIPE_POS);
+    time += g_gameTime->GetFrameDeltaTime() * 0.5f;
 
-    g_camera3D->SetPosition(m_toCameraPos);
-    g_camera3D->SetTarget(TITLE_CAMERA_TARGET_POS);
+    g_camera3D->SetTarget(position);
+    g_camera3D->SetPosition(position + cameraOffset);
     g_camera3D->Update();
-    return true;
+
+    if (time >= 0.5f)
+    {
+        m_isWarpCamera = false;
+        m_changeCamera = false;
+    }
 }
 
-void TitleGameCamera::Update() {}
+void GameCamera::DokanStart()
+{
+    if (!m_changeCamera)
+    {
+        m_changeCamera = true;
+        time = 0.0f;
+    }
 
+    cameraOffset = g_camera3D->GetPosition() - g_camera3D->GetTarget();
+    m_warpTargetPos = g_camera3D->GetTarget();
 
+}

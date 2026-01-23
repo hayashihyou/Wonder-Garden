@@ -36,6 +36,10 @@ void CollisionManager::Update()
     // 流れを一覧でみたいから
 
     Player* player = FindGO<Player>("Player");
+    if (player == nullptr)
+    {
+        player = NewGO<Player>(0, "Player");
+    }
     Boss* boss = FindGO<Boss>("Boss");
     std::vector<Enemy*> enemys = FindGOs<Enemy>("Enemy");
     std::vector<EnemyType2*> enemysType2s = FindGOs<EnemyType2>("EnemyType2");

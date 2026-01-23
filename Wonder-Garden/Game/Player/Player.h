@@ -97,14 +97,39 @@ public:
     /// <param name="stopmove"></param>
     void SetStopMove(bool stopmove) { m_isStopMove = stopmove; }
 
+
+    /// <summary>
+    /// HPを保持
+    /// </summary>
+    /// <param name="hp"></param>
     void SetHP(int hp) { m_hp = hp; }
 
+
+    /// <summary>
+    /// ジャンプ力を保持
+    /// </summary>
+    /// <param name="jump"></param>
     void SetJumpPower(float jump) { m_jumpPower = jump; }
 
+
+    /// <summary>
+    /// 無敵時間を保持
+    /// </summary>
+    /// <param name="time"></param>
     void SetInvisTimer(float time) { m_invincibleTimer = time; }
 
+
+    /// <summary>
+    /// 攻撃判定の保持
+    /// </summary>
+    /// <param name="collision"></param>
     void SetCollision(AttackCollision* collision) { m_punchCollision = collision; }
 
+
+    /// <summary>
+    /// 移動速度を保持
+    /// </summary>
+    /// <param name="movespeed"></param>
     void SetMoveSpeed(float movespeed) { m_moveSpeed = movespeed; }
 
     /// <summary>
@@ -112,7 +137,30 @@ public:
     /// </summary>
     void SetCannonFlag(bool cannonReady) { m_isCannonReady = cannonReady; }
 
-public:
+
+    void InitCharCon(Vector3 pos)
+    {
+        if (m_characterController == nullptr)
+        {
+            m_characterController = new CharacterController();
+            m_characterController->Init(10.0f, 40.0f, pos);
+        }
+        
+    }
+
+
+    /// <summary>
+    /// キャラクターコントローラーを削除
+    /// </summary>
+    void ReleaseCharCon(CharacterController* charaCon)
+    {
+        if (charaCon != nullptr)
+        {
+            delete charaCon;
+            charaCon = nullptr;
+        }
+    }
+    public:
     /// <summary>
     /// モデルを取得
     /// </summary>
@@ -129,7 +177,7 @@ public:
     /// キャラコンの取得
     /// </summary>
     /// <returns></returns>
-    CharacterController* GetCharCon() { return &m_characterController; }
+    CharacterController* GetCharCon() { return m_characterController; }
 
     Transform* GetTransform() { return &m_transform; }
 
@@ -300,8 +348,8 @@ private:
     void Move() override;
 
 private:
-    CharacterController m_characterController;           // キャラコン
-    AttackCollision* m_punchCollision;                   // 攻撃の当たり判定
+    CharacterController* m_characterController = nullptr; // キャラコン
+    AttackCollision* m_punchCollision = nullptr;          // 攻撃の当たり判定
     ModelRender m_playerModel;                           // プレイヤーのモデル
     AnimationClip m_animationClips[enAnimationClip_Num]; // アニメーション
     PlayerStatePattern* m_playerStatePattern;

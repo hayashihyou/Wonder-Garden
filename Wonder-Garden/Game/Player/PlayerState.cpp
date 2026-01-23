@@ -103,6 +103,12 @@ bool PlayerIdleState::RequestState(uint32_t& request)
         return true;
     }
 
+    if (m_gameCamera->GetWarpCamera() == true)
+    {
+        request = PlayerPipeState::ID();
+        return true;
+    }
+
     if (m_player->IsCannon() == true)
     {
         request = PlayerCannonState::ID();
@@ -186,6 +192,12 @@ bool PlayerWalkState::RequestState(uint32_t& request)
     if (m_player->IsDead())
     {
         request = PlayerDeadState::ID();
+        return true;
+    }
+
+    if (m_gameCamera->GetWarpCamera() == true)
+    {
+        request = PlayerPipeState::ID();
         return true;
     }
 
@@ -273,6 +285,12 @@ bool PlayerRunState::RequestState(uint32_t& request)
         return true;
     }
 
+    if (m_gameCamera->GetWarpCamera() == true)
+    {
+        request = PlayerPipeState::ID();
+        return true;
+    }
+
     if (m_player->IsCannon() == true)
     {
         request = PlayerCannonState::ID();
@@ -351,6 +369,12 @@ bool PlayerJumpState::RequestState(uint32_t& request)
             request = PlayerDeadState::ID();
             return true;
         }
+    }
+
+    if (m_gameCamera->GetWarpCamera() == true)
+    {
+        request = PlayerPipeState::ID();
+        return true;
     }
 
     if (m_player->IsCannon() == true)
@@ -492,6 +516,28 @@ bool PlayerDeadState::RequestState(uint32_t& request)
     return false;
 }
 
+void PlayerPipeState::Enter()
+{
+    m_gameCamera = FindGO<GameCamera>("GameCamera");
+    m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Idle);
+}
+
+void PlayerPipeState::Update(){};
+
+void PlayerPipeState::Exit() {}
+
+bool PlayerPipeState::RequestState(uint32_t& request)
+{
+    if (m_gameCamera->GetWarpCamera() == false)
+    {
+        m_player->InitCharCon(m_player->GetPosition());
+        request = PlayerIdleState::ID();
+        return true;
+    }
+    return false;
+}
+
+
 void PlayerCannonState::Enter()
 {
     m_gameCamera = FindGO<GameCamera>("GameCamera");
@@ -550,9 +596,6 @@ void PlayerFireState::Update()
     {
         m_player->SetFireFlag(false);
     }
-
-   /* rotation.AddRotationDegX(5.0f);
-    m_player->SetRotation(rotation);*/
 }
 
 void PlayerFireState::Exit()

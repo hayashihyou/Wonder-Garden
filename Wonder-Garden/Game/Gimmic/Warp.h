@@ -11,6 +11,7 @@ public:
     bool Start();
     void Update();
 
+
 private:
     /// <summary>
     /// 土管に入ってワープしてるか
@@ -28,6 +29,8 @@ private:
     Vector3 m_pipePos;
     Vector3 m_pipe2Pos;
     Quaternion m_pipeRot;
+
+
 };
 
 
