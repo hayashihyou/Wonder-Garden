@@ -2,6 +2,7 @@
 #include "Warp.h"
 #include "Player/Player.h"
 #include "GameCamera.h"
+#include "GameCamera.h"
 #include "SoundManager.h"
 
 namespace
@@ -37,12 +38,31 @@ void Warp::Update()
 
 void Warp::CheckWarp()
 {
+    // TODO: プレイヤーとコリジョンの位置が違うときにヒットになってしまう。
+    // なる時とならない時が多分ランダム。
+    //当たり判定の位置は
+    // m_pipeCollision→m_physicsGhostObject→m_ghostObject→btCollisionObject→m_worldTransform→m_origin（実質位置（多分））
+    //で見れる。
+    if (m_player == nullptr || m_player->GetCharCon()==nullptr)
+    {
+        return;
+    }
+
     if (m_pipeCollision.IsHit(*m_player->GetCharCon()))
     {
-        m_player->GetModel()->SetPosition(m_pipe2Pos);
+        //モデルとキャラコンの位置を移動先に設定
+        m_player->SetPosition(m_pipe2Pos);
         m_player->GetCharCon()->SetPosition(m_pipe2Pos);
-        m_player->GetCharCon()->GetPosition();
+
+        m_player->GetModel()->SetPosition(m_pipe2Pos);
         m_player->GetModel()->Update();
+
+        //m_player->ReleaseCharCon(m_player->GetCharCon());
+        //  m_player->GetModel()->SetPosition(m_pipe2Pos);
+        //  m_player->GetCharCon()->SetPosition(m_pipe2Pos);
+        //  m_player->GetModel()->Update();
+        m_gameCamera->SetWarpCamera(true);
+        m_gameCamera->DokanStart();
         m_gameCamera->Update();
 
         // ワープ音再生

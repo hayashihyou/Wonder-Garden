@@ -56,6 +56,7 @@ bool Player::Start()
     m_playerStatePattern->RegisterState<PlayerAttackState>(this);
     m_playerStatePattern->RegisterState<PlayerDamageState>(this);
     m_playerStatePattern->RegisterState<PlayerDeadState>(this);
+    m_playerStatePattern->RegisterState<PlayerPipeState>(this);
     m_playerStatePattern->RegisterState<PlayerCannonState>(this);
     m_playerStatePattern->RegisterState<PlayerFireState>(this);
     m_playerStatePattern->RegisterState<PlayerBattleState>(this);
@@ -65,7 +66,7 @@ bool Player::Start()
     m_playerStatePattern->InitializeState<PlayerIdleState>();
 
     // キャラクターコントローラーの初期化
-    m_characterController.Init(10.0f, 40.0f, m_position);
+    InitCharCon(m_position);
     m_playerModel.Update();
     return true;
 }

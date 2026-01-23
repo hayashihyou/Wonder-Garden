@@ -48,6 +48,16 @@ void Cannon::Render(RenderContext& rc)
 
 void Cannon::CheckNearCannon()
 {
+    if (m_player == nullptr)
+    {
+        m_player = NewGO<Player>(0, "Player");
+    }
+
+    if (m_player->GetCharCon() == nullptr)
+    {
+        return;
+    }
+
     if (m_cannonCollision.IsHit(*m_player->GetCharCon()))
     {
         if (changeFlag == true)

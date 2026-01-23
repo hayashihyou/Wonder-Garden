@@ -57,7 +57,7 @@ public:
     /// <summary>
     /// カメラの角度を抑制
     /// </summary>
-    void SuppressCameraAngle();
+    void SuppressCameraAngle(Vector3 oldPos);
 
 
     /// <summary>
@@ -72,12 +72,22 @@ public:
     void StarCamera();
 
 
+    /// <summary>
+    /// 土管移動時のカメラ処理
+    /// </summary>
+    void WarpCamera();
+
+
 public:
     void SetBossCamera(bool bossFlag) { m_isBossCamera = bossFlag; }
     void SetStarCamera(bool starFlag) { m_isStarCamera = starFlag; }
+    void SetWarpCamera(bool warpFlag) { m_isWarpCamera = warpFlag; }
 
     bool GetBossCamera() const { return m_isBossCamera; }
     bool GetStarCamera() const { return m_isStarCamera; }
+    bool GetWarpCamera() const { return m_isWarpCamera; }
+
+    void DokanStart();
 
 
 private:
@@ -88,27 +98,20 @@ private:
     Vector3 m_toCameraPos;      // 注視点からカメラ位置までのベクトル
     Transform m_transform;      // トランスフォーム
 
-    Vector3 m_bossTargetPos; // ボスの注視点位置
-    Vector3 m_bossCameraPos; // ボスのカメラ位置
-    Vector3 m_starTargetPos; // スターの注視点位置
-    Vector3 m_starCameraPos; // スターのカメラ位置
+    Vector3 m_bossTargetPos;     // ボスの注視点位置
+    Vector3 m_bossCameraPos;     // ボスのカメラ位置
+    Vector3 m_starTargetPos;     // スターの注視点位置
+    Vector3 m_starCameraPos;     // スターのカメラ位置
+    Vector3 m_warpTargetPos;     // 土管移動時の注視点位置
+    Vector3 m_warpCameraPos;     // 土管移動時のカメラ位置
+    Vector3 m_cameraPosition;    // カメラ位置
+    Vector3 m_targetPosition;    // 注視点位置
 
+    float time = 0.0f;
+    Vector3 cameraOffset = Vector3::Zero;
 
     bool m_isBossCamera = false;    // ボス戦前のムービー部分のカメラフラグ
     bool m_changeCamera = false;   // カメラ切り替えフラグ
     bool m_isStarCamera = false;   // スター取得時のカメラフラグ
-};
-
-
-class TitleGameCamera : public GameCamera
-{
-public:
-    TitleGameCamera(){};
-    ~TitleGameCamera(){};
-    bool Start();
-    void Update();
-
-
-private:
-    Vector3 m_toCameraPos;
+    bool m_isWarpCamera = false;   // 土管移動時のカメラフラグ
 };
