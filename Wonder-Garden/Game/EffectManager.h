@@ -3,6 +3,7 @@
 enum EnEffcetType
 {
     Hit,
+    Boss_Hit,
 };
 
 class EffectManager : public IGameObject

@@ -42,8 +42,8 @@ bool Player::Start()
         OnAnimationEvent(clipName, eventName);
     });
 
-    //m_position = {-1952.0f, 103.0f, 2418.0f};
-    m_position = Vector3::Zero;
+    m_position = {-1952.0f, 103.0f, 2418.0f};
+    //m_position = Vector3::Zero;
     m_moveDirection = Vector3::Zero;
     m_moveSpeed = MOVESPEED;
     m_jumpPower = JUMPPOWER;
