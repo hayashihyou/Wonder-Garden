@@ -1,19 +1,19 @@
 #include "stdafx.h"
 
 #include "AttackCollision.h"
-#include "Magic.h"
 #include "CollisionManager.h"
 #include "EffectManager.h"
 #include "Enemy/Boss.h"
 #include "Enemy/Enemy.h"
 #include "Enemy/EnemyType2.h"
+#include "Magic.h"
 #include "Player/Player.h"
 
 CollisionManager* CollisionManager::m_isntace = nullptr;
 
 CollisionManager::CollisionManager()
 {
-    m_effect = NewGO<EffectEmitter>(0);
+
 }
 
 CollisionManager::~CollisionManager()
@@ -23,11 +23,10 @@ CollisionManager::~CollisionManager()
 
 void CollisionManager::CreateEffect(Vector3 position)
 {
-    /* m_effect->Init(EnEffcetType::Hit);
-     m_effect->SetPosition(position);
-     m_effect->SetRotation(Quaternion::Identity);
-     m_effect->SetScale({3.0f, 3.0f, 3.0f});
-     m_effect->Play();*/
+    m_effect = NewGO<EffectEmitter>(0);
+    m_effect->SetPosition(position);
+    m_effect->SetRotation(Quaternion::Identity);
+    m_effect->SetScale({3.0f, 3.0f, 3.0f});
 }
 
 void CollisionManager::Update()
@@ -58,9 +57,11 @@ void CollisionManager::Update()
                     // @tod for 数値をどこかに定数とかでおきたいね
                     // プレイヤーの攻撃力みたいなものを使いたい
                     enemy->DamagePunch(2);
-                    /*Vector3 enemyEffectPos = enemy->GetPosition();
-                    enemyEffectPos.y += 50.0f;
-                    CreateEffect(enemyEffectPos);*/
+                    Vector3 enemyEffectPos = enemy->GetPosition();
+                    enemyEffectPos.y += 30.0f;
+                    CreateEffect(enemyEffectPos);
+                    m_effect->Init(EnEffcetType::Hit);
+                    m_effect->Play();
                 }
             }
         }
@@ -76,6 +77,8 @@ void CollisionManager::Update()
                     Vector3 enemy2EffectPos = enemyType2->GetPosition();
                     enemy2EffectPos.y += 50.0f;
                     CreateEffect(enemy2EffectPos);
+                    m_effect->Init(EnEffcetType::Hit);
+                    m_effect->Play();
                 }
             }
         }
@@ -136,6 +139,12 @@ void CollisionManager::Update()
                 if (player->GetCollision()->m_punchCollision->IsHit(boss->GetCollision()))
                 {
                     boss->DamagePunch(2);
+                    Vector3 bossEffectPos = boss->GetPosition();
+                    bossEffectPos.y += 100.0f;
+                    CreateEffect(bossEffectPos);
+                    m_effect->SetScale({15.0f, 15.0f, 15.0f});
+                    m_effect->Init(EnEffcetType::Boss_Hit);
+                    m_effect->Play();
                 }
             }
 
