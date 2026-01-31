@@ -5,6 +5,7 @@
 #include "PlayerState.h"
 #include "SoundManager.h"
 #include "GameCamera.h"
+#include "EffectManager.h"
 
 
 namespace
@@ -563,7 +564,6 @@ bool PlayerCannonState::RequestState(uint32_t& request)
 void PlayerFireState::Enter()
 {
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Fire);
-
     // 発射音再生
     SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::CanonFireSE);
 }
@@ -596,11 +596,25 @@ void PlayerFireState::Update()
     {
         m_player->SetFireFlag(false);
     }
+
+    if (m_effect == nullptr)
+    {
+        CreateEffect(m_player->GetPosition(), m_player->GetRotation());
+    }
+
+    Vector3 effectPos = m_player->GetPosition();
+    Quaternion effectRot = m_player->GetRotation();
+
+    effectRot.z += 1.0f;
+
+    m_effect->SetPosition(effectPos);
+    m_effect->SetRotation(effectRot);
 }
 
 void PlayerFireState::Exit()
 {
     m_player->SetAddForce({0.0f, 0.0f, 0.0f});
+    m_effect->Stop();
 }
 
 bool PlayerFireState::RequestState(uint32_t& request)
@@ -613,6 +627,16 @@ bool PlayerFireState::RequestState(uint32_t& request)
         return true;
     }
     return false;
+}
+
+void PlayerFireState::CreateEffect(Vector3 position, Quaternion rotation)
+{
+    m_effect = NewGO<EffectEmitter>(0);
+    m_effect->SetPosition(position);
+    m_effect->SetRotation(rotation);
+    m_effect->SetScale({10.0f, 10.0f, 10.0f});
+    m_effect->Init(EnEffcetType::Cannon_Fire);
+    m_effect->Play();
 }
 
 void PlayerBattleState::Enter()

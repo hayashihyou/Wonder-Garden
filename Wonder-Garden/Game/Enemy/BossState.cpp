@@ -56,7 +56,7 @@ void BossMoveState::Update()
     // 移動処理
     Vector3 toPlayerDir = m_boss->GetToPlayer();
     toPlayerDir.Normalize();
-    Vector3 position = m_boss->GetPosition() + toPlayerDir * 2.0f;
+    Vector3 position = m_boss->GetPosition() + toPlayerDir * 4.0f;
     Quaternion rotation = m_boss->GetRotation();
     rotation.SetRotationYFromDirectionXZ(toPlayerDir);
     m_boss->SetPosition(position);
