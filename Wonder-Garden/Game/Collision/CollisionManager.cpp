@@ -26,7 +26,7 @@ void CollisionManager::CreateEffect(Vector3 position)
     m_effect = NewGO<EffectEmitter>(0);
     m_effect->SetPosition(position);
     m_effect->SetRotation(Quaternion::Identity);
-    m_effect->SetScale({3.0f, 3.0f, 3.0f});
+    m_effect->SetScale({5.0f, 5.0f, 5.0f});
 }
 
 void CollisionManager::Update()
@@ -60,7 +60,7 @@ void CollisionManager::Update()
                     Vector3 enemyEffectPos = enemy->GetPosition();
                     enemyEffectPos.y += 30.0f;
                     CreateEffect(enemyEffectPos);
-                    m_effect->Init(EnEffcetType::Hit);
+                    m_effect->Init(EnEffcetType::Enemy_Hit);
                     m_effect->Play();
                 }
             }
@@ -77,7 +77,7 @@ void CollisionManager::Update()
                     Vector3 enemy2EffectPos = enemyType2->GetPosition();
                     enemy2EffectPos.y += 50.0f;
                     CreateEffect(enemy2EffectPos);
-                    m_effect->Init(EnEffcetType::Hit);
+                    m_effect->Init(EnEffcetType::Enemy_Hit);
                     m_effect->Play();
                 }
             }
@@ -140,9 +140,9 @@ void CollisionManager::Update()
                 {
                     boss->DamagePunch(2);
                     Vector3 bossEffectPos = boss->GetPosition();
-                    bossEffectPos.y += 100.0f;
+                    bossEffectPos.y += 75.0f;
                     CreateEffect(bossEffectPos);
-                    m_effect->SetScale({15.0f, 15.0f, 15.0f});
+                    m_effect->SetScale({20.0f, 20.0f, 20.0f});
                     m_effect->Init(EnEffcetType::Boss_Hit);
                     m_effect->Play();
                 }

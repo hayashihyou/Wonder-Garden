@@ -16,6 +16,7 @@ class IPlayerState : public IGameObject
 protected:
     Player* m_player;
     GameCamera* m_gameCamera;
+    EffectEmitter* m_effect;
 
 public:
     IPlayerState(Player* player) : m_player(player){};
@@ -233,6 +234,7 @@ public:
     void Enter() override;
     void Update() override;
     void Exit() override;
+    void CreateEffect(Vector3 position , Quaternion rotation);
 
     virtual bool RequestState(uint32_t& request) override;
 };

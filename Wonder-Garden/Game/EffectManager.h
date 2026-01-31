@@ -2,8 +2,9 @@
 
 enum EnEffcetType
 {
-    Hit,
+    Enemy_Hit,
     Boss_Hit,
+    Cannon_Fire,
 };
 
 class EffectManager : public IGameObject
