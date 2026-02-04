@@ -105,7 +105,10 @@ void Boss::Update()
 
     m_bossModel.SetPosition(m_position);
     m_bossModel.SetRotation(m_rotation);
-    m_bossCollision->SetPosition(m_colPosition);
+    if (m_bossCollision)
+    {
+        m_bossCollision->SetPosition(m_colPosition);
+    }
     m_bossHeadCollision->SetPosition(m_colPosition);
     m_bossModel.Update();
 }

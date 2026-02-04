@@ -176,6 +176,7 @@ bool EnemyJumpDeadState::RequestState(uint32_t& request)
 void EnemyAttackDeadState::Enter()
 {
     m_enemy->m_enemyModel.PlayAnimation(m_enemy->enAnimationClip_AttackDead);
+    m_enemy->DeleteCollision();
 }
 
 void EnemyAttackDeadState::Update()

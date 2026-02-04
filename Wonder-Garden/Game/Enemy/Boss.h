@@ -178,6 +178,16 @@ public:
     void SetBattleFlag(bool battle) { m_battleFlag = battle; }
 
 
+    /// <summary>
+    /// 当たり判定の削除
+    /// </summary>
+    void DeleteCollision()
+    {
+        DeleteGO(m_bossCollision);
+        m_bossCollision = nullptr;
+    }
+
+
 public:
     /// <summary>
     /// モデルの取得

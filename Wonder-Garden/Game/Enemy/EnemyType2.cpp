@@ -86,7 +86,10 @@ void EnemyType2::Update()
     AttackCoolTimeUpdate();
     UpdateChangeState();
 
-    enemyType2Collision->SetPosition(m_colPos);
+    if (enemyType2Collision)
+    {
+        enemyType2Collision->SetPosition(m_colPos);
+    }
     enemyType2JumpCollision->SetPosition(m_colJumpPos);
     m_enemyType2Model.SetPosition(m_position);
     m_enemyType2Model.SetRotation(m_rotation);

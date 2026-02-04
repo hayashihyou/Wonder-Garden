@@ -104,6 +104,11 @@ public:
     void DeleteAttackCollision();
 
 
+    void DeleteCollision()
+    {
+        DeleteGO(enemyType2Collision);
+        enemyType2Collision = nullptr;
+    }
 
 public:
     /// <summary>

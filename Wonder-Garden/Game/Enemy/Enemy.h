@@ -123,6 +123,16 @@ public:
     void SetDeadFlag(bool dead) { m_isDeadFlag = dead; }
 
 
+    /// <summary>
+    /// 当たり判定の削除
+    /// </summary>
+    void DeleteCollision()
+    {
+        DeleteGO(enemyCollisionObject);
+        enemyCollisionObject = nullptr;
+    }
+
+
 public:
     /// <summary>
     /// 位置を取得

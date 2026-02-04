@@ -117,6 +117,7 @@ void EnemyType2AttackState::MakeAttackCollision()
 void EnemyType2AttackDeadState::Enter()
 {
     m_enemyType2->GetModelRender()->PlayAnimation(m_enemyType2->enAnimationClip_AttackDead);
+    m_enemyType2->DeleteCollision();
 }
 
 void EnemyType2AttackDeadState::Update()
