@@ -16,27 +16,26 @@ public:
      * シングルトン関連
      */
 private:
-    static CollisionManager* m_isntace;
-    EffectEmitter* m_effect = nullptr;
+    static CollisionManager* m_instance;
 
 public:
     static void Create()
     {
-        if (m_isntace == nullptr)
+        if (m_instance == nullptr)
         {
-            m_isntace = new CollisionManager();
+            m_instance = new CollisionManager();
         }
     }
     static CollisionManager* Get()
     {
-        return m_isntace;
+        return m_instance;
     } 
     static void Delete()
     {
-        if (m_isntace)
+        if (m_instance)
         {
-            delete m_isntace;
-            m_isntace = nullptr;
+            delete m_instance;
+            m_instance = nullptr;
         }
     }
 };

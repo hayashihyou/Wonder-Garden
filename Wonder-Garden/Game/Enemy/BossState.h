@@ -22,6 +22,7 @@ public:
 
 protected:
     Boss* m_boss = nullptr;
+    EffectEmitter* m_effect = nullptr;
 };
 
 class BossIdleState : public IBossState
@@ -68,6 +69,9 @@ private:
 
     EnAttackPattern m_attackPattern = enAttackNum;
 
+    int m_attack;
+    Vector3 m_attackPos;
+
 public:
     BossAttackState(Boss* owner) : IBossState(owner){};
     virtual ~BossAttackState(){};
@@ -76,6 +80,7 @@ public:
     void Exit();
     bool RequestState(uint32_t& request);
     void MakeAttackCollision();
+    void CreateEffect(Vector3 position, Quaternion rotation, int num);
 };
 
 class BossDeadState : public IBossState

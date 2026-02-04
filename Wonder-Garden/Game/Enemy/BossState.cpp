@@ -7,6 +7,7 @@
 #include "BossState.h"
 #include "Player/Player.h"
 #include "SoundManager.h"
+#include "EffectManager.h"
 
 namespace
 {
@@ -91,21 +92,26 @@ bool BossMoveState::RequestState(uint32_t& request)
 void BossAttackState::Enter()
 {
     srand(time(nullptr));
-    int attack = rand() % 3;
+     m_attack = rand() % 3;
 
-    if (attack == enNormalAttack)
+    if (m_attack == enNormalAttack)
     {
         m_boss->GetModelRender()->PlayAnimation(m_boss->enAnimationClip_Attack);
+        m_attackPos = BOSS_ATK_POSITION;
     }
 
-    if (attack == enDoubleHitAttack)
+    if (m_attack == enDoubleHitAttack)
     {
         m_boss->GetModelRender()->PlayAnimation(m_boss->enAnimationClip_Attack2);
+        m_attackPos = BOSS_ATK_POSITION;
     }
 
-    if (attack == enJumpAttack)
+    if (m_attack == enJumpAttack)
     {
         m_boss->GetModelRender()->PlayAnimation(m_boss->enAnimationClip_JumpAttack);
+        m_attackPos = BOSS_ATK_POSITION;
+        m_attackPos.z += 200.0f;
+        
     }
 
     // 攻撃音再生
@@ -123,6 +129,13 @@ void BossAttackState::Update()
 
         // 攻撃判定生成
         MakeAttackCollision();
+
+        if (m_attack == enJumpAttack && m_effect == nullptr)
+        {
+            Vector3 offset = m_attackPos;
+            m_boss->GetRotation().Apply(offset);
+            CreateEffect(m_boss->GetPosition() + offset, m_boss->GetRotation(), EnEffcetType::Boss_Attack);
+        }
     }
 
     else
@@ -132,7 +145,14 @@ void BossAttackState::Update()
     }
 }
 
-void BossAttackState::Exit() {}
+void BossAttackState::Exit()
+{
+    if (m_effect != nullptr)
+    {
+        m_effect->Stop();
+        m_effect = nullptr;
+    }
+}
 
 bool BossAttackState::RequestState(uint32_t& request)
 {
@@ -155,9 +175,19 @@ bool BossAttackState::RequestState(uint32_t& request)
 void BossAttackState::MakeAttackCollision()
 {
     m_boss->SetCollision(NewGO<AttackCollision>(0));
-    m_boss->GetAttackCollision()->InitTransform(BOSS_ATK_POSITION, m_boss->GetToPlayer(), *m_boss->GetTransform());
+    m_boss->GetAttackCollision()->InitTransform(m_attackPos, m_boss->GetToPlayer(), *m_boss->GetTransform());
     m_boss->GetAttackCollision()->CreateCollision(ATK_COL_SIZE);
     m_boss->GetAttackCollision()->Update();
+}
+
+void BossAttackState::CreateEffect(Vector3 position, Quaternion rotation, int num)
+{
+    m_effect = NewGO<EffectEmitter>(0);
+    m_effect->SetPosition(position);
+    m_effect->SetRotation(rotation);
+    m_effect->SetScale({150.0f, 150.0f, 150.0f});
+    m_effect->Init(num);
+    m_effect->Play();
 }
 
 void BossDeadState::Enter()

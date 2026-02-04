@@ -166,6 +166,12 @@ private:
     /// 攻撃判定の生成
     /// </summary>
     void MakeAttackCollision();
+
+
+private:
+    int m_effectID = 0;
+
+
 };
 
 class PlayerDamageState : public IPlayerState
@@ -234,9 +240,14 @@ public:
     void Enter() override;
     void Update() override;
     void Exit() override;
-    void CreateEffect(Vector3 position , Quaternion rotation);
+    void CreateEffect(Vector3 position, Quaternion rotation, int num);
 
     virtual bool RequestState(uint32_t& request) override;
+
+
+private:
+    int m_effectID = 0;
+
 };
 
 class PlayerBattleState : public IPlayerState
