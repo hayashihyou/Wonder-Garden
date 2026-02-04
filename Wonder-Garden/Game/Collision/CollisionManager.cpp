@@ -50,14 +50,17 @@ void CollisionManager::Update()
 
             for (Enemy* enemy : enemys)
             {
-                if (player->GetCollision()->m_punchCollision->IsHit(enemy->GetColision()))
+                if (enemy->GetColision() != nullptr)
                 {
-                    // @tod for 数値をどこかに定数とかでおきたいね
-                    // プレイヤーの攻撃力みたいなものを使いたい
-                    enemy->DamagePunch(2);
-                    Vector3 enemyEffectPos = enemy->GetPosition();
-                    enemyEffectPos.y += 30.0f;
-                    EffectManager::Get()->PlayEffect(enemyEffectPos, enemy->GetRotation(), ENEMY_EFFECT_SCALE, EnEffcetType::Enemy_Hit);
+                    if (player->GetCollision()->m_punchCollision->IsHit(enemy->GetColision()))
+                    {
+                        // @tod for 数値をどこかに定数とかでおきたいね
+                        // プレイヤーの攻撃力みたいなものを使いたい
+                        enemy->DamagePunch(2);
+                        Vector3 enemyEffectPos = enemy->GetPosition();
+                        enemyEffectPos.y += 30.0f;
+                        EffectManager::Get()->PlayEffect(enemyEffectPos, enemy->GetRotation(), ENEMY_EFFECT_SCALE, EnEffcetType::Enemy_Hit);
+                    }
                 }
             }
         }
@@ -67,12 +70,15 @@ void CollisionManager::Update()
 
             for (EnemyType2* enemyType2 : enemysType2s)
             {
-                if (player->GetCollision()->m_punchCollision->IsHit(enemyType2->GetCollision()))
+                if (enemyType2->GetCollision() != nullptr)
                 {
-                    enemyType2->DamagePunch(2);
-                    Vector3 enemy2EffectPos = enemyType2->GetPosition();
-                    enemy2EffectPos.y += 50.0f;
-                    EffectManager::Get()->PlayEffect(enemy2EffectPos, enemyType2->GetRotation(), ENEMY_EFFECT_SCALE,EnEffcetType::Enemy_Hit);
+                    if (player->GetCollision()->m_punchCollision->IsHit(enemyType2->GetCollision()))
+                    {
+                        enemyType2->DamagePunch(2);
+                        Vector3 enemy2EffectPos = enemyType2->GetPosition();
+                        enemy2EffectPos.y += 50.0f;
+                        EffectManager::Get()->PlayEffect(enemy2EffectPos, enemyType2->GetRotation(), ENEMY_EFFECT_SCALE, EnEffcetType::Enemy_Hit);
+                    }
                 }
             }
         }
@@ -130,12 +136,15 @@ void CollisionManager::Update()
         {
             if (player->GetCollision() != nullptr)
             {
-                if (player->GetCollision()->m_punchCollision->IsHit(boss->GetCollision()))
+                if (boss->GetCollision() != nullptr)
                 {
-                    boss->DamagePunch(2);
-                    Vector3 bossEffectPos = boss->GetPosition();
-                    bossEffectPos.y += 75.0f;
-                    EffectManager::Get()->PlayEffect(bossEffectPos, boss->GetRotation(), BOSS_EFFECT_SCALE, EnEffcetType::Boss_Hit);
+                    if (player->GetCollision()->m_punchCollision->IsHit(boss->GetCollision()))
+                    {
+                        boss->DamagePunch(2);
+                        Vector3 bossEffectPos = boss->GetPosition();
+                        bossEffectPos.y += 75.0f;
+                        EffectManager::Get()->PlayEffect(bossEffectPos, boss->GetRotation(), BOSS_EFFECT_SCALE, EnEffcetType::Boss_Hit);
+                    }
                 }
             }
 

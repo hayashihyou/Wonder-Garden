@@ -193,6 +193,7 @@ void BossAttackState::CreateEffect(Vector3 position, Quaternion rotation, int nu
 void BossDeadState::Enter()
 {
     m_boss->GetModelRender()->PlayAnimation(m_boss->enAnimationClip_Dead);
+    m_boss->DeleteCollision();
 }
 
 void BossDeadState::Update()
