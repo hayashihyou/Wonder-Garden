@@ -75,9 +75,9 @@ Game::~Game()
     DeleteGO(m_hpUI);
     DeleteGO(m_warp);
     DeleteGO(m_cannon);
-    DeleteGO(m_effectManager);
 
     CollisionManager::Delete();
+    EffectManager::Delete();
 }
 
 bool Game::Start()
@@ -92,7 +92,6 @@ bool Game::Start()
     m_gameCamera = NewGO<GameCamera>(0,"GameCamera");
     m_hpUI = NewGO<HPUI>(0, "HPUI");
     m_warp = NewGO<Warp>(0, "Warp");
-    m_effectManager = NewGO<EffectManager>(0, "EffectManager");
     m_countCointer = NewGO<CountCointer>(0, "CoinCounter");
     m_coinUI = NewGO<CoinUI>(0, "CoinUI");
 
@@ -147,6 +146,10 @@ bool Game::Start()
 
     // コリジョンマネージャのインスタンスの取得
     CollisionManager::Create();
+
+    //エフェクトマネージャーのインスタンスの取得
+    EffectManager::Create();
+    EffectManager::Get()->Start();
 
     return true;
 }

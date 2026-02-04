@@ -9,7 +9,13 @@
 #include "Magic.h"
 #include "Player/Player.h"
 
-CollisionManager* CollisionManager::m_isntace = nullptr;
+namespace
+{
+    const Vector3 ENEMY_EFFECT_SCALE = {10.0f, 10.0f, 10.0f};
+    const Vector3 BOSS_EFFECT_SCALE = {20.0f, 20.0f, 20.0f};
+}
+
+CollisionManager* CollisionManager::m_instance = nullptr;
 
 CollisionManager::CollisionManager()
 {
@@ -18,15 +24,7 @@ CollisionManager::CollisionManager()
 
 CollisionManager::~CollisionManager()
 {
-    DeleteGO(m_effect);
-}
-
-void CollisionManager::CreateEffect(Vector3 position)
-{
-    m_effect = NewGO<EffectEmitter>(0);
-    m_effect->SetPosition(position);
-    m_effect->SetRotation(Quaternion::Identity);
-    m_effect->SetScale({5.0f, 5.0f, 5.0f});
+    
 }
 
 void CollisionManager::Update()
@@ -59,9 +57,7 @@ void CollisionManager::Update()
                     enemy->DamagePunch(2);
                     Vector3 enemyEffectPos = enemy->GetPosition();
                     enemyEffectPos.y += 30.0f;
-                    CreateEffect(enemyEffectPos);
-                    m_effect->Init(EnEffcetType::Enemy_Hit);
-                    m_effect->Play();
+                    EffectManager::Get()->PlayEffect(enemyEffectPos, enemy->GetRotation(), ENEMY_EFFECT_SCALE, EnEffcetType::Enemy_Hit);
                 }
             }
         }
@@ -76,9 +72,7 @@ void CollisionManager::Update()
                     enemyType2->DamagePunch(2);
                     Vector3 enemy2EffectPos = enemyType2->GetPosition();
                     enemy2EffectPos.y += 50.0f;
-                    CreateEffect(enemy2EffectPos);
-                    m_effect->Init(EnEffcetType::Enemy_Hit);
-                    m_effect->Play();
+                    EffectManager::Get()->PlayEffect(enemy2EffectPos, enemyType2->GetRotation(), ENEMY_EFFECT_SCALE,EnEffcetType::Enemy_Hit);
                 }
             }
         }
@@ -141,10 +135,7 @@ void CollisionManager::Update()
                     boss->DamagePunch(2);
                     Vector3 bossEffectPos = boss->GetPosition();
                     bossEffectPos.y += 75.0f;
-                    CreateEffect(bossEffectPos);
-                    m_effect->SetScale({20.0f, 20.0f, 20.0f});
-                    m_effect->Init(EnEffcetType::Boss_Hit);
-                    m_effect->Play();
+                    EffectManager::Get()->PlayEffect(bossEffectPos, boss->GetRotation(), BOSS_EFFECT_SCALE, EnEffcetType::Boss_Hit);
                 }
             }
 

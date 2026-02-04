@@ -1,12 +1,11 @@
 #include "stdafx.h"
 
 #include "AttackCollision.h"
+#include "EffectManager.h"
+#include "GameCamera.h"
 #include "Player.h"
 #include "PlayerState.h"
 #include "SoundManager.h"
-#include "GameCamera.h"
-#include "EffectManager.h"
-
 
 namespace
 {
@@ -34,6 +33,8 @@ namespace
     const float GRAVITY = 0.98f;
     const float ATK_COL_SIZE = 20.0f;
     const Vector3 ATK_POSITION = {0.0f, 30.0f, 50.0f};
+    const Vector3 ATK_SCALE = {15.0f, 15.0f, 15.0f};
+    const Vector3 CANNON_SCALE = {10.0f, 10.0f, 10.0f};
 } // namespace
 
 PlayerStatePattern::PlayerStatePattern() : StatePatternBase() {}
@@ -122,7 +123,7 @@ bool PlayerIdleState::RequestState(uint32_t& request)
         return true;
     }
 
-    if( m_gameCamera->GetStarCamera() == true)
+    if (m_gameCamera->GetStarCamera() == true)
     {
         request = PlayerStarState::ID();
         return true;
@@ -406,6 +407,10 @@ void PlayerAttackState::Enter()
 
     // パンチ音再生
     SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::PlayerPunchSE);
+
+    Vector3 offset = ATK_POSITION;
+    m_player->GetRotation().Apply(offset);
+    m_effectID = EffectManager::Get()->PlayEffect(m_player->GetPosition() + offset, m_player->GetRotation(), ATK_SCALE, EnEffcetType::Player_Attack);
 }
 
 void PlayerAttackState::Update()
@@ -420,13 +425,16 @@ void PlayerAttackState::Update()
         MakeAttackCollision();
     }
 
-    else 
+    else
     {
         m_player->DeleteAttackCollision();
     }
 }
 
-void PlayerAttackState::Exit() {}
+void PlayerAttackState::Exit()
+{
+    EffectManager::Get()->StopEffect(m_effectID);
+}
 
 bool PlayerAttackState::RequestState(uint32_t& request)
 {
@@ -538,7 +546,6 @@ bool PlayerPipeState::RequestState(uint32_t& request)
     return false;
 }
 
-
 void PlayerCannonState::Enter()
 {
     m_gameCamera = FindGO<GameCamera>("GameCamera");
@@ -566,13 +573,17 @@ void PlayerFireState::Enter()
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Fire);
     // 発射音再生
     SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::CanonFireSE);
+    m_player->SetFireFlag(true);
+
+    Quaternion effectRot = m_player->GetRotation();
+    effectRot.z += 1.0f;
+    m_effectID = EffectManager::Get()->PlayEffect(m_player->GetPosition(), effectRot, CANNON_SCALE, EnEffcetType::Cannon_Fire);
 }
 
 void PlayerFireState::Update()
 {
 
     Quaternion rotation = m_player->GetRotation();
-
 
     // 外部からの力を適用
     if (m_player->GetForce().Length() > 0.0f)
@@ -585,6 +596,7 @@ void PlayerFireState::Update()
         Vector3 nextpostion = m_player->GetCharCon()->Execute(move, 1.0f);
 
         m_player->SetPosition(nextpostion);
+        EffectManager::Get()->SetPosition(m_effectID,nextpostion);
 
         if (m_player->GetForce().Length() <= 1.0f)
         {
@@ -592,56 +604,31 @@ void PlayerFireState::Update()
         }
     }
 
-    if (m_player->GetCharCon()->IsOnGround() == true)
-    {
-        m_player->SetFireFlag(false);
-    }
 
-    if (m_effect == nullptr)
-    {
-        CreateEffect(m_player->GetPosition(), m_player->GetRotation());
-    }
-
-    Vector3 effectPos = m_player->GetPosition();
-    Quaternion effectRot = m_player->GetRotation();
-
-    effectRot.z += 1.0f;
-
-    m_effect->SetPosition(effectPos);
-    m_effect->SetRotation(effectRot);
 }
 
 void PlayerFireState::Exit()
 {
     m_player->SetAddForce({0.0f, 0.0f, 0.0f});
-    m_effect->Stop();
+    EffectManager::Get()->StopEffect(m_effectID);
+    m_player->SetFireFlag(false);
+    m_player->SetRotation(Quaternion::Identity);
+    m_player->SetCannonFlag(false);
 }
 
 bool PlayerFireState::RequestState(uint32_t& request)
 {
     if (m_player->GetCharCon()->IsOnGround() == true)
     {
-        m_player->SetRotation(Quaternion::Identity);
-        m_player->SetCannonFlag(false);
         request = PlayerIdleState::ID();
         return true;
     }
     return false;
 }
 
-void PlayerFireState::CreateEffect(Vector3 position, Quaternion rotation)
-{
-    m_effect = NewGO<EffectEmitter>(0);
-    m_effect->SetPosition(position);
-    m_effect->SetRotation(rotation);
-    m_effect->SetScale({10.0f, 10.0f, 10.0f});
-    m_effect->Init(EnEffcetType::Cannon_Fire);
-    m_effect->Play();
-}
-
 void PlayerBattleState::Enter()
 {
-    m_gameCamera = FindGO<GameCamera>("GameCamera"); 
+    m_gameCamera = FindGO<GameCamera>("GameCamera");
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Idle);
 }
 
