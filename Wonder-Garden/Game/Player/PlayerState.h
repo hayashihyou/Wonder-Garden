@@ -10,6 +10,7 @@ public:                                                                         
 
 class Player;
 class GameCamera;
+class StarCounter;
 
 class IPlayerState : public IGameObject
 {
@@ -17,6 +18,7 @@ protected:
     Player* m_player;
     GameCamera* m_gameCamera;
     EffectEmitter* m_effect;
+    StarCounter* m_starCounter;
 
 public:
     IPlayerState(Player* player) : m_player(player){};
@@ -270,6 +272,20 @@ class PlayerStarState : public IPlayerState
 public:
     PlayerStarState(Player* player) : IPlayerState(player){};
     virtual ~PlayerStarState(){};
+    void Enter() override;
+    void Update() override;
+    void Exit() override;
+
+    virtual bool RequestState(uint32_t& request) override;
+};
+
+class PlayerClearState : public IPlayerState
+{
+    appState(PlayerClearState);
+
+public:
+    PlayerClearState(Player* player) : IPlayerState(player){};
+    virtual ~PlayerClearState(){};
     void Enter() override;
     void Update() override;
     void Exit() override;

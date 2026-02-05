@@ -2,6 +2,7 @@
 
 #include "Title.h"
 #include "Game.h"
+#include "StarCounter.h"
 #include "SoundManager.h"
 #include "Player/Player.h"
 #include "GameCamera.h"
@@ -18,6 +19,7 @@ Title::~Title()
     DeleteGO(m_player);
     DeleteGO(m_gameCamera); 
     DeleteGO(m_titlePipe);
+    DeleteGO(m_starCounter);
 }
 
 
@@ -26,6 +28,7 @@ bool Title::Start()
     m_player = NewGO<Player>(0, "Player");
     m_gameCamera = NewGO<GameCamera>(0, "GameCamera");
     m_titlePipe = NewGO<TitlePipe>(0, "TitlePipe");
+    m_starCounter = NewGO<StarCounter>(0, "StarCounter");
 
     InitModel();
     InitSprite();

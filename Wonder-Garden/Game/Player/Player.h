@@ -138,6 +138,13 @@ public:
     void SetCannonFlag(bool cannonReady) { m_isCannonReady = cannonReady; }
 
 
+    /// <summary>
+    /// ゲームクリア条件の保持
+    /// </summary>
+    /// <param name="clearflag"></param>
+    void SetClearFlag(bool clearflag) { m_isClear = clearflag; }
+
+
     void InitCharCon(Vector3 pos)
     {
         if (m_characterController == nullptr)
@@ -292,6 +299,13 @@ public:
     bool IsCannon() { return m_isCannonReady; }
 
 
+    /// <summary>
+    /// ゲームクリア条件の取得
+    /// </summary>
+    /// <returns></returns>
+    bool IsClear() { return m_isClear; }
+
+
 public:
     /// <summary>
     /// 外部からの力を保持す
@@ -313,6 +327,7 @@ public:
         enAnimationClip_Damage,
         enAnimationClip_Dead,
         enAnimationClip_Fire,
+        enAnimationClip_Clear,
         enAnimationClip_Num,
     };
 
@@ -382,6 +397,7 @@ private:
     bool m_isJump = false;
     bool m_isRun = false;
     bool m_isCannonReady = false;
+    bool m_isClear = false;
 };
 
 

@@ -34,6 +34,8 @@ bool Player::Start()
     m_animationClips[enAnimationClip_Dead].SetLoopFlag(false);
     m_animationClips[enAnimationClip_Fire].Load("Assets/animData/player/playerFly.tka");
     m_animationClips[enAnimationClip_Fire].SetLoopFlag(false);
+    m_animationClips[enAnimationClip_Clear].Load("Assets/animData/player/playerClear.tka");
+    m_animationClips[enAnimationClip_Clear].SetLoopFlag(false);
 
     m_playerModel.Init("Assets/modelData/player/player.tkm", m_animationClips, enAnimationClip_Num);
 
@@ -61,6 +63,7 @@ bool Player::Start()
     m_playerStatePattern->RegisterState<PlayerFireState>(this);
     m_playerStatePattern->RegisterState<PlayerBattleState>(this);
     m_playerStatePattern->RegisterState<PlayerStarState>(this);
+    m_playerStatePattern->RegisterState<PlayerClearState>(this);
 
     // 最初はIdle(待機)状態から始まるので
     m_playerStatePattern->InitializeState<PlayerIdleState>();

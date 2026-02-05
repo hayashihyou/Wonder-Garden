@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "PlayerState.h"
 #include "SoundManager.h"
+#include "StarCounter.h"
 
 namespace
 {
@@ -60,6 +61,7 @@ void PlayerStatePattern::Update()
 void PlayerIdleState::Enter()
 {
     m_gameCamera = FindGO<GameCamera>("GameCamera");
+    m_starCounter = FindGO<StarCounter>("StarCounter");
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Idle);
 }
 
@@ -129,12 +131,19 @@ bool PlayerIdleState::RequestState(uint32_t& request)
         return true;
     }
 
+    if (m_starCounter->GetStarCount() == 1)
+    {
+        request = PlayerClearState::ID();
+        return true;
+    }
+
     return false;
 }
 
 void PlayerWalkState::Enter()
 {
     m_gameCamera = FindGO<GameCamera>("GameCamera");
+    m_starCounter = FindGO<StarCounter>("StarCounter");
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Walk);
 }
 
@@ -221,12 +230,19 @@ bool PlayerWalkState::RequestState(uint32_t& request)
         return true;
     }
 
+    if (m_starCounter->GetStarCount() == 1)
+    {
+        request = PlayerClearState::ID();
+        return true;
+    }
+
     return false;
 }
 
 void PlayerRunState::Enter()
 {
     m_gameCamera = FindGO<GameCamera>("GameCamera");
+    m_starCounter = FindGO<StarCounter>("StarCounter");
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Run);
 }
 
@@ -311,12 +327,19 @@ bool PlayerRunState::RequestState(uint32_t& request)
         return true;
     }
 
+    if (m_starCounter->GetStarCount() == 1)
+    {
+        request = PlayerClearState::ID();
+        return true;
+    }
+
     return false;
 }
 
 void PlayerJumpState::Enter()
 {
     m_gameCamera = FindGO<GameCamera>("GameCamera");
+    m_starCounter = FindGO<StarCounter>("StarCounter");
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Jump);
     m_jump = m_player->GetJumpPower();
 
@@ -397,6 +420,12 @@ bool PlayerJumpState::RequestState(uint32_t& request)
         return true;
     }
 
+    if (m_starCounter->GetStarCount() == 1)
+    {
+        request = PlayerClearState::ID();
+        return true;
+    }
+
     return false;
 }
 
@@ -410,7 +439,8 @@ void PlayerAttackState::Enter()
 
     Vector3 offset = ATK_POSITION;
     m_player->GetRotation().Apply(offset);
-    m_effectID = EffectManager::Get()->PlayEffect(m_player->GetPosition() + offset, m_player->GetRotation(), ATK_SCALE, EnEffcetType::Player_Attack);
+    m_effectID = EffectManager::Get()->PlayEffect(m_player->GetPosition() + offset, m_player->GetRotation(), ATK_SCALE,
+                                                  EnEffcetType::Player_Attack);
 }
 
 void PlayerAttackState::Update()
@@ -577,7 +607,8 @@ void PlayerFireState::Enter()
 
     Quaternion effectRot = m_player->GetRotation();
     effectRot.z += 1.0f;
-    m_effectID = EffectManager::Get()->PlayEffect(m_player->GetPosition(), effectRot, CANNON_SCALE, EnEffcetType::Cannon_Fire);
+    m_effectID =
+        EffectManager::Get()->PlayEffect(m_player->GetPosition(), effectRot, CANNON_SCALE, EnEffcetType::Cannon_Fire);
 }
 
 void PlayerFireState::Update()
@@ -596,15 +627,13 @@ void PlayerFireState::Update()
         Vector3 nextpostion = m_player->GetCharCon()->Execute(move, 1.0f);
 
         m_player->SetPosition(nextpostion);
-        EffectManager::Get()->SetPosition(m_effectID,nextpostion);
+        EffectManager::Get()->SetPosition(m_effectID, nextpostion);
 
         if (m_player->GetForce().Length() <= 1.0f)
         {
             m_player->GetForce() = Vector3::Zero;
         }
     }
-
-
 }
 
 void PlayerFireState::Exit()
@@ -665,5 +694,30 @@ bool PlayerStarState::RequestState(uint32_t& request)
         return true;
     }
 
+    return false;
+}
+
+void PlayerClearState::Enter()
+{
+    m_gameCamera = FindGO<GameCamera>("GameCamera");
+    m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Clear);
+}
+
+void PlayerClearState::Update()
+{
+    Vector3 move = Vector3(0.0f, -GRAVITY, 0.0f);
+    const Vector3 nextPosition = m_player->GetCharCon()->Execute(move, 1.0f);
+    m_player->SetPosition(nextPosition);
+
+    if (!m_player->GetModel()->IsPlayingAnimation())
+    {
+        m_player->SetClearFlag(true);
+    }
+}
+
+void PlayerClearState::Exit() {}
+
+bool PlayerClearState::RequestState(uint32_t& request)
+{
     return false;
 }

@@ -119,7 +119,7 @@ private:
     Vector3 m_targetPosition;    // 注視点位置
 
     float time = 0.0f;
-    float m_countdown = 3.0f;
+    float m_countdown = 1.0f;
     Vector3 cameraOffset = Vector3::Zero;
 
     bool m_isBossCamera = false;    // ボス戦前のムービー部分のカメラフラグ
