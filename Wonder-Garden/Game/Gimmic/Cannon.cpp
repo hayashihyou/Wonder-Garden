@@ -86,11 +86,9 @@ void Cannon::CheckNearCannon()
 void Cannon::Fire()
 {
 
-    if (g_pad[0]->IsTrigger(enButtonA))
+    if (m_player->IsFire() == true)
     {
         changeFlag = true;
-
-        m_player->SetFireFlag(true);
 
         // ここの方向は大砲の向き
         Vector3 fireDirection = Vector3::Front;
