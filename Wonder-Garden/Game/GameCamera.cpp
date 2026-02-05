@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
+#include "Enemy/Boss.h"
 #include "GameCamera.h"
 #include "Player/Player.h"
-#include "Enemy/Boss.h"
 #include "Star.h"
 #include "UI/BossBarsUI.h"
 
@@ -12,17 +12,17 @@ namespace
     const float CAMERA_UPPER_LIMIT = 0.9f;                      // カメラ上方向の制限値
     const float CAMERA_LOWER_LIMIT = -0.2f;                     // カメラ下方向の制限値
     const Vector3 INITIAL_TO_CAMERA_POS(0.0f, 130.0f, -250.0f); // 初期注視点からカメラ位置までのベクトル
-    const Vector3 TITLE_CAMERA_TARGET_POS(0.0f, 50.0f, 0.0f);   // タイトルカメラ注視点位置
-    const Vector3 BOSS_CAMERA_POS(0.0f, 20.0f, -300.0f);        // ボスカメラ位置
-    const Vector3 STAR_CAMERA_POS(2300.0f, 350.0f, 3400.0f);    // スターカメラ位置
-    const Vector3 WARP_CAMERA_POS(300.0f, 200.0f, 1300.0f);      // ワープカメラ位置
-    const Vector3 PLAYER_CAMERA_POS(-300.0f, 100.0f, -300.0f);  // プレイヤーカメラ位置
-    const Vector3 PIPE_POS = {-2200.0f, 90.0f, 660.0f};         // 土管位置
-    const float CAMERA_NEAR_CLIP = 1.0f;                        // カメラのニアクリップ距離
-    const float CAMERA_FAR_CLIP = 22000.0f;                     // カメラのファークリップ距離
-    const float CAMERA_ROTATION_SPEED = 1.3f;                   // カメラ回転速度
+    const Vector3 TITLE_CAMERA_TARGET_POS(0.0f, 50.0f, 0.0f);  // タイトルカメラ注視点位置
+    const Vector3 BOSS_CAMERA_POS(0.0f, 20.0f, -300.0f);       // ボスカメラ位置
+    const Vector3 STAR_CAMERA_POS(2300.0f, 350.0f, 3400.0f);   // スターカメラ位置
+    const Vector3 WARP_CAMERA_POS(300.0f, 200.0f, 1300.0f);    // ワープカメラ位置
+    const Vector3 CANNON_CAMERA_POS(0.0, 300.0f, -500.0f);     // 大砲のカメラ位置
+    const Vector3 PLAYER_CAMERA_POS(-300.0f, 100.0f, -300.0f); // プレイヤーカメラ位置
+    const Vector3 PIPE_POS = {-2200.0f, 90.0f, 660.0f};        // 土管位置
+    const float CAMERA_NEAR_CLIP = 1.0f;                       // カメラのニアクリップ距離
+    const float CAMERA_FAR_CLIP = 22000.0f;                    // カメラのファークリップ距離
+    const float CAMERA_ROTATION_SPEED = 1.3f;                  // カメラ回転速度
 } // namespace
-
 
 bool GameCamera::Start()
 {
@@ -34,7 +34,6 @@ bool GameCamera::Start()
 
     return true;
 }
-
 
 void GameCamera::Update()
 {
@@ -59,8 +58,13 @@ void GameCamera::Update()
         WarpCamera();
     }
 
+    else if (m_player->IsCannon() == true)
+    {
+        CannonCamera();
+    }
+
     // そうでなければ通常のカメラ処理
-    else 
+    else
     {
         // 入力取得
         float inputX = g_pad[0]->GetRStickXF();
@@ -86,10 +90,9 @@ void GameCamera::Update()
         g_camera3D->SetPosition(cameraPosition);
     }
 
-     // カメラ更新
+    // カメラ更新
     g_camera3D->Update();
 }
-
 
 void GameCamera::Init()
 {
@@ -100,7 +103,6 @@ void GameCamera::Init()
     g_camera3D->SetNear(CAMERA_NEAR_CLIP);
     g_camera3D->SetFar(CAMERA_FAR_CLIP);
 }
-
 
 void GameCamera::Rotation(float inputX, float inputY)
 {
@@ -117,7 +119,6 @@ void GameCamera::Rotation(float inputX, float inputY)
     qRot.Apply(m_toCameraPos);
 }
 
-
 Vector3 GameCamera::CalcTarget()
 {
     // プレイヤーの足元から少し上
@@ -126,7 +127,6 @@ Vector3 GameCamera::CalcTarget()
 
     return target;
 }
-
 
 void GameCamera::SuppressCameraAngle(Vector3 oldPos)
 {
@@ -150,7 +150,6 @@ void GameCamera::SuppressCameraAngle(Vector3 oldPos)
     }
 }
 
-
 void GameCamera::BossCamera()
 {
     if (m_changeCamera == false)
@@ -162,7 +161,7 @@ void GameCamera::BossCamera()
         // カメラの注視点を設定
         m_bossTargetPos = m_boss->GetPosition();
 
-        //カメラの視点を設定
+        // カメラの視点を設定
         m_bossCameraPos = m_player->GetPosition() + BOSS_CAMERA_POS;
         g_camera3D->SetTarget(m_bossTargetPos);
         g_camera3D->SetPosition(m_bossCameraPos);
@@ -173,7 +172,6 @@ void GameCamera::BossCamera()
     {
         m_bossCameraPos.z = 3700.0f;
         m_bossCameraPos.y += 1.0f;
-
 
         if (m_bossCameraPos.y >= 300.0f)
         {
@@ -194,10 +192,10 @@ void GameCamera::StarCamera()
     {
         m_changeCamera = true;
 
-         // カメラの注視点を設定
+        // カメラの注視点を設定
         m_starTargetPos = STAR_CAMERA_POS;
 
-        //カメラの視点を設定
+        // カメラの視点を設定
         m_starCameraPos = g_camera3D->GetPosition();
     }
 
@@ -215,6 +213,17 @@ void GameCamera::StarCamera()
     g_camera3D->SetPosition(m_starCameraPos);
 }
 
+void GameCamera::DokanStart()
+{
+    if (!m_changeCamera)
+    {
+        m_changeCamera = true;
+        time = 0.0f;
+    }
+
+    cameraOffset = g_camera3D->GetPosition() - g_camera3D->GetTarget();
+    m_warpTargetPos = g_camera3D->GetTarget();
+}
 
 void GameCamera::WarpCamera()
 {
@@ -238,15 +247,55 @@ void GameCamera::WarpCamera()
     }
 }
 
-void GameCamera::DokanStart()
+void GameCamera::CannonCamera()
 {
-    if (!m_changeCamera)
+    if (m_changeCamera == false)
     {
         m_changeCamera = true;
-        time = 0.0f;
+
+        Vector3 cannonTargetPos = m_player->GetPosition() - INITIAL_TO_CAMERA_POS;
+        m_cannonCameraPos = cannonTargetPos + CANNON_CAMERA_POS;
+
+        g_camera3D->SetTarget(cannonTargetPos);
     }
 
-    cameraOffset = g_camera3D->GetPosition() - g_camera3D->GetTarget();
-    m_warpTargetPos = g_camera3D->GetTarget();
+    Vector3 idealPos = m_cannonCameraPos;
 
+
+    /**
+    * 条件が被ってしまう為、フラグを使って制御
+    */
+    if (m_cannonCameraPos.x <= -1400.0f && m_cannonCameraPos.z <= 2850.0f && m_isMoveCamera == false)
+    {
+        idealPos += Vector3(3.0f, 0.0f, 3.0f);
+    }
+
+    else if (m_cannonCameraPos.x >= -2000.0f && m_bossCameraPos.z <= 3000.0f)
+    {
+        m_isMoveCamera = true;
+        idealPos += Vector3(-4.0f, 0.0f, 3.0f);
+    }
+
+    else if (m_cannonCameraPos.x >= -2350.0f && m_cannonCameraPos.z >= 2350.0f)
+    {
+        idealPos -= Vector3(3.0f, 0.0f, 3.0f);
+    }
+
+    else if (m_cannonCameraPos.x < -2350.0f && m_cannonCameraPos.z > 2350.0f)
+    {
+        m_countdown -= g_gameTime->GetFrameDeltaTime();
+    }
+
+    m_cannonCameraPos.Lerp(1.0f, m_cannonCameraPos, idealPos);
+
+    g_camera3D->SetTarget(m_player->GetPosition());
+    g_camera3D->SetPosition(m_cannonCameraPos);
+
+    if (m_countdown <= 0.0f)
+    {
+        m_player->SetFireFlag(true);
+        m_changeCamera = false;
+        m_isMoveCamera = false;
+        m_countdown = 3.0f;
+    }
 }
