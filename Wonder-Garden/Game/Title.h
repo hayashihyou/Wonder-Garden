@@ -4,6 +4,7 @@
 
 class Player;
 class GameCamera;
+class StarCounter;
 class TitlePipe;
 
 /// <summary>
@@ -53,10 +54,11 @@ private:
     SpriteRender m_titleSprite; // タイトル画面スプライト
     ModelRender m_titleModel;   // タイトル画面用モデル
     PhysicsStaticObject m_physicsStaticObject;
-    SkyCube* m_skyCube = nullptr;        // スカイキューブ
-    Player* m_player = nullptr;                   // タイトル画面用プレイヤー
-    GameCamera* m_gameCamera = nullptr; // タイトル画面用カメラ
+    SkyCube* m_skyCube = nullptr;         // スカイキューブ
+    Player* m_player = nullptr;           // タイトル画面用プレイヤー
+    GameCamera* m_gameCamera = nullptr;   // タイトル画面用カメラ
     TitlePipe* m_titlePipe = nullptr;     // タイトル画面用土管
+    StarCounter* m_starCounter = nullptr;  
 
     Vector3 m_spritePos;
     Vector3 m_modelPos;

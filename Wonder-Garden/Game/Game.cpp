@@ -64,11 +64,11 @@ Game::~Game()
         DeleteGO(m_star);
     }
 
+    DeleteGO(m_starCounter);
     DeleteGO(m_player);
     DeleteGO(m_boss);
     DeleteGO(m_stage);
     DeleteGO(m_skyCube);
-    DeleteGO(m_starCounter);
     DeleteGO(m_gameCamera);
     DeleteGO(m_countCointer);
     DeleteGO(m_coinUI);
@@ -87,7 +87,6 @@ bool Game::Start()
 
     m_player = NewGO<Player>(0,"Player");
     m_stage = NewGO<Stage>(0, "Stage");
-    //m_skyCube = NewGO<SkyCube>(0, "SkyCube");
     m_starCounter = NewGO<StarCounter>(0, "StarCounter");
     m_gameCamera = NewGO<GameCamera>(0,"GameCamera");
     m_hpUI = NewGO<HPUI>(0, "HPUI");
@@ -178,7 +177,7 @@ void Game::Update()
         DeleteGO(this);
     }
 
-    if (m_starCounter->GetStarCount() == 1)
+    if (m_player->IsClear())
     {
         NewGO<GameClear>(0, "GameClear");
         SoundManager::GetInstance().DeleteCurrentBGM();

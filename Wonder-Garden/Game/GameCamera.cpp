@@ -296,6 +296,6 @@ void GameCamera::CannonCamera()
         m_player->SetFireFlag(true);
         m_changeCamera = false;
         m_isMoveCamera = false;
-        m_countdown = 3.0f;
+        m_countdown = 1.0f;
     }
 }
