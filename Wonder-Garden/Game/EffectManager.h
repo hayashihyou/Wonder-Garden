@@ -7,6 +7,7 @@ enum EnEffcetType
     Cannon_Fire,
     Player_Attack,
     Boss_Attack,
+    Game_Clear,
 };
 
 class EffectManager 
@@ -30,11 +31,8 @@ private:
 
 public:
     bool Start();
-    int PlayEffect(Vector3 position, Quaternion rotation, Vector3 scale, int num);
+    EffectEmitter* PlayEffect(Vector3 position, Quaternion rotation, Vector3 scale, int num);
     void StopEffect(int id);
-
-    void SetPosition(int ID, Vector3 position) { m_effect[ID]->SetPosition(position);}
-    void SetRotation(int ID, Quaternion rotation) { m_effect[ID]->SetRotation(rotation); }
 
 
     /**

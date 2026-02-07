@@ -90,10 +90,23 @@ public:
     void CannonCamera();
 
 
+    /// <summary>
+    /// 大砲発射時の定点カメラ
+    /// </summary>
+    void FireCamera();
+
+
+    /// <summary>
+    /// ゲームクリアした時のカメラ
+    /// </summary>
+    void GameClearCamera();
+
+
 public:
     void SetBossCamera(bool bossFlag) { m_isBossCamera = bossFlag; }
     void SetStarCamera(bool starFlag) { m_isStarCamera = starFlag; }
     void SetWarpCamera(bool warpFlag) { m_isWarpCamera = warpFlag; }
+    void SetClearCamera(bool clearFlag) { m_isclearCamera = clearFlag; }
 
     bool GetBossCamera() const { return m_isBossCamera; }
     bool GetStarCamera() const { return m_isStarCamera; }
@@ -117,6 +130,7 @@ private:
     Vector3 m_warpCameraPos;     // 土管移動時のカメラ位置
     Vector3 m_cameraPosition;    // カメラ位置
     Vector3 m_targetPosition;    // 注視点位置
+    Vector3 m_clearCameraPos;    // クリア時のカメラの固定位置
 
     float time = 0.0f;
     float m_countdown = 1.0f;
@@ -127,4 +141,5 @@ private:
     bool m_isStarCamera = false;   // スター取得時のカメラフラグ
     bool m_isWarpCamera = false;   // 土管移動時のカメラフラグ
     bool m_isMoveCamera = false;   //カメラが移動したかの確認
+    bool m_isclearCamera = false;  // クリア演出フラグ
 };
