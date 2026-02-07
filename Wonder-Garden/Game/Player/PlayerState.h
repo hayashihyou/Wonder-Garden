@@ -17,7 +17,7 @@ class IPlayerState : public IGameObject
 protected:
     Player* m_player;
     GameCamera* m_gameCamera;
-    EffectEmitter* m_effect;
+    EffectEmitter* m_effec;
     StarCounter* m_starCounter;
 
 public:
@@ -248,8 +248,8 @@ public:
 
 
 private:
-    int m_effectID = 0;
-
+    
+   float m_effectTimer = 0.0f; // エフェクトの再生間隔のタイマー
 };
 
 class PlayerBattleState : public IPlayerState

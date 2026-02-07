@@ -19,6 +19,7 @@ namespace
     const Vector3 CANNON_CAMERA_POS(0.0, 300.0f, -500.0f);     // 大砲のカメラ位置
     const Vector3 PLAYER_CAMERA_POS(-300.0f, 100.0f, -300.0f); // プレイヤーカメラ位置
     const Vector3 PIPE_POS = {-2200.0f, 90.0f, 660.0f};        // 土管位置
+    const Vector3 CLEAR_CAMERA_OFFSET(0.0f, 40.0f, 200.0f);    // ゲームクリアの際のカメラの位置
     const float CAMERA_NEAR_CLIP = 1.0f;                       // カメラのニアクリップ距離
     const float CAMERA_FAR_CLIP = 22000.0f;                    // カメラのファークリップ距離
     const float CAMERA_ROTATION_SPEED = 1.3f;                  // カメラ回転速度
@@ -37,8 +38,13 @@ bool GameCamera::Start()
 
 void GameCamera::Update()
 {
+    if (m_isclearCamera == true)
+    {
+        GameClearCamera();
+    }
+
     // もしボス戦前のムービー部分ならこの処理を呼ぶ
-    if (m_isBossCamera == true)
+    else if (m_isBossCamera == true)
     {
         BossCamera();
     }
@@ -61,6 +67,11 @@ void GameCamera::Update()
     else if (m_player->IsCannon() == true)
     {
         CannonCamera();
+    }
+
+    else if (m_player->IsFire())
+    {
+        FireCamera();
     }
 
     // そうでなければ通常のカメラ処理
@@ -206,6 +217,7 @@ void GameCamera::StarCamera()
         if (m_starTargetPos.y >= STAR_CAMERA_POS.y)
         {
             m_isStarCamera = false;
+            m_changeCamera = false;
         }
     }
 
@@ -238,7 +250,6 @@ void GameCamera::WarpCamera()
 
     g_camera3D->SetTarget(position);
     g_camera3D->SetPosition(position + cameraOffset);
-    g_camera3D->Update();
 
     if (time >= 0.5f)
     {
@@ -257,6 +268,15 @@ void GameCamera::CannonCamera()
         m_cannonCameraPos = cannonTargetPos + CANNON_CAMERA_POS;
 
         g_camera3D->SetTarget(cannonTargetPos);
+    }
+
+    if (m_countdown <= 0.0f)
+    {
+        m_player->SetFireFlag(true);
+        m_changeCamera = false;
+        m_isMoveCamera = false;
+        m_countdown = 1.0f;
+        return;
     }
 
     Vector3 idealPos = m_cannonCameraPos;
@@ -288,14 +308,41 @@ void GameCamera::CannonCamera()
 
     m_cannonCameraPos.Lerp(1.0f, m_cannonCameraPos, idealPos);
 
-    g_camera3D->SetTarget(m_player->GetPosition());
-    g_camera3D->SetPosition(m_cannonCameraPos);
-
-    if (m_countdown <= 0.0f)
+    if (m_player->IsFire() == false)
     {
-        m_player->SetFireFlag(true);
-        m_changeCamera = false;
-        m_isMoveCamera = false;
-        m_countdown = 1.0f;
+        g_camera3D->SetTarget(m_player->GetPosition());
+        g_camera3D->SetPosition(m_cannonCameraPos);
     }
 }
+
+void GameCamera::FireCamera()
+{
+    g_camera3D->SetTarget(m_player->GetPosition());
+    g_camera3D->SetPosition(m_cannonCameraPos);
+}
+
+void GameCamera::GameClearCamera()
+{
+
+    Vector3 playerPos = m_player->GetPosition();
+
+    if (m_changeCamera == false)
+    {
+        m_changeCamera = true;
+
+        Vector3 playerCameraOffset = CLEAR_CAMERA_OFFSET;
+        Quaternion rotation = m_player->GetRotation();
+        rotation.Apply(playerCameraOffset);
+
+        m_clearCameraPos = playerPos + playerCameraOffset;
+    }
+
+
+    Vector3 target =playerPos;
+    target.y += 40.0f;
+
+    g_camera3D->SetTarget(target);
+    g_camera3D->SetPosition(m_clearCameraPos);
+}
+
+

@@ -36,6 +36,8 @@ namespace
     const Vector3 ATK_POSITION = {0.0f, 30.0f, 50.0f};
     const Vector3 ATK_SCALE = {15.0f, 15.0f, 15.0f};
     const Vector3 CANNON_SCALE = {10.0f, 10.0f, 10.0f};
+    const Vector3 CLEAR_EFFECT_POSITION = {0.0f, -200.0f, -200.0f};
+    const Vector3 CLEAR_EFFECT_SCALE = {10.0f, 10.0f, 10.0f};
 } // namespace
 
 PlayerStatePattern::PlayerStatePattern() : StatePatternBase() {}
@@ -439,7 +441,7 @@ void PlayerAttackState::Enter()
 
     Vector3 offset = ATK_POSITION;
     m_player->GetRotation().Apply(offset);
-    m_effectID = EffectManager::Get()->PlayEffect(m_player->GetPosition() + offset, m_player->GetRotation(), ATK_SCALE,
+    EffectManager::Get()->PlayEffect(m_player->GetPosition() + offset, m_player->GetRotation(), ATK_SCALE,
                                                   EnEffcetType::Player_Attack);
 }
 
@@ -463,7 +465,7 @@ void PlayerAttackState::Update()
 
 void PlayerAttackState::Exit()
 {
-    EffectManager::Get()->StopEffect(m_effectID);
+    
 }
 
 bool PlayerAttackState::RequestState(uint32_t& request)
@@ -600,15 +602,11 @@ bool PlayerCannonState::RequestState(uint32_t& request)
 
 void PlayerFireState::Enter()
 {
+    m_gameCamera = FindGO<GameCamera>("GameCamera");
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Fire);
     // 発射音再生
     SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::CanonFireSE);
     m_player->SetFireFlag(true);
-
-    Quaternion effectRot = m_player->GetRotation();
-    effectRot.z += 1.0f;
-    m_effectID =
-        EffectManager::Get()->PlayEffect(m_player->GetPosition(), effectRot, CANNON_SCALE, EnEffcetType::Cannon_Fire);
 }
 
 void PlayerFireState::Update()
@@ -627,7 +625,16 @@ void PlayerFireState::Update()
         Vector3 nextpostion = m_player->GetCharCon()->Execute(move, 1.0f);
 
         m_player->SetPosition(nextpostion);
-        EffectManager::Get()->SetPosition(m_effectID, nextpostion);
+
+        m_effectTimer += g_gameTime->GetFrameDeltaTime();
+
+        if (m_effectTimer >= 0.1f)
+        {
+            Quaternion effectRot = m_player->GetRotation();
+            effectRot.z += 1.0f;
+            EffectManager::Get()->PlayEffect(m_player->GetPosition(), effectRot, CANNON_SCALE, EnEffcetType::Cannon_Fire);
+            m_effectTimer = 0.0f;
+        }
 
         if (m_player->GetForce().Length() <= 1.0f)
         {
@@ -639,7 +646,6 @@ void PlayerFireState::Update()
 void PlayerFireState::Exit()
 {
     m_player->SetAddForce({0.0f, 0.0f, 0.0f});
-    EffectManager::Get()->StopEffect(m_effectID);
     m_player->SetFireFlag(false);
     m_player->SetRotation(Quaternion::Identity);
     m_player->SetCannonFlag(false);
@@ -701,6 +707,13 @@ void PlayerClearState::Enter()
 {
     m_gameCamera = FindGO<GameCamera>("GameCamera");
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Clear);
+    m_gameCamera->SetClearCamera(true);
+
+    Vector3 effctPos = CLEAR_EFFECT_POSITION;
+    Quaternion rotation = m_player->GetRotation();
+    rotation.Apply(effctPos);
+
+    EffectManager::Get()->PlayEffect(m_player->GetPosition() + effctPos, m_player->GetRotation(), CLEAR_EFFECT_SCALE, EnEffcetType::Game_Clear);
 }
 
 void PlayerClearState::Update()
