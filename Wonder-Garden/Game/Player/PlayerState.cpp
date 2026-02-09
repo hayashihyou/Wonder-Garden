@@ -628,7 +628,7 @@ void PlayerFireState::Update()
 
         m_effectTimer += g_gameTime->GetFrameDeltaTime();
 
-        if (m_effectTimer >= 0.1f)
+        if (m_effectTimer >= 0.05f)
         {
             Quaternion effectRot = m_player->GetRotation();
             effectRot.z += 1.0f;
