@@ -1,6 +1,6 @@
 #pragma once
 
-class CountCointer;
+class CoinCounter;
 
 /// <summary>
 /// コインUI
@@ -34,15 +34,18 @@ private:
     /// </summary>
     void Render(RenderContext& rc);
 
-    /// <summary>
-    /// フォント初期化
-    /// </summary>
-    void InitFont();
 
     /// <summary>
     /// スプライト初期化
     /// </summary>
     void InitSprite();
+
+
+    /// <summary>
+    /// コインのテキストの初期化
+    /// </summary>
+    void InitText();
+
 
     /// <summary>
     /// コインテキスト更新
@@ -50,8 +53,12 @@ private:
     void UpdateCoinText();
 
 private:
-    CountCointer* m_countCointer = nullptr; // コインカウンター
+    CoinCounter* m_coinCounter = nullptr; // コインカウンター
+    SpriteRender m_sprite;          // スプライト
+    SpriteRender m_coinTextOnes;    //1の位のコインの取得枚数のテキスト
+    SpriteRender m_coinTextTens;    //10の位のコインの取得枚数のテキスト
 
-    FontRender m_font;     // フォント
-    SpriteRender m_sprite; // スプライト
+    int m_lastOnes = -1;
+    int m_lastTens = -1;
+
 };
