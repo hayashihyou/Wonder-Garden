@@ -70,7 +70,7 @@ void Title::Render(RenderContext& rc)
 
 void Title::InitSprite()
 {
-    m_titleSprite.Init("Assets/texture/Title.DDS", 1920.0f, 1080.0f);
+    m_titleSprite.Init("Assets/texture/OutGame/Title.DDS", 1920.0f, 1080.0f);
     m_spritePos = {0.0f, 200.0f, 0.0f};
     m_titleSprite.SetPosition(m_spritePos);
     m_titleSprite.Update();

@@ -11,9 +11,9 @@ bool BossBarsUI::Start()
 {
     m_gameCamera = FindGO<GameCamera>("GameCamera");
 
-    m_bossBar.Init("Assets/texture/Boss_Bar.DDS",1920.0f,1080.0f);
-    m_bossAlertFrame.Init("Assets/texture/Boss_Frame.DDS",1920.0f,1080.0f);
-    m_bossAlert.Init("Assets/texture/Boss_Caution.DDS", 960.0f, 540.0f);
+    m_bossBar.Init("Assets/texture/Boss_Battle/Boss_Bar.DDS",1920.0f,1080.0f);
+    m_bossAlertFrame.Init("Assets/texture/Boss_Battle/Boss_Frame.DDS",1920.0f,1080.0f);
+    m_bossAlert.Init("Assets/texture/Boss_Battle/Boss_Caution.DDS", 960.0f, 540.0f);
 
     m_position = Vector3(0.0f,0.0f,0.0f);
 

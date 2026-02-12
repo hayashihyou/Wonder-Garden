@@ -27,11 +27,11 @@ namespace
         HPIconInfo(const std::string& s, const float r) : path(s), ratio(r) {}
     };
     static const HPIconInfo HP_ICON_INFO_LIST[] = {
-        HPIconInfo("Assets/texture/HP.DDS", 1.0f),    HPIconInfo("Assets/texture/HP_1.DDS", 0.875f),
-        HPIconInfo("Assets/texture/HP_2.DDS", 0.75f), HPIconInfo("Assets/texture/HP_3.DDS", 0.625f),
-        HPIconInfo("Assets/texture/HP_4.DDS", 0.5f),  HPIconInfo("Assets/texture/HP_5.DDS", 0.375f),
-        HPIconInfo("Assets/texture/HP_6.DDS", 0.25f), HPIconInfo("Assets/texture/HP_7.DDS", 0.125f),
-        HPIconInfo("Assets/texture/HP_8.DDS", 0.0f)};
+        HPIconInfo("Assets/texture/Player_HP/HP.DDS", 1.0f),    HPIconInfo("Assets/texture/Player_HP/HP_1.DDS", 0.875f),
+        HPIconInfo("Assets/texture/Player_HP/HP_2.DDS", 0.75f), HPIconInfo("Assets/texture/Player_HP/HP_3.DDS", 0.625f),
+        HPIconInfo("Assets/texture/Player_HP/HP_4.DDS", 0.5f),  HPIconInfo("Assets/texture/Player_HP/HP_5.DDS", 0.375f),
+        HPIconInfo("Assets/texture/Player_HP/HP_6.DDS", 0.25f), HPIconInfo("Assets/texture/Player_HP/HP_7.DDS", 0.125f),
+        HPIconInfo("Assets/texture/Player_HP/HP_8.DDS", 0.0f)};
 
     int GetHPIconType(const float hpRatio)
     {
@@ -88,10 +88,10 @@ void HPUI::Render(RenderContext& rc)
 
 void HPUI::InitHPBar()
 {
-    m_HPBarBack.Init("Assets/texture/Boss_HPBar_Back.DDS", 550.0f, 80.0f);
-    m_HPBarDamage.Init("Assets/texture/Boss_HPBar_Damage.DDS", 550.0f, 80.0f);
-    m_HPBar.Init("Assets/texture/Boss_HPBar.DDS", 550.0f, 80.0f);
-    m_HPBarFrame.Init("Assets/texture/Boss_HPBarFrame_Trans.DDS", 650.0f, 130.0f);
+    m_HPBarBack.Init("Assets/texture/Boss_HP/Boss_HPBar_Back.DDS", 550.0f, 80.0f);
+    m_HPBarDamage.Init("Assets/texture/Boss_HP/Boss_HPBar_Damage.DDS", 550.0f, 80.0f);
+    m_HPBar.Init("Assets/texture/Boss_HP/Boss_HPBar.DDS", 550.0f, 80.0f);
+    m_HPBarFrame.Init("Assets/texture/Boss_HP/Boss_HPBarFrame_Trans.DDS", 650.0f, 130.0f);
 
     m_HPBarBack.SetScale(Vector3(1.0f, 1.0f, 1.0f));
     m_HPBarDamage.SetScale(Vector3(1.0f, 1.0f, 1.0f));

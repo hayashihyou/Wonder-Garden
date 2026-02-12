@@ -1,6 +1,6 @@
 #pragma once
 
-class CountCointer;
+class CoinCounter;
 class Player;
 
 /// <summary>
@@ -77,6 +77,7 @@ private:
     /// </summary>
     void HealHp();
 
+
 private:
     /// <summary>
     /// 状態
@@ -89,7 +90,7 @@ private:
     };
     State m_currentState = IDLE; // 現在の状態
 
-    CountCointer* m_countCointer = nullptr; // コインをカウント
+    CoinCounter* m_countCointer = nullptr; // コインをカウント
     Player* m_player = nullptr;             // プレイヤー
 
     ModelRender m_model;              // モデル

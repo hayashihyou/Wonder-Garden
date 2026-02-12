@@ -34,6 +34,6 @@ void GameOver::Render(RenderContext& rc)
 
 void GameOver::Init()
 {
-    m_gameOverSprite.Init("Assets/texture/GameOver.DDS", IMAGE_WIDTH, IMAGE_HEIGHT);
+    m_gameOverSprite.Init("Assets/texture/OutGame/GameOver.DDS", IMAGE_WIDTH, IMAGE_HEIGHT);
     m_gameOverSprite.Update();
 }

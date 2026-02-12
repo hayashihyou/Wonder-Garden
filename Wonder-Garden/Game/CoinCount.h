@@ -3,13 +3,13 @@
 /// <summary>
 /// コインカウント
 /// </summary>
-class CountCointer : public IGameObject
+class CoinCounter : public IGameObject
 {
 public:
     /// <summary>
     /// コンストラクタ
     /// </summary>
-    CountCointer() = default;
+    CoinCounter() = default;
 
     /// <summary>
     /// カウント
@@ -17,15 +17,23 @@ public:
     void Count();
 
     /// <summary>
-    /// コイン数取得
+    /// コイン数1の位取得
     /// </summary>
-    int GetCount() { return m_count; }
+    int GetCountOnes() { return m_countOnes; }
+
+
+    /// <summary>
+    /// コイン数10の位取得
+    /// </summary>
+    /// <returns></returns>
+    int GetCountTens() { return m_countTens; }
+    
 
 private:
     /// <summary>
     /// デストラクタ
     /// </summary>
-    ~CountCointer() = default;
+    ~CoinCounter() = default;
 
     /// <summary>
     /// 開始
@@ -33,5 +41,6 @@ private:
     bool Start();
 
 private:
-    int m_count = 0; // コイン数
+    int m_countOnes = 0; // コイン数1の位
+    int m_countTens = 0; // コイン数10の位
 };

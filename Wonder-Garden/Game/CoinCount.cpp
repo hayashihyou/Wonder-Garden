@@ -2,12 +2,18 @@
 
 #include "CoinCount.h"
 
-bool CountCointer::Start()
+bool CoinCounter::Start()
 {
     return true;
 }
 
-void CountCointer::Count()
+void CoinCounter::Count()
 {
-    m_count++;
+    m_countOnes++;
+
+    if (m_countOnes > 9)
+    {
+        m_countTens++;
+        m_countOnes = 0;
+    }
 }

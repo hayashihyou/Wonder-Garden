@@ -18,7 +18,7 @@ namespace
 
 bool Coin::Start()
 {
-    m_countCointer = FindGO<CountCointer>("CoinCounter");
+    m_countCointer = FindGO<CoinCounter>("CoinCounter");
     m_player = FindGO<Player>("Player");
 
     // 初期回転速度設定

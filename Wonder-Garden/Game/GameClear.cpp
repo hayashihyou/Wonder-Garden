@@ -28,6 +28,6 @@ void GameClear::Render(RenderContext& rc)
 
 void GameClear::Init()
 {
-    m_gameClearSprite.Init("Assets/texture/GameClear.DDS", 1920.0f, 1080.0f);
+    m_gameClearSprite.Init("Assets/texture/OutGame/GameClear.DDS", 1920.0f, 1080.0f);
     m_gameClearSprite.Update();
 }
