@@ -5,11 +5,17 @@
 #include "GameOver.h"
 #include "Player/Player.h"
 
+Fade::~Fade()
+{
+    DeleteGO(m_player);
+}
+
 bool Fade::Start()
 {
     m_player = FindGO<Player>("Player");
 
     m_fadeSprite.Init("Assets/texture/FadeIn/FadeIn.DDS", 9000.0f, 9000.0f);
+    test.Init("Assets/texture/FadeIn/Fade.DDS", 1280.0f, 720.0f);
 
     m_state = EnState::FadeIn;
     m_scale = {30.0f, 30.0f, 1.0f};
@@ -17,6 +23,9 @@ bool Fade::Start()
     m_fadeSprite.SetPosition(m_position);
     m_fadeSprite.SetScale(m_scale);
     m_fadeSprite.Update();
+    test.SetPosition(testPos);
+    test.SetScale(testScl);
+    test.Update();
 
     return true;
 }
@@ -32,7 +41,8 @@ void Fade::Update()
         if (m_scale.x <= 0.3f)
         {
             m_scale = {0.3f, 0.3f, 1.0f};
-            m_fadeTime -= g_gameTime->GetFrameDeltaTime(); 
+            m_fadeTime -= g_gameTime->GetFrameDeltaTime();
+            m_isFade = true;
         }
 
         if (m_fadeTime <= 0.0f)
@@ -70,6 +80,8 @@ void Fade::Update()
 
     case EnState::Finished:
 
+        m_isFade = false;
+
         m_scale.x += 0.3f;
         m_scale.y += 0.3f;
 
@@ -98,36 +110,9 @@ void Fade::Update()
 void Fade::Render(RenderContext& rc)
 {
     m_fadeSprite.Draw(rc);
+
+    if (m_isFade)
+    {
+        test.Draw(rc);
+    }
 }
-
-//void Fade::FadeIn()
-//{
-//    if (m_scale.x < 10.0f)
-//    {
-//        m_scale += {0.2f, 0.2f, 0.0f};
-//    }
-//    else
-//    {
-//        DeleteGO(this);
-//    }
-//
-//    m_fadeSprite.SetScale(m_scale);
-//    m_fadeSprite.Update();
-//}
-
-//void Fade::FadeOut()
-//{
-//    if (m_scale.x > 0.5f)
-//    {
-//        m_scale -= {0.3f, 0.3f, 0.0f};
-//    }
-//
-//    else
-//    {
-//        m_scale = Vector3::Zero;
-//        m_isFade = true;
-//    }
-//
-//    m_fadeSprite.SetScale(m_scale);
-//    m_fadeSprite.Update();
-//}

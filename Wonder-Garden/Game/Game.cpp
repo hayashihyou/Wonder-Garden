@@ -66,7 +66,6 @@ Game::~Game()
     }
 
     DeleteGO(m_starCounter);
-    DeleteGO(m_player);
     DeleteGO(m_boss);
     DeleteGO(m_stage);
     DeleteGO(m_skyCube);
@@ -76,7 +75,6 @@ Game::~Game()
     DeleteGO(m_hpUI);
     DeleteGO(m_warp);
     DeleteGO(m_cannon);
-    DeleteGO(m_fade);
 
     CollisionManager::Delete();
     EffectManager::Delete();

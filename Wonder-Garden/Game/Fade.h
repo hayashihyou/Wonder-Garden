@@ -25,7 +25,7 @@ public:
     /// <summary>
     /// デストラクタ
     /// </summary>
-    ~Fade(){};
+    ~Fade();
 
 
     /// <summary>
@@ -48,18 +48,6 @@ public:
     void Render(RenderContext& rc);
 
 
-    /// <summary>
-    /// フェードイン  
-    /// </summary>
-    //void FadeIn();
-
-
-    /// <summary>
-    /// フェードアウト
-    /// </summary>
-    //void FadeOut();
-
-
 public:
     /// <summary>
     /// フェードインしたかの状態の保持
@@ -80,12 +68,15 @@ private:
     EnState m_state = EnState::None;
 
     SpriteRender m_fadeSprite;     //スプライトレンダー
+    SpriteRender test;
     Player* m_player = nullptr;    //プレイヤー
     GameClear* m_gameClear = nullptr;
     GameOver* m_gameOver = nullptr;
 
     Vector3 m_position = Vector3::Zero;
-    Vector3 m_scale = {30.0f,30.0f,1.0f};
+    Vector3 testPos = Vector3::Zero;
+    Vector3 m_scale = {30.0f, 30.0f, 1.0f};
+    Vector3 testScl = {10.0f, 10.0f, 1.0f};
 
     bool m_isFade = false;                //フェードインしたか確認
     bool m_isGameClear = false;           //ゲームクリアしたか
