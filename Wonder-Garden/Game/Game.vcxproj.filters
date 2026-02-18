@@ -84,6 +84,7 @@
       <Filter>UI</Filter>
     </ClCompile>
     <ClCompile Include="Magic.cpp" />
+    <ClCompile Include="Fade.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -148,5 +149,6 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="Magic.h" />
+    <ClInclude Include="Fade.h" />
   </ItemGroup>
 </Project>

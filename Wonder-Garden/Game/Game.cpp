@@ -13,6 +13,7 @@
 #include "GameOver.h"
 #include "Gimmic/Cannon.h"
 #include "Gimmic/Warp.h"
+#include "Fade.h"
 #include "Player/Player.h"
 #include "Player/PlayerState.h"
 #include "SoundManager.h"
@@ -75,6 +76,7 @@ Game::~Game()
     DeleteGO(m_hpUI);
     DeleteGO(m_warp);
     DeleteGO(m_cannon);
+    DeleteGO(m_fade);
 
     CollisionManager::Delete();
     EffectManager::Delete();
@@ -91,8 +93,9 @@ bool Game::Start()
     m_gameCamera = NewGO<GameCamera>(0,"GameCamera");
     m_hpUI = NewGO<HPUI>(0, "HPUI");
     m_warp = NewGO<Warp>(0, "Warp");
-    m_countCointer = NewGO<CountCointer>(0, "CoinCounter");
+    m_countCointer = NewGO<CoinCounter>(0, "CoinCounter");
     m_coinUI = NewGO<CoinUI>(0, "CoinUI");
+
 
     m_levelRender.Init("Assets/stage/stage.tkl",[&](LevelObjectData& objData)
     {
@@ -172,16 +175,29 @@ void Game::Update()
 
     if (m_player->GetPosition().y <= -400.0f || m_player->IsGameOver() == true)
     {
-        NewGO<GameOver>(0, "GameOver");
+        if (m_fade == nullptr)
+        {
+            m_fade = NewGO<Fade>(1, "Fade"); 
+        }
         SoundManager::GetInstance().DeleteCurrentBGM();
-        DeleteGO(this);
+        if (m_fade->IsFade())
+        {
+            DeleteGO(this);
+        }
+        
     }
 
     if (m_player->IsClear())
     {
-        NewGO<GameClear>(0, "GameClear");
+        if (m_fade == nullptr)
+        {
+            m_fade = NewGO<Fade>(1, "Fade");
+        }
         SoundManager::GetInstance().DeleteCurrentBGM();
-        DeleteGO(this);
+        if (m_fade->IsFade())
+        {
+            DeleteGO(this);
+        }
     }
 }
 

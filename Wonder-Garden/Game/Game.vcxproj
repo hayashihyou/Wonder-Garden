@@ -236,6 +236,7 @@
     <ClCompile Include="Enemy\EnemyState.cpp" />
     <ClCompile Include="Enemy\EnemyType2.cpp" />
     <ClCompile Include="Enemy\EnemyType2State.cpp" />
+    <ClCompile Include="Fade.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="GameClear.cpp" />
@@ -275,6 +276,7 @@
     <ClInclude Include="Enemy\EnemyState.h" />
     <ClInclude Include="Enemy\EnemyType2.h" />
     <ClInclude Include="Enemy\EnemyType2State.h" />
+    <ClInclude Include="Fade.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="GameClear.h" />

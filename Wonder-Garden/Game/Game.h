@@ -4,7 +4,7 @@
 #include "nature/SkyCube.h"
 
 class Coin;
-class CountCointer;
+class CoinCounter;
 class CoinUI;
 class Player;
 class IEnemyState;
@@ -22,6 +22,7 @@ class GameOver;
 class HPUI;
 class Warp;
 class Cannon;
+class Fade;
 
 class Game : public IGameObject
 {
@@ -68,7 +69,7 @@ private:
 
 private:
     Coin* m_coin = nullptr;
-    CountCointer* m_countCointer = nullptr;
+    CoinCounter* m_countCointer = nullptr;
     CoinUI* m_coinUI = nullptr;
     Player* m_player = nullptr;
     IEnemyState* m_iState = nullptr;
@@ -85,4 +86,5 @@ private:
     Warp* m_warp = nullptr;
     Cannon* m_cannon = nullptr;
     LevelRender m_levelRender;
+    Fade* m_fade = nullptr;
 };
