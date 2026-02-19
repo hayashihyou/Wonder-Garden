@@ -21,6 +21,7 @@ void CoinUI::Update()
 void CoinUI::Render(RenderContext& rc)
 {
     m_sprite.Draw(rc);
+    m_coinTextMark.Draw(rc);
     m_coinTextOnes.Draw(rc);
     m_coinTextTens.Draw(rc);
 }
@@ -29,9 +30,12 @@ void CoinUI::InitSprite()
 {
     m_sprite.Init("Assets/texture/Coin/coin.DDS", 100.0f, 100.0f);
     m_sprite.SetPosition(Vector3(-850.0f, 475.0f, 0.0f));
-    m_coinTextOnes.SetPosition(Vector3(-725.0f, 475.0f, 0.0f));
-    m_coinTextTens.SetPosition(Vector3(-775.0f, 475.0f, 0.0f));
+    m_coinTextMark.Init("Assets/texture/Coin/CoinCountMark.DDS", 100.0f, 100.0f);
+    m_coinTextMark.SetPosition(Vector3(-775.0f, 470.0f, 0.0f));
+    m_coinTextOnes.SetPosition(Vector3(-670.0f, 475.0f, 0.0f));
+    m_coinTextTens.SetPosition(Vector3(-720.0f, 475.0f, 0.0f));
     m_sprite.Update();
+    m_coinTextMark.Update();
     m_coinTextOnes.Update();
     m_coinTextTens.Update();
 }

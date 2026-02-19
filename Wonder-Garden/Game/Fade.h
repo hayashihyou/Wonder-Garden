@@ -3,6 +3,7 @@
 class Player;
 class GameClear;
 class GameOver;
+class GameCamera;
 
 class Fade : public IGameObject 
 {
@@ -67,11 +68,12 @@ public:
 private:
     EnState m_state = EnState::None;
 
-    SpriteRender m_fadeSprite;     //スプライトレンダー
+    SpriteRender m_fadeSprite;           //スプライトレンダー
     SpriteRender test;
-    Player* m_player = nullptr;    //プレイヤー
-    GameClear* m_gameClear = nullptr;
-    GameOver* m_gameOver = nullptr;
+    Player* m_player = nullptr;          //プレイヤー
+    GameClear* m_gameClear = nullptr;    //ゲームクリア
+    GameOver* m_gameOver = nullptr;      //ゲームオーバー
+    GameCamera* m_gameCamera = nullptr;  //ゲームカメラ
 
     Vector3 m_position = Vector3::Zero;
     Vector3 testPos = Vector3::Zero;

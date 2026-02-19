@@ -69,7 +69,6 @@ Game::~Game()
     DeleteGO(m_boss);
     DeleteGO(m_stage);
     DeleteGO(m_skyCube);
-    DeleteGO(m_gameCamera);
     DeleteGO(m_countCointer);
     DeleteGO(m_coinUI);
     DeleteGO(m_hpUI);

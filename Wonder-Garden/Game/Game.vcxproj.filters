@@ -19,6 +19,9 @@
     <Filter Include="Gimmic">
       <UniqueIdentifier>{cc08f4db-1812-4b6e-bca9-387e7a40253e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{6d388527-e2fe-464d-8d6f-a80875f16d5e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -85,6 +88,15 @@
     </ClCompile>
     <ClCompile Include="Magic.cpp" />
     <ClCompile Include="Fade.cpp" />
+    <ClCompile Include="UI\UIAnimation.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\UIBase.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Curve.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -150,5 +162,17 @@
     </ClInclude>
     <ClInclude Include="Magic.h" />
     <ClInclude Include="Fade.h" />
+    <ClInclude Include="UI\UIAnimation.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\UIBase.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Curve.h">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\CRC32.h">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

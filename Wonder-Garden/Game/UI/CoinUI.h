@@ -57,6 +57,7 @@ private:
     SpriteRender m_sprite;          // スプライト
     SpriteRender m_coinTextOnes;    //1の位のコインの取得枚数のテキスト
     SpriteRender m_coinTextTens;    //10の位のコインの取得枚数のテキスト
+    SpriteRender m_coinTextMark;    //取得枚数の記号
 
     int m_lastOnes = -1;
     int m_lastTens = -1;
