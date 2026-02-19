@@ -1,5 +1,8 @@
 #pragma once
 
+class UICanvas;
+class UIIcon;
+
 /// <summary>
 /// ゲームクリア
 /// </summary>
@@ -9,13 +12,12 @@ public:
     /// <summary>
     /// コンストラクタ
     /// </summary>
-    GameClear() {};
+    GameClear();
 
-private:
     /// <summary>
     /// デストラクタ
     /// </summary>
-    ~GameClear() {};
+    ~GameClear();
 
     /// <summary>
     /// 開始
@@ -37,6 +39,21 @@ private:
     /// </summary>
     void Init();
 
+
 private:
-    SpriteRender m_gameClearSprite; // ゲームクリア画像
+    std::unique_ptr<UICanvas> m_uiCanvas = nullptr;
+
+    UIIcon* m_gameClear;
+    UIIcon* m_clearText;
+    UIIcon* m_pushText;
+    UIIcon* m_coinTexture;
+    UIIcon* m_coinCountMark;
+
+
+private:
+    Vector3 m_textureScale = {2.5f, 2.5f, 1.0f};
+
+    float m_elapsedTime = 0.0f;
+    bool m_isEasing = true;
+    bool m_isScaled = false;
 };

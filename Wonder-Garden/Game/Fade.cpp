@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "Fade.h"
+#include "GameCamera.h"
 #include "GameClear.h"
 #include "GameOver.h"
 #include "Player/Player.h"
@@ -8,14 +9,16 @@
 Fade::~Fade()
 {
     DeleteGO(m_player);
+    DeleteGO(m_gameCamera);
 }
 
 bool Fade::Start()
 {
     m_player = FindGO<Player>("Player");
+    m_gameCamera = FindGO<GameCamera>("GameCamera");
 
     m_fadeSprite.Init("Assets/texture/FadeIn/FadeIn.DDS", 9000.0f, 9000.0f);
-    test.Init("Assets/texture/FadeIn/Fade.DDS", 1280.0f, 720.0f);
+    test.Init("Assets/texture/FadeIn/Fade.DDS", 1280.0f, 1080.0f);
 
     m_state = EnState::FadeIn;
     m_scale = {30.0f, 30.0f, 1.0f};
@@ -51,7 +54,7 @@ void Fade::Update()
             m_state = None;
         }
 
-       break;
+        break;
 
     case EnState::FadeOut:
         m_scale.x += 0.3f;
@@ -62,7 +65,7 @@ void Fade::Update()
             m_state = Finished;
         }
 
-       break;
+        break;
 
     case EnState::None:
         if (m_player->IsClear())
@@ -71,7 +74,7 @@ void Fade::Update()
             m_state = FadeOut;
         }
 
-        else if (m_player->IsGameOver())
+        else if (m_player->GetPosition().y <= -400.0f || m_player->IsGameOver())
         {
             m_isGameOver = true;
             m_state = FadeOut;
@@ -90,22 +93,20 @@ void Fade::Update()
             DeleteGO(this);
         }
 
-       if (m_isGameClear && m_gameClear == nullptr)
-       {
-           m_gameClear = NewGO<GameClear>(0, "GameClear");
-       }
+        if (m_isGameClear && m_gameClear == nullptr)
+        {
+            m_gameClear = NewGO<GameClear>(0, "GameClear");
+        }
 
-       else if (m_isGameOver && m_gameOver == nullptr)
-       {
-           m_gameOver = NewGO<GameOver>(0, "GameOver");
-       }
-       break;
-
+        else if (m_isGameOver && m_gameOver == nullptr)
+        {
+            m_gameOver = NewGO<GameOver>(0, "GameOver");
+        }
+        break;
     }
 
     m_fadeSprite.SetScale(m_scale);
     m_fadeSprite.Update();
-
 }
 void Fade::Render(RenderContext& rc)
 {
