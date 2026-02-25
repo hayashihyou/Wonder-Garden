@@ -4,6 +4,7 @@
 #include "EnemyType2.h"
 #include "EnemyType2State.h"
 #include "SoundManager.h"
+#include "KillCounter.h"
 
 namespace
 {
@@ -116,6 +117,8 @@ void EnemyType2AttackState::MakeAttackCollision()
 
 void EnemyType2AttackDeadState::Enter()
 {
+    m_killCounter = FindGO<KillCounter>("KillCounter");
+    m_killCounter->EnemyType2Count();
     m_enemyType2->GetModelRender()->PlayAnimation(m_enemyType2->enAnimationClip_AttackDead);
     m_enemyType2->DeleteCollision();
 }

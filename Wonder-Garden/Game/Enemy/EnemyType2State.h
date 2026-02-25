@@ -9,6 +9,7 @@ public:                                                                         
     }
 
 class EnemyType2;
+class KillCounter;
 
 class IEnemyType2State : public Noncopyable
 {
@@ -64,6 +65,9 @@ public:
     void Update() override;
     void Exit() override;
     bool RequestState(uint32_t& request) override;
+
+private:
+    KillCounter* m_killCounter = nullptr;
 };
 
 class EnemyType2JumpDeadState : public IEnemyType2State

@@ -6,6 +6,7 @@
 #include "Boss.h"
 #include "BossState.h"
 #include "Player/Player.h"
+#include "KillCounter.h"
 #include "SoundManager.h"
 #include "EffectManager.h"
 
@@ -192,6 +193,8 @@ void BossAttackState::CreateEffect(Vector3 position, Quaternion rotation, int nu
 
 void BossDeadState::Enter()
 {
+    m_killCounter = FindGO<KillCounter>("KillCounter");
+    m_killCounter->BossCount();
     m_boss->GetModelRender()->PlayAnimation(m_boss->enAnimationClip_Dead);
     m_boss->DeleteCollision();
 }

@@ -7,6 +7,7 @@
 #include "Enemy/Boss.h"
 #include "Enemy/Enemy.h"
 #include "Enemy/EnemyType2.h"
+#include "KillCounter.h"
 #include "Game.h"
 #include "GameCamera.h"
 #include "GameClear.h"
@@ -20,6 +21,7 @@
 #include "Stage.h"
 #include "Star.h"
 #include "StarCounter.h"
+#include "Score.h"
 #include "Title.h"
 #include "UI/CoinUI.h"
 #include "UI/HPUI.h"
@@ -69,7 +71,6 @@ Game::~Game()
     DeleteGO(m_boss);
     DeleteGO(m_stage);
     DeleteGO(m_skyCube);
-    DeleteGO(m_countCointer);
     DeleteGO(m_coinUI);
     DeleteGO(m_hpUI);
     DeleteGO(m_warp);
@@ -92,6 +93,8 @@ bool Game::Start()
     m_warp = NewGO<Warp>(0, "Warp");
     m_countCointer = NewGO<CoinCounter>(0, "CoinCounter");
     m_coinUI = NewGO<CoinUI>(0, "CoinUI");
+    m_killCounter = NewGO<KillCounter>(0, "KillCounter");
+    m_score = NewGO<Score>(0, "Score");
 
 
     m_levelRender.Init("Assets/stage/stage.tkl",[&](LevelObjectData& objData)

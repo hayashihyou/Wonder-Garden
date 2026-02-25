@@ -4,6 +4,7 @@
 #include "Enemy.h"
 #include "EnemyState.h"
 #include "Player/Player.h"
+#include "KillCounter.h"
 #include <SoundManager.h>
 
 namespace
@@ -154,6 +155,7 @@ void EnemyAttackState::MakeAttackCollision()
 
 void EnemyJumpDeadState::Enter()
 {
+    m_enemy->SetDeadFlag(false);
     m_enemy->m_enemyModel.PlayAnimation(m_enemy->enAnimationClip_JumpDead);
 }
 
@@ -175,6 +177,8 @@ bool EnemyJumpDeadState::RequestState(uint32_t& request)
 
 void EnemyAttackDeadState::Enter()
 {
+    m_killCounter = FindGO<KillCounter>("KillCounter");
+    m_killCounter->EnemyCount();
     m_enemy->m_enemyModel.PlayAnimation(m_enemy->enAnimationClip_AttackDead);
     m_enemy->DeleteCollision();
 }

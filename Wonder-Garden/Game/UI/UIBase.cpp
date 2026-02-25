@@ -249,7 +249,7 @@ void UIDigit::UpdateNumber(const int targetDigit, const int number)
 
     // 対象の桁の数字
     const int targetDigitNumber = GetDigit(targetDigit);
-    std::string assetNname = m_assetPath + "/0.dds";
+    std::string assetNname = m_assetPath + "_0.DDS";
     // 数字の部分を桁の数字で変える
     assetNname[assetNname.size() - 5] = '0' + targetDigitNumber;
     nextRender->Init(assetNname.c_str(), w, h);
@@ -259,7 +259,7 @@ void UIDigit::UpdatePosition(const int index)
 {
     SpriteRender* render = m_renderList[index];
     Vector3 position = m_transform.m_position;
-    position.x -= w * index;
+    position.x -= (w * 0.5f) * index;
     render->SetPosition(position);
 }
 

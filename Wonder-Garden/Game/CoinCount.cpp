@@ -10,6 +10,7 @@ bool CoinCounter::Start()
 void CoinCounter::Count()
 {
     m_countOnes++;
+    m_totalCount++;
 
     if (m_countOnes > 9)
     {

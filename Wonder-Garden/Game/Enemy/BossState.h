@@ -9,6 +9,7 @@ public:                                                                         
     }
 
 class Boss;
+class KillCounter;
 
 class IBossState : public Noncopyable
 {
@@ -94,6 +95,9 @@ public:
     void Update();
     void Exit();
     bool RequestState(uint32_t& request);
+
+private:
+    KillCounter* m_killCounter = nullptr;
 };
 
 class BossDownState : public IBossState
