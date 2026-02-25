@@ -9,6 +9,7 @@ public:                                                                         
     }
 
 class Enemy;
+class KillCounter;
 
 class IEnemyState : public Noncopyable
 {
@@ -95,4 +96,7 @@ public:
     void Exit() override;
 
     virtual bool RequestState(uint32_t& request) override;
+
+private:
+    KillCounter* m_killCounter = nullptr;
 };

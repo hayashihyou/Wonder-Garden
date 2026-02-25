@@ -97,6 +97,8 @@
     <ClCompile Include="Util\Curve.cpp">
       <Filter>Util</Filter>
     </ClCompile>
+    <ClCompile Include="KillCounter.cpp" />
+    <ClCompile Include="Score.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -174,5 +176,7 @@
     <ClInclude Include="Util\CRC32.h">
       <Filter>Util</Filter>
     </ClInclude>
+    <ClInclude Include="KillCounter.h" />
+    <ClInclude Include="Score.h" />
   </ItemGroup>
 </Project>

@@ -262,7 +262,7 @@ public:
     void SetNumber(const int number) { m_requestNumber = number; }
 
     std::vector<SpriteRender*>& GetSpriteRenderList() { return m_renderList; }
-
+            
     void ForEach(const std::function<void(SpriteRender*)>& func)
     {
         for (auto* render : m_renderList)

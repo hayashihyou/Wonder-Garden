@@ -27,6 +27,13 @@ public:
     /// </summary>
     /// <returns></returns>
     int GetCountTens() { return m_countTens; }
+
+
+    /// <summary>
+    /// コインの合計枚数
+    /// </summary>
+    /// <returns></returns>
+    int GetTotalCount() { return m_totalCount; }
     
 
 private:
@@ -43,4 +50,5 @@ private:
 private:
     int m_countOnes = 0; // コイン数1の位
     int m_countTens = 0; // コイン数10の位
+    int m_totalCount = 0; //合計何枚とったか
 };
