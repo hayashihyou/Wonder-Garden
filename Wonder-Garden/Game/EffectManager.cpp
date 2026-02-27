@@ -16,7 +16,9 @@ bool EffectManager::Start()
     EffectEngine::GetInstance()->ResistEffect(Enemy_Hit, u"Assets/effect/Enemy_Hit/Enemy_Hit.efk");
     EffectEngine::GetInstance()->ResistEffect(Boss_Hit, u"Assets/effect/Boss_Hit/Boss_Hit.efk");
     EffectEngine::GetInstance()->ResistEffect(Cannon_Fire, u"Assets/effect/Cannon_Fire/Cannon_Fire.efk");
+    EffectEngine::GetInstance()->ResistEffect(Cannon_Star, u"Assets/effect/Cannon_Star/Cannon_Star.efk");
     EffectEngine::GetInstance()->ResistEffect(Player_Attack, u"Assets/effect/Player_Attack/Player_Attack.efk");
+    EffectEngine::GetInstance()->ResistEffect(Player_Land, u"Assets/effect/Player_Land/Player_Land.efk");
     EffectEngine::GetInstance()->ResistEffect(Boss_Attack, u"Assets/effect/Boss_Attack/Boss_Attack.efk");
     EffectEngine::GetInstance()->ResistEffect(Game_Clear, u"Assets/effect/Game_Clear/Game_Clear.efk");
 

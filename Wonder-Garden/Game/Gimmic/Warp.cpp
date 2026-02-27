@@ -57,10 +57,6 @@ void Warp::CheckWarp()
         m_player->GetModel()->SetPosition(m_pipe2Pos);
         m_player->GetModel()->Update();
 
-        //m_player->ReleaseCharCon(m_player->GetCharCon());
-        //  m_player->GetModel()->SetPosition(m_pipe2Pos);
-        //  m_player->GetCharCon()->SetPosition(m_pipe2Pos);
-        //  m_player->GetModel()->Update();
         m_gameCamera->SetWarpCamera(true);
         m_gameCamera->DokanStart();
         m_gameCamera->Update();

@@ -35,9 +35,10 @@ namespace
     const float ATK_COL_SIZE = 20.0f;
     const Vector3 ATK_POSITION = {0.0f, 30.0f, 50.0f};
     const Vector3 ATK_SCALE = {15.0f, 15.0f, 15.0f};
-    const Vector3 CANNON_SCALE = {10.0f, 10.0f, 10.0f};
+    const Vector3 SMOKE_SCALE = {10.0f, 10.0f, 1.0f};
     const Vector3 CLEAR_EFFECT_POSITION = {0.0f, -200.0f, -200.0f};
-    const Vector3 CLEAR_EFFECT_SCALE = {10.0f, 10.0f, 10.0f};
+    const Vector3 CLEAR_EFFECT_SCALE = {10.0f, 10.0f, 1.0f};
+    const Quaternion SMOKE_ROTATION = {0.0f, 90.0f, 0.0f, 1.0f};
 } // namespace
 
 PlayerStatePattern::PlayerStatePattern() : StatePatternBase() {}
@@ -118,6 +119,12 @@ bool PlayerIdleState::RequestState(uint32_t& request)
     if (m_player->IsCannon() == true)
     {
         request = PlayerCannonState::ID();
+        return true;
+    }
+
+    if (m_player->IsLand())
+    {
+        request = PlayerLandState::ID();
         return true;
     }
 
@@ -626,16 +633,6 @@ void PlayerFireState::Update()
 
         m_player->SetPosition(nextpostion);
 
-        m_effectTimer += g_gameTime->GetFrameDeltaTime();
-
-        if (m_effectTimer >= 0.05f)
-        {
-            Quaternion effectRot = m_player->GetRotation();
-            effectRot.z += 1.0f;
-            EffectManager::Get()->PlayEffect(m_player->GetPosition(), effectRot, CANNON_SCALE, EnEffcetType::Cannon_Fire);
-            m_effectTimer = 0.0f;
-        }
-
         if (m_player->GetForce().Length() <= 1.0f)
         {
             m_player->GetForce() = Vector3::Zero;
@@ -655,11 +652,50 @@ bool PlayerFireState::RequestState(uint32_t& request)
 {
     if (m_player->GetCharCon()->IsOnGround() == true)
     {
-        request = PlayerIdleState::ID();
+        request = PlayerLandState::ID();
         return true;
     }
     return false;
 }
+
+void PlayerLandState::Enter()
+{
+    m_gameCamera = FindGO<GameCamera>("GameCamera");
+    m_player->SetLandFlag(true);
+    m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Idle);
+    EffectManager::Get()->PlayEffect(m_player->GetPosition(),Quaternion::Identity, SMOKE_SCALE, Player_Land);
+
+    m_landTime = m_player->GetLandTime();
+}
+
+void PlayerLandState::Update()
+{
+    m_landTime -= g_gameTime->GetFrameDeltaTime();
+
+    m_player->SetLandTime(m_landTime);
+    
+    if (m_landTime <= 0.0f)
+    {
+        m_player->SetLandFlag(false);
+    }
+}
+
+void PlayerLandState::Exit()
+{
+    m_landTime = 0.0f;
+}
+
+bool PlayerLandState::RequestState(uint32_t& request)
+{
+    if (m_landTime<= 0.0f)
+    {
+        request = PlayerIdleState::ID();
+        return true;
+    }
+
+    return false;
+}
+
 
 void PlayerBattleState::Enter()
 {

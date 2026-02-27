@@ -4,9 +4,11 @@ enum EnEffcetType
 {
     Enemy_Hit,
     Boss_Hit,
-    Cannon_Fire,
-    Player_Attack,
     Boss_Attack,
+    Cannon_Fire,
+    Cannon_Star,
+    Player_Attack,
+    Player_Land,
     Game_Clear,
 };
 

@@ -27,6 +27,8 @@ GameClear::GameClear() {}
 GameClear::~GameClear()
 {
     DeleteGO(m_coinCount);
+    DeleteGO(m_killCount);
+    DeleteGO(m_score);
 }
 
 bool GameClear::Start()

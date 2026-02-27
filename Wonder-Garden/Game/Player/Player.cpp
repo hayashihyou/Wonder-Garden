@@ -4,6 +4,7 @@
 #include "Enemy/Enemy.h"
 #include "Player/Player.h"
 #include "Player/PlayerState.h"
+#include "GameCamera.h"
 
 namespace
 {
@@ -17,6 +18,8 @@ namespace
 bool Player::Start()
 {
     m_playerStatePattern = new PlayerStatePattern;
+
+    m_gameCamera = FindGO<GameCamera>("GameCamera");
 
     m_animationClips[enAnimationClip_Idle].Load("Assets/animData/player/playerIdle.tka");
     m_animationClips[enAnimationClip_Idle].SetLoopFlag(true);
@@ -61,6 +64,7 @@ bool Player::Start()
     m_playerStatePattern->RegisterState<PlayerPipeState>(this);
     m_playerStatePattern->RegisterState<PlayerCannonState>(this);
     m_playerStatePattern->RegisterState<PlayerFireState>(this);
+    m_playerStatePattern->RegisterState<PlayerLandState>(this);
     m_playerStatePattern->RegisterState<PlayerBattleState>(this);
     m_playerStatePattern->RegisterState<PlayerStarState>(this);
     m_playerStatePattern->RegisterState<PlayerClearState>(this);
@@ -171,6 +175,12 @@ void Player::CheckInvincible()
 
 void Player::Render(RenderContext& rc)
 {
+
+    if (m_gameCamera->IsPlayerDraw())
+    {
+        return;
+    }
+
     // 通常時
     if (!m_isInvincible)
     {

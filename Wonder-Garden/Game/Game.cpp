@@ -203,8 +203,7 @@ void Game::Update()
 
 void Game::BossBattle()
 {
-   Vector3 playerPos = m_player->GetPosition();
-   if (playerPos.x >= BOSS_BATTLE_POS.x && playerPos.z >= BOSS_BATTLE_POS.z)
+   if (!m_player->IsLand() && m_player->GetLandTime() <= 0.0f)
    {
        if (m_boss->GetBattleFlag() == false)
        {
