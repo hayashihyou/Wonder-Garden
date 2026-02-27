@@ -97,6 +97,12 @@ public:
 
 
     /// <summary>
+    /// 大砲発射後の着地地点のカメラ
+    /// </summary>
+    void LandCamera();
+
+
+    /// <summary>
     /// ゲームクリアした時のカメラ
     /// </summary>
     void GameClearCamera();
@@ -111,6 +117,8 @@ public:
     bool GetBossCamera() const { return m_isBossCamera; }
     bool GetStarCamera() const { return m_isStarCamera; }
     bool GetWarpCamera() const { return m_isWarpCamera; }
+    bool IsPlayerDraw() const { return m_isPlayerDraw; }
+       
 
 
 private:
@@ -122,6 +130,7 @@ private:
     Transform m_transform;      // トランスフォーム
 
     Vector3 m_cannonCameraPos;   // 大砲のカメラ位置
+    Vector3 m_landCameraPos;
     Vector3 m_bossTargetPos;     // ボスの注視点位置
     Vector3 m_bossCameraPos;     // ボスのカメラ位置
     Vector3 m_starTargetPos;     // スターの注視点位置
@@ -134,6 +143,10 @@ private:
 
     float time = 0.0f;
     float m_countdown = 1.0f;
+    float m_effectTime = 0.7f;              //エフェクトを再生するタイマー
+    float m_changeTime = 0.7f;              //カメラの切り替えのタイマー
+    float m_smokeTime = 0.0f;
+
     Vector3 cameraOffset = Vector3::Zero;
 
     bool m_isBossCamera = false;    // ボス戦前のムービー部分のカメラフラグ
@@ -141,5 +154,7 @@ private:
     bool m_isStarCamera = false;   // スター取得時のカメラフラグ
     bool m_isWarpCamera = false;   // 土管移動時のカメラフラグ
     bool m_isMoveCamera = false;   //カメラが移動したかの確認
+    bool m_isEffectPlay = false;   //エフェクトが再生されたか
+    bool m_isPlayerDraw = false;   //プレイヤーの描画するタイミング
     bool m_isclearCamera = false;  // クリア演出フラグ
 };

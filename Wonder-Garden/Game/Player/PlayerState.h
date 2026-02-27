@@ -242,14 +242,30 @@ public:
     void Enter() override;
     void Update() override;
     void Exit() override;
-    void CreateEffect(Vector3 position, Quaternion rotation, int num);
+
+    virtual bool RequestState(uint32_t& request) override;
+
+
+};
+
+class PlayerLandState : public IPlayerState
+{
+    appState(PlayerLandState);
+
+public:
+    PlayerLandState(Player* player) : IPlayerState(player){};
+    virtual ~PlayerLandState(){};
+    void Enter() override;
+    void Update() override;
+    void Exit() override;
 
     virtual bool RequestState(uint32_t& request) override;
 
 
 private:
-    
-   float m_effectTimer = 0.0f; // エフェクトの再生間隔のタイマー
+    float m_landTime = 0;
+
+
 };
 
 class PlayerBattleState : public IPlayerState

@@ -4,6 +4,7 @@
 #include "GameCamera.h"
 #include "Player/Player.h"
 #include "Star.h"
+#include "EffectManager.h"
 #include "UI/BossBarsUI.h"
 
 namespace
@@ -17,6 +18,9 @@ namespace
     const Vector3 STAR_CAMERA_POS(2300.0f, 350.0f, 3400.0f);   // スターカメラ位置
     const Vector3 WARP_CAMERA_POS(300.0f, 200.0f, 1300.0f);    // ワープカメラ位置
     const Vector3 CANNON_CAMERA_POS(0.0, 300.0f, -500.0f);     // 大砲のカメラ位置
+    const Vector3 LAND_CAMERA_POS(2400.0f, 125.0f, 2900.0f);   // 
+    const Vector3 EFFECT_SCALE(15.0f, 15.0f, 1.0f);            //
+    const Vector3 SMOKE_SCALE(10.0f, 10.0f, 1.0f);
     const Vector3 PLAYER_CAMERA_POS(-300.0f, 100.0f, -300.0f); // プレイヤーカメラ位置
     const Vector3 PIPE_POS = {-2200.0f, 90.0f, 660.0f};        // 土管位置
     const Vector3 CLEAR_CAMERA_OFFSET(0.0f, 40.0f, 200.0f);    // ゲームクリアの際のカメラの位置
@@ -49,7 +53,7 @@ void GameCamera::Update()
         BossCamera();
     }
 
-    else if (m_isStarCamera == true)
+    else if (m_isStarCamera)
     {
         if (m_star == nullptr)
         {
@@ -59,14 +63,19 @@ void GameCamera::Update()
         StarCamera();
     }
 
-    else if (m_isWarpCamera == true)
+    else if (m_isWarpCamera)
     {
         WarpCamera();
     }
 
-    else if (m_player->IsCannon() == true)
+    else if (m_player->IsCannon())
     {
         CannonCamera();
+    }
+
+    else if (m_isEffectPlay)
+    {
+        LandCamera();
     }
 
     else if (m_player->IsFire())
@@ -189,6 +198,7 @@ void GameCamera::BossCamera()
             m_bossCameraPos.y = 300.0f;
             m_isBossCamera = false;
             m_changeCamera = false;
+            m_player->SetLandTime(1.5f);
         }
     }
 
@@ -317,8 +327,53 @@ void GameCamera::CannonCamera()
 
 void GameCamera::FireCamera()
 {
+    if (m_isPlayerDraw)
+    {
+        m_changeTime -= g_gameTime->GetFrameDeltaTime();
+        if (m_changeTime <= 0.0f)
+        {
+            m_isEffectPlay = true;
+            m_changeTime = 0.7f;
+        }
+        return;
+    }
+
+    if (m_effectTime > 0.0f)
+    {
+        m_effectTime -= g_gameTime->GetFrameDeltaTime();
+        m_smokeTime += g_gameTime->GetFrameDeltaTime();
+        if (m_smokeTime >= 0.05f)
+        {
+            Quaternion effectRot = m_player->GetRotation();
+            effectRot.z += 1.0f;
+            EffectManager::Get()->PlayEffect(m_player->GetPosition(), effectRot, SMOKE_SCALE,EnEffcetType::Cannon_Fire);
+            m_smokeTime = 0.0f;
+        }
+
+        g_camera3D->SetTarget(m_player->GetPosition());
+        g_camera3D->SetPosition(m_cannonCameraPos);
+    }
+
+    else
+    {
+        m_effectTime = 0.35f;
+        m_isPlayerDraw = true;
+        EffectManager::Get()->PlayEffect(m_player->GetPosition(), Quaternion::Identity, EFFECT_SCALE, Cannon_Star);
+    }
+}
+
+void GameCamera::LandCamera()
+{
+    m_isPlayerDraw = false;
+    m_landCameraPos = LAND_CAMERA_POS;
+
+    if (!m_player->IsLand() && m_player->GetLandTime() <= 0.0f)
+    {
+        m_isEffectPlay = false;
+    }
+
     g_camera3D->SetTarget(m_player->GetPosition());
-    g_camera3D->SetPosition(m_cannonCameraPos);
+    g_camera3D->SetPosition(m_landCameraPos);
 }
 
 void GameCamera::GameClearCamera()

@@ -40,6 +40,7 @@ void BossBarsUI::Update()
         return;
     }
 
+    
     m_elapsedTime += g_gameTime->GetFrameDeltaTime();
     float percent = m_elapsedTime / 0.5f;
     float alpha = 0.0f;

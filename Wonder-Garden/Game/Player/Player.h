@@ -4,6 +4,7 @@
 class Enemy;
 class AttackCollision;
 class PlayerStatePattern;
+class GameCamera;
 
 class Player : public CharacterBase
 {
@@ -139,10 +140,24 @@ public:
 
 
     /// <summary>
+    /// 地面についたときエフェクトを再生する時間
+    /// </summary>
+    /// <param name="landtime"></param>
+    void SetLandTime(float landtime) { m_landTimer = landtime; }
+
+
+    /// <summary>
     /// ゲームクリア条件の保持
     /// </summary>
     /// <param name="clearflag"></param>
     void SetClearFlag(bool clearflag) { m_isClear = clearflag; }
+
+
+    /// <summary>
+    /// 地面についたかどうかの状態の保持
+    /// </summary>
+    /// <param name="landflag"></param>
+    void SetLandFlag(bool landflag) { m_isLand = landflag; }
 
 
     void InitCharCon(Vector3 pos)
@@ -231,6 +246,13 @@ public:
     /// <returns></returns>
     float GetJumpPower() { return m_jumpPower; }
 
+
+    /// <summary>
+    /// 地面についたときのエフェクトの再生時間の取得
+    /// </summary>
+    /// <returns></returns>
+    float GetLandTime() { return m_landTimer; }
+
     /// <summary>
     /// 外部からの力を取得
     /// </summary>
@@ -291,6 +313,13 @@ public:
     /// 大砲が発射したかどうか
     /// </summary>
     bool IsFire() { return m_isFire; }
+
+
+    /// <summary>
+    /// 地面についたのかどうか
+    /// </summary>
+    /// <returns></returns>
+    bool IsLand() { return m_isLand; }
 
 
     /// <summary>
@@ -364,11 +393,12 @@ private:
     void Move() override;
 
 private:
-    CharacterController* m_characterController = nullptr; // キャラコン
-    AttackCollision* m_punchCollision = nullptr;          // 攻撃の当たり判定
+    CharacterController* m_characterController = nullptr;// キャラコン
+    AttackCollision* m_punchCollision = nullptr;         // 攻撃の当たり判定
     ModelRender m_playerModel;                           // プレイヤーのモデル
     AnimationClip m_animationClips[enAnimationClip_Num]; // アニメーション
     PlayerStatePattern* m_playerStatePattern;
+    GameCamera* m_gameCamera = nullptr;                  //ゲームカメラ
 
 private:
     float m_moveSpeed;                     // 移動速度
@@ -386,6 +416,7 @@ private:
 
     float m_drawTimer = 0;          // 点滅表示する為のタイマー
     float m_invincibleTimer = 0.0f; // 無敵時間
+    float m_landTimer = 1.5f;       // 地面でエフェクトを再生する時間
 
     bool m_isAttack = false;     // 攻撃中か確認するフラグ
     bool m_isStopMove = false;   // 攻撃時や死亡時、プレイヤーの移動を止めるフラグ
@@ -399,6 +430,7 @@ private:
     bool m_isRun = false;
     bool m_isCannonReady = false;
     bool m_isClear = false;
+    bool m_isLand = false;
 };
 
 
