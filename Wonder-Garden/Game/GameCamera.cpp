@@ -5,6 +5,7 @@
 #include "Player/Player.h"
 #include "Star.h"
 #include "EffectManager.h"
+#include "SoundManager.h"
 #include "UI/BossBarsUI.h"
 
 namespace
@@ -297,18 +298,18 @@ void GameCamera::CannonCamera()
     */
     if (m_cannonCameraPos.x <= -1400.0f && m_cannonCameraPos.z <= 2850.0f && m_isMoveCamera == false)
     {
-        idealPos += Vector3(3.0f, 0.0f, 3.0f);
+        idealPos += Vector3(6.0f, 0.0f, 6.0f);
     }
 
     else if (m_cannonCameraPos.x >= -2000.0f && m_bossCameraPos.z <= 3000.0f)
     {
         m_isMoveCamera = true;
-        idealPos += Vector3(-4.0f, 0.0f, 3.0f);
+        idealPos += Vector3(-8.0f, 0.0f, 6.0f);
     }
 
     else if (m_cannonCameraPos.x >= -2350.0f && m_cannonCameraPos.z >= 2350.0f)
     {
-        idealPos -= Vector3(3.0f, 0.0f, 3.0f);
+        idealPos -= Vector3(8.0f, 0.0f, 8.0f);
     }
 
     else if (m_cannonCameraPos.x < -2350.0f && m_cannonCameraPos.z > 2350.0f)
@@ -359,6 +360,7 @@ void GameCamera::FireCamera()
         m_effectTime = 0.35f;
         m_isPlayerDraw = true;
         EffectManager::Get()->PlayEffect(m_player->GetPosition(), Quaternion::Identity, EFFECT_SCALE, Cannon_Star);
+        SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::CannonStarSE);
     }
 }
 

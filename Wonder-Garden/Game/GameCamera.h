@@ -118,7 +118,6 @@ public:
     bool GetStarCamera() const { return m_isStarCamera; }
     bool GetWarpCamera() const { return m_isWarpCamera; }
     bool IsPlayerDraw() const { return m_isPlayerDraw; }
-       
 
 
 private:

@@ -38,7 +38,8 @@ namespace
     const Vector3 SMOKE_SCALE = {10.0f, 10.0f, 1.0f};
     const Vector3 CLEAR_EFFECT_POSITION = {0.0f, -200.0f, -200.0f};
     const Vector3 CLEAR_EFFECT_SCALE = {10.0f, 10.0f, 1.0f};
-    const Quaternion SMOKE_ROTATION = {0.0f, 90.0f, 0.0f, 1.0f};
+    const Vector3 SMOKE_POSITION = {0.0f, 10.0f, 0.0f};
+    const Quaternion SMOKE_ROTATION = {1.0f, 0.0f, 0.0f, 1.0f};
 } // namespace
 
 PlayerStatePattern::PlayerStatePattern() : StatePatternBase() {}
@@ -612,14 +613,16 @@ void PlayerFireState::Enter()
     m_gameCamera = FindGO<GameCamera>("GameCamera");
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Fire);
     // 発射音再生
-    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::CanonFireSE);
+    SoundManager::GetInstance().PlaySE(SoundManager::SoundNumber::CannonFireSE);
     m_player->SetFireFlag(true);
 }
 
 void PlayerFireState::Update()
 {
-
-    Quaternion rotation = m_player->GetRotation();
+    if (m_gameCamera->IsPlayerDraw())
+    {
+        return;
+    }
 
     // 外部からの力を適用
     if (m_player->GetForce().Length() > 0.0f)
@@ -663,7 +666,6 @@ void PlayerLandState::Enter()
     m_gameCamera = FindGO<GameCamera>("GameCamera");
     m_player->SetLandFlag(true);
     m_player->GetModel()->PlayAnimation(m_player->enAnimationClip_Idle);
-    EffectManager::Get()->PlayEffect(m_player->GetPosition(),Quaternion::Identity, SMOKE_SCALE, Player_Land);
 
     m_landTime = m_player->GetLandTime();
 }
@@ -673,6 +675,14 @@ void PlayerLandState::Update()
     m_landTime -= g_gameTime->GetFrameDeltaTime();
 
     m_player->SetLandTime(m_landTime);
+
+    if (m_player->GetLandTime() > 0.0f)
+    {
+        Vector3 position = m_player->GetPosition();
+        position.x += 1.5f;
+        m_player->SetPosition(position);
+        EffectManager::Get()->PlayEffect(m_player->GetPosition() + SMOKE_POSITION, Quaternion::Identity, SMOKE_SCALE, Player_Land);
+    }
     
     if (m_landTime <= 0.0f)
     {
