@@ -18,7 +18,7 @@ bool Fade::Start()
     m_gameCamera = FindGO<GameCamera>("GameCamera");
 
     m_fadeSprite.Init("Assets/texture/FadeIn/FadeIn.DDS", 9000.0f, 9000.0f);
-    test.Init("Assets/texture/FadeIn/Fade.DDS", 1280.0f, 1080.0f);
+    m_fadeBack.Init("Assets/texture/FadeIn/Fade.DDS", 1280.0f, 1080.0f);
 
     m_state = EnState::FadeIn;
     m_scale = {30.0f, 30.0f, 1.0f};
@@ -26,9 +26,9 @@ bool Fade::Start()
     m_fadeSprite.SetPosition(m_position);
     m_fadeSprite.SetScale(m_scale);
     m_fadeSprite.Update();
-    test.SetPosition(testPos);
-    test.SetScale(testScl);
-    test.Update();
+    m_fadeBack.SetPosition(testPos);
+    m_fadeBack.SetScale(testScl);
+    m_fadeBack.Update();
 
     return true;
 }
@@ -114,6 +114,6 @@ void Fade::Render(RenderContext& rc)
 
     if (m_isFade)
     {
-        test.Draw(rc);
+        m_fadeBack.Draw(rc);
     }
 }

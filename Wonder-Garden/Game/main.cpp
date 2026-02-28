@@ -41,8 +41,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
     g_sceneLight->SetAmbinet(Vector3(0.5f, 0.5f, 0.5f));
 
     // タイトル
-    //NewGO<Title>(0, "Title");
-    NewGO<Game>(0, "Game");
+    NewGO<Title>(0, "Title");
+    //NewGO<Game>(0, "Game");
 
     // サウンドマネージャー
     NewGO<SoundManager>(0);

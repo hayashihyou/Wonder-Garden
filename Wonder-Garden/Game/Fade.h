@@ -69,7 +69,7 @@ private:
     EnState m_state = EnState::None;
 
     SpriteRender m_fadeSprite;           //スプライトレンダー
-    SpriteRender test;
+    SpriteRender m_fadeBack;                   //フェードを完全にしたときの黒い背景
     Player* m_player = nullptr;          //プレイヤー
     GameClear* m_gameClear = nullptr;    //ゲームクリア
     GameOver* m_gameOver = nullptr;      //ゲームオーバー
