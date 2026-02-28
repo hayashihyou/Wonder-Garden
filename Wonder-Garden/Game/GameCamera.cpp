@@ -293,9 +293,8 @@ void GameCamera::CannonCamera()
     Vector3 idealPos = m_cannonCameraPos;
 
 
-    /**
-    * 条件が被ってしまう為、フラグを使って制御
-    */
+    
+    //条件が被ってしまう為、フラグを使って制御
     if (m_cannonCameraPos.x <= -1400.0f && m_cannonCameraPos.z <= 2850.0f && m_isMoveCamera == false)
     {
         idealPos += Vector3(6.0f, 0.0f, 6.0f);
