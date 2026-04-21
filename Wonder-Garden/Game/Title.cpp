@@ -7,6 +7,7 @@
 #include "Player/Player.h"
 #include "GameCamera.h"
 #include "Gimmic/Warp.h"
+#include "EffectManager.h"
 
 
 namespace
@@ -20,6 +21,7 @@ Title::~Title()
     DeleteGO(m_gameCamera); 
     DeleteGO(m_titlePipe);
     DeleteGO(m_starCounter);
+    EffectManager::Delete();
 }
 
 
@@ -34,13 +36,15 @@ bool Title::Start()
     InitSprite();
 
     SoundManager::GetInstance().PlayBGM(SoundManager::SoundNumber::TitleBGM);
+
+    EffectManager::Create();
+    EffectManager::Get()->Start();
     
     return true;
 }
 
 void Title::Update()
 {
-    // Bボタンが押されたらゲームシーンへ移行
     if (m_titlePipe->GetPipeCollision().IsHit(*m_player->GetCharCon()))
     {
         // 決定SE再生

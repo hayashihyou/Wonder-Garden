@@ -1,5 +1,5 @@
 #pragma once
-#include "Assets/Util/CRC32.h"
+#include "Util/CRC32.h"
 
 #define appState(name)                                                                                                 \
 public:                                                                                                                \
